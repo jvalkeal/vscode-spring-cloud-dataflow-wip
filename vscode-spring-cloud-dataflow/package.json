@@ -1,0 +1,123 @@
+{
+	"name": "vscode-spring-cloud-dataflow",
+	"displayName": "Spring Cloud Data Flow",
+	"description": "Developer support for Spring Cloud Data Flow",
+	"version": "0.0.1",
+	"publisher": "Pivotal",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jvalkeal/vscode-spring-cloud-dataflow-wip"
+	},
+	"icon": "media/scdficon.png",
+	"engines": {
+		"vscode": "^1.34.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onView:scdfApps",
+		"onView:scdfStreams",
+		"onView:scdfTasks",
+		"onLanguage:scdfs",
+		"onLanguage:scdft",
+		"onCommand:vscode-spring-cloud-dataflow.explorer.refresh",
+		"onCommand:vscode-spring-cloud-dataflow.server.register",
+		"onCommand:vscode-spring-cloud-dataflow.server.unregister",
+		"onCommand:scdf.test"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "vscode-spring-cloud-dataflow.server.register",
+				"title": "Register Spring Cloud Data Flow Server"
+			},
+			{
+				"command": "vscode-spring-cloud-dataflow.server.unregister",
+				"title": "Unregister Spring Cloud Data Flow Server"
+			},
+			{
+				"command": "vscode-spring-cloud-dataflow.streams.show",
+				"title": "Show Stream"
+			}
+		],
+		"menus": {
+			"view/item/context": [
+				{
+					"command": "vscode-spring-cloud-dataflow.server.unregister",
+					"when": "view == scdfApps"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.streams.show",
+					"when": "view == scdfStreams"
+				}
+			]
+		},
+		"languages": [
+			{
+				"id": "scdfs",
+				"aliases": [
+					"Spring Cloud Data Flow Stream Language"
+				],
+				"extensions": [
+					".scdfs"
+				]
+			},
+			{
+				"id": "scdft",
+				"aliases": [
+					"Spring Cloud Data Flow Task Language"
+				],
+				"extensions": [
+					".scdft"
+				]
+			}
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "scdf-explorer",
+					"title": "SCDF",
+					"icon": "media/scdf.svg"
+				}
+			]
+		},
+		"views": {
+			"scdf-explorer": [
+				{
+					"id": "scdfApps",
+					"name": "Apps"
+				},
+				{
+					"id": "scdfStreams",
+					"name": "Streams"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"postinstall": "node ./node_modules/vscode/bin/install",
+		"test": "npm run compile && node ./node_modules/vscode/bin/test",
+		"scdflsp": "node scdflsp.js",
+		"vsce-package": "vsce package",
+		"build": "npm run scdflsp && npm run vsce-package"
+	},
+	"devDependencies": {
+		"@types/keytar": "^4.4.0",
+		"@types/mocha": "^2.2.42",
+		"@types/node": "^10.12.21",
+		"maven-repository-manager": "^1.0.0",
+		"tslint": "^5.12.1",
+		"typescript": "^3.3.1",
+		"vsce": "^1.62.0",
+		"vscode": "^1.1.28"
+	},
+	"dependencies": {
+		"axios": "^0.19.0",
+		"vscode-languageclient": "^5.2.1"
+	}
+}

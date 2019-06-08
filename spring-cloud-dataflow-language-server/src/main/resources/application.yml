@@ -1,0 +1,11 @@
+logging:
+  level:
+    org.springframework.dsl: info
+    org.springframework.cloud.dataflow.language.server: debug
+spring:
+  main:
+    banner-mode: "off"
+  dsl:
+    lsp:
+      server:
+        mode: PROCESS
