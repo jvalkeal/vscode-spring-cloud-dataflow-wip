@@ -55,4 +55,11 @@ public class DataflowStreamLanguageLinterTests {
 		assertThat(problem.getRange().getEnd().getLine()).isEqualTo(0);
 		assertThat(problem.getRange().getEnd().getCharacter()).isEqualTo(10);
 	}
+
+	// @Test
+	// public void testLints2() {
+	// 	Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, "stream1 = time|log\nstream2 = time|log");
+	// 	List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream().collect(Collectors.toList());
+	// 	assertThat(problems).hasSize(0);
+	// }
 }

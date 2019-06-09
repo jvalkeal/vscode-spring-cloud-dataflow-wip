@@ -1,4 +1,4 @@
-import { ExtensionContext, commands, window, workspace } from 'vscode';
+import { ExtensionContext, commands, window, workspace, languages } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions } from 'vscode-languageclient';
 import * as Path from 'path';
 import { extensionGlobals } from './extension-variables';
@@ -23,6 +23,11 @@ export function activate(context: ExtensionContext) {
     // });
     // context.subscriptions.push(disposable);
 
+    // let disposable = commands.registerCommand('vscode-spring-cloud-dataflow.streams.deploy', (xxx1, xxx2) => {
+    //     console.log('XXX deploy', xxx1, xxx2);
+    // });
+    // context.subscriptions.push(disposable);
+
     context.subscriptions.push(commands.registerCommand('vscode-spring-cloud-dataflow.server.register', () => connectServer()));
     context.subscriptions.push(commands.registerCommand('vscode-spring-cloud-dataflow.server.unregister', disconnectServer));
 
@@ -35,6 +40,9 @@ export function activate(context: ExtensionContext) {
         appsExplorerProvider.refresh();
         streamsExplorerProvider.refresh();
     }));
+
+
+    // languages.registerCodeLensProvider
 
     // for scdfs language
     context.subscriptions.push(workspace.registerTextDocumentContentProvider('scdfs', streamsExplorerProvider));

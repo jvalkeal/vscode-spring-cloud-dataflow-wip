@@ -24,6 +24,7 @@
 		"onCommand:vscode-spring-cloud-dataflow.explorer.refresh",
 		"onCommand:vscode-spring-cloud-dataflow.server.register",
 		"onCommand:vscode-spring-cloud-dataflow.server.unregister",
+		"onCommand:vscode-spring-cloud-dataflow.streams.deploy",
 		"onCommand:scdf.test"
 	],
 	"main": "./out/extension.js",
@@ -40,6 +41,10 @@
 			{
 				"command": "vscode-spring-cloud-dataflow.streams.show",
 				"title": "Show Stream"
+			},
+			{
+				"command": "vscode-spring-cloud-dataflow.streams.deploy",
+				"title": "Deploy Stream"
 			}
 		],
 		"menus": {

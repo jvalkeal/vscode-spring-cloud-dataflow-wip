@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dsl.lsp.server.support.JvmLspExiter;
 import org.springframework.dsl.lsp.server.support.LspExiter;
+import org.springframework.dsl.service.Lenser;
 import org.springframework.dsl.service.reconcile.Linter;
 
 @Configuration
@@ -37,6 +38,11 @@ public class DataflowLanguagesConfiguration {
     @Bean
     public Linter dataflowStreamLanguageLinter() {
         return new DataflowStreamLanguageLinter();
+    }
+
+    @Bean
+    public Lenser dataflowStreamLanguageLenser() {
+        return new DataflowStreamLanguageLenser();
     }
 
     @Bean
