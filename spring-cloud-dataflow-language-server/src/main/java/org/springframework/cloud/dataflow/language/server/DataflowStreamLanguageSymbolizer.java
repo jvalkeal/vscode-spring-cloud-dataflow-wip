@@ -15,17 +15,14 @@
  */
 package org.springframework.cloud.dataflow.language.server;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.springframework.dsl.service.DslContext;
+import org.springframework.dsl.service.symbol.SymbolizeInfo;
+import org.springframework.dsl.service.symbol.Symbolizer;
 
-import org.springframework.context.annotation.Import;
+public class DataflowStreamLanguageSymbolizer extends DataflowLanguagesService implements Symbolizer {
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Documented
-// @Import(DataflowLanguagesConfiguration.class)
-public @interface EnableDataflowLanguages {
+    @Override
+    public SymbolizeInfo symbolize(DslContext context) {
+        return SymbolizeInfo.empty();
+    }
 }

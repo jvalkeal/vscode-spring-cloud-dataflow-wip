@@ -22,17 +22,35 @@ import org.springframework.dsl.jsonrpc.annotation.JsonRpcNotification;
 import org.springframework.dsl.jsonrpc.annotation.JsonRpcRequestMapping;
 import org.springframework.dsl.jsonrpc.annotation.JsonRpcRequestParams;
 import org.springframework.dsl.jsonrpc.session.JsonRpcSession;
+import org.springframework.dsl.service.DslContext;
 
+/**
+ * Controller which takes ownership of all lsp protocol communication for
+ * a {@code scdf} namespace. Functionality behind this controller is defined
+ * together with a lsp client which for correct functionality need to
+ * be aware of these rules working with Spring Cloud Data Flow specific extensions
+ * of a lsp protocol.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 @JsonRpcRequestMapping(method = "scdf/")
 public class DataflowJsonRpcController {
 
     private final static Logger log = LoggerFactory.getLogger(DataflowJsonRpcController.class);
 
+    /**
+     * Blindly inject given params into a session so that other methods can use this
+     * info from a {@link JsonRpcSession} available from a {@link DslContext}.
+     *
+     * @param params the dataflow environment params
+     * @param session th json rpc session
+     */
     @JsonRpcRequestMapping(method = "environment")
     @JsonRpcNotification
     public void environmentNotification(@JsonRpcRequestParams DataflowEnvironmentParams params,
             JsonRpcSession session) {
-        log.info("Client sending new environment info, params {} and session id {}", params, session.getId());
+        log.debug("Client sending new environment info, params {} and session id {}", params, session.getId());
         session.getAttributes().put("test", params.getHost());
     }
 }

@@ -18,7 +18,6 @@ package org.springframework.cloud.dataflow.language.server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@EnableDataflowLanguages
 @SpringBootApplication
 public class Application {
 

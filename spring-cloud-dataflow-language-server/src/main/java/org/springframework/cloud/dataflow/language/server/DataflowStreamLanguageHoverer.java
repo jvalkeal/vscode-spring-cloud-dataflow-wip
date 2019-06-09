@@ -15,23 +15,17 @@
  */
 package org.springframework.cloud.dataflow.language.server;
 
-import org.springframework.dsl.model.LanguageId;
+import org.springframework.dsl.domain.Hover;
+import org.springframework.dsl.domain.Position;
+import org.springframework.dsl.service.DslContext;
+import org.springframework.dsl.service.Hoverer;
 
-/**
- * Various contansts for dataflow languages.
- *
- * @author Janne Valkealahti
- *
- */
-public class DataflowLanguages {
+import reactor.core.publisher.Mono;
 
-	public final static LanguageId LANGUAGEID_STREAM = LanguageId.languageId("scdfs",
-			"Spring Cloud Data Flow Stream Language");
+public class DataflowStreamLanguageHoverer extends DataflowLanguagesService implements Hoverer {
 
-	public final static LanguageId LANGUAGEID_TASK = LanguageId.languageId("scdft",
-			"Spring Cloud Data Flow Task Language");
-
-	public final static String COMMAND_STREAM_DEPLOY = "vscode-spring-cloud-dataflow.streams.deploy";
-
-	public final static String COMMAND_STREAM_DEPLOY_TITLE = "Deploy Stream";
+    @Override
+    public Mono<Hover> hover(DslContext context, Position position) {
+        return Mono.empty();
+    }
 }
