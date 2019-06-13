@@ -20,7 +20,7 @@ export enum ServerMode {
 export class ServerNode extends BaseNode {
 
     constructor(private readonly registration: ServerRegistration, private readonly mode: ServerMode) {
-        super(registration.url);
+        super(registration.url, 'serverRegistration');
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {

@@ -51,11 +51,11 @@
 			"view/item/context": [
 				{
 					"command": "vscode-spring-cloud-dataflow.server.unregister",
-					"when": "view == scdfApps"
+					"when": "viewItem == serverRegistration"
 				},
 				{
 					"command": "vscode-spring-cloud-dataflow.streams.show",
-					"when": "view == scdfStreams"
+					"when": "viewItem == definedStream"
 				}
 			]
 		},

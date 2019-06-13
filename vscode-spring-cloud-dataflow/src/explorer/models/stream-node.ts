@@ -5,7 +5,7 @@ import { treeUtils } from "../../utils/tree-utils";
 export class StreamNode extends BaseNode {
 
     constructor(label: string, private readonly serverId: string) {
-        super(label);
+        super(label, 'definedStream');
     }
 
     public getResourceUri(): Uri {

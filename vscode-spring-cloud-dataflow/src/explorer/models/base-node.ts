@@ -4,7 +4,7 @@ import { treeUtils } from "../../utils/tree-utils";
 export abstract class BaseNode {
     public readonly label: string;
 
-    protected constructor(label: string) {
+    protected constructor(label: string, private readonly contextValue?: string) {
         this.label = label;
     }
 
@@ -14,7 +14,8 @@ export abstract class BaseNode {
         return {
             label: this.label,
             iconPath: iconPath,
-            collapsibleState: TreeItemCollapsibleState.Collapsed
+            collapsibleState: TreeItemCollapsibleState.Collapsed,
+            contextValue: this.contextValue
         };
     }
 
