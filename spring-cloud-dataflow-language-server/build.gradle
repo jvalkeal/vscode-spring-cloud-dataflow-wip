@@ -34,6 +34,7 @@ dependencyManagement {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.dsl:spring-dsl-starter-lspserver'
+	implementation 'org.springframework.dsl:spring-dsl-symboltable'
 	implementation('org.springframework.cloud:spring-cloud-dataflow-core') {
 		exclude group: 'org.springframework.hateoas', module: 'spring-hateoas'
 	}

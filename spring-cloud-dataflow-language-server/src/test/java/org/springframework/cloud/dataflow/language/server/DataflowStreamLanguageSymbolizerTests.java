@@ -15,5 +15,74 @@
  */
 package org.springframework.cloud.dataflow.language.server;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.dsl.document.Document;
+import org.springframework.dsl.document.TextDocument;
+import org.springframework.dsl.domain.DocumentSymbol;
+import org.springframework.dsl.domain.Range;
+import org.springframework.dsl.domain.SymbolInformation;
+import org.springframework.dsl.domain.SymbolKind;
+import org.springframework.dsl.service.DslContext;
+import org.springframework.dsl.service.symbol.SymbolizeInfo;
+
 public class DataflowStreamLanguageSymbolizerTests {
+
+    private final DataflowStreamLanguageSymbolizer symbolizer = new DataflowStreamLanguageSymbolizer();
+
+    @Test
+    public void testSimpleStreamWithName() {
+        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, "stream1 = time --initial-delay=1000 | log --name=mylogger");
+        SymbolizeInfo symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build());
+
+        List<SymbolInformation> symbolInformations = symbolizeInfo.symbolInformations().toStream()
+                .collect(Collectors.toList());
+        List<DocumentSymbol> documentSymbols = symbolizeInfo.documentSymbols().toStream().collect(Collectors.toList());
+
+        assertThat(symbolInformations).hasSize(1);
+        assertThat(documentSymbols).hasSize(1);
+        assertThat(documentSymbols.get(0).getName()).isEqualTo("stream1");
+        assertThat(documentSymbols.get(0).getDetail()).isNull();
+        assertThat(documentSymbols.get(0).getKind()).isEqualTo(SymbolKind.String);
+        assertThat(documentSymbols.get(0).getRange()).isEqualTo(Range.from(0, 10, 0, 57));
+        assertThat(documentSymbols.get(0).getSelectionRange()).isEqualTo(Range.from(0, 10, 0, 57));
+        assertThat(documentSymbols.get(0).getChildren()).isNotNull();
+        assertThat(documentSymbols.get(0).getChildren()).hasSize(2);
+
+        assertThat(documentSymbols.get(0).getChildren().get(0)).isNotNull();
+        assertThat(documentSymbols.get(0).getChildren().get(0).getName()).isEqualTo("time");
+        assertThat(documentSymbols.get(0).getChildren().get(0).getKind()).isEqualTo(SymbolKind.String);
+        assertThat(documentSymbols.get(0).getChildren().get(0).getRange()).isEqualTo(Range.from(0, 10, 0, 57));
+        assertThat(documentSymbols.get(0).getChildren().get(0).getSelectionRange()).isEqualTo(Range.from(0, 10, 0, 57));
+        assertThat(documentSymbols.get(0).getChildren().get(0).getChildren()).isNotNull();
+        assertThat(documentSymbols.get(0).getChildren().get(0).getChildren()).hasSize(1);
+        assertThat(documentSymbols.get(0).getChildren().get(0).getChildren().get(0).getName()).isEqualTo("initial-delay");
+
+        assertThat(documentSymbols.get(0).getChildren().get(1)).isNotNull();
+        assertThat(documentSymbols.get(0).getChildren().get(1).getName()).isEqualTo("log");
+        assertThat(documentSymbols.get(0).getChildren().get(1).getKind()).isEqualTo(SymbolKind.String);
+        assertThat(documentSymbols.get(0).getChildren().get(1).getRange()).isEqualTo(Range.from(0, 10, 0, 57));
+        assertThat(documentSymbols.get(0).getChildren().get(1).getSelectionRange()).isEqualTo(Range.from(0, 10, 0, 57));
+        assertThat(documentSymbols.get(0).getChildren().get(1).getChildren()).isNotNull();
+        assertThat(documentSymbols.get(0).getChildren().get(1).getChildren()).hasSize(1);
+        assertThat(documentSymbols.get(0).getChildren().get(1).getChildren().get(0).getName()).isEqualTo("name");
+    }
+
+    @Test
+    public void testNamedSourceDestination() {
+        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, ":myevents > log");
+        SymbolizeInfo symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build());
+
+    }
+
+    @Test
+    public void testNamedSinkDestination() {
+        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, "time > :myevents");
+        SymbolizeInfo symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build());
+
+    }
 }

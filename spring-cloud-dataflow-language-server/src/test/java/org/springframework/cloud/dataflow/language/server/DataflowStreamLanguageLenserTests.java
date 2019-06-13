@@ -15,5 +15,29 @@
  */
 package org.springframework.cloud.dataflow.language.server;
 
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.dsl.document.Document;
+import org.springframework.dsl.document.TextDocument;
+import org.springframework.dsl.domain.CodeLens;
+import org.springframework.dsl.service.DslContext;
+import org.springframework.dsl.service.Lenser;
+
 public class DataflowStreamLanguageLenserTests {
+
+    private final Lenser lenser = new DataflowStreamLanguageLenser();
+
+	@Test
+	public void testLintsMultipleStreams() {
+        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0,
+                "stream1 = time|log\nstream2 = time|log");
+        List<CodeLens> problems = lenser.lense(DslContext.builder().document(document).build()).toStream()
+                .collect(Collectors.toList());
+        assertThat(problems).hasSize(2);
+	}
 }

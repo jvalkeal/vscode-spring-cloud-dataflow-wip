@@ -33,22 +33,28 @@ public class DataflowStreamLanguageLinterTests {
 	private static Range zeroRange = Range.from(0, 0, 0, 0);
 
 	@Test
-	public void testLints() {
+	public void testEmpty() {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, "");
-		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream().collect(Collectors.toList());
+		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
+				.collect(Collectors.toList());
+		assertThat(problems).hasSize(0);
+	}
+
+	@Test
+	public void testJustOneApp() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, "foo");
+		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
+				.collect(Collectors.toList());
+		assertThat(problems).isEmpty();
+	}
+
+	@Test
+	public void testDoublePipeErrorBetweenApps() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, ":aaa > fff||bbb");
+		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
+				.collect(Collectors.toList());
 		assertThat(problems).hasSize(1);
 		ReconcileProblem problem = problems.get(0);
-		assertThat(problem.getRange()).isEqualTo(zeroRange);
-		assertThat(problem.getMessage()).contains("Unexpectedly ran out of input");
-
-		document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, "foo");
-		problems = linter.lint(DslContext.builder().document(document).build()).toStream().collect(Collectors.toList());
-		assertThat(problems).isEmpty();
-
-		document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, ":aaa > fff||bbb");
-		problems = linter.lint(DslContext.builder().document(document).build()).toStream().collect(Collectors.toList());
-		assertThat(problems).hasSize(1);
-		problem = problems.get(0);
 		assertThat(problem.getMessage()).contains("do not use || between source/processor/sink apps in a stream");
 		assertThat(problem.getRange().getStart().getLine()).isEqualTo(0);
 		assertThat(problem.getRange().getStart().getCharacter()).isEqualTo(10);
@@ -56,10 +62,21 @@ public class DataflowStreamLanguageLinterTests {
 		assertThat(problem.getRange().getEnd().getCharacter()).isEqualTo(10);
 	}
 
-	// @Test
-	// public void testLints2() {
-	// 	Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, "stream1 = time|log\nstream2 = time|log");
-	// 	List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream().collect(Collectors.toList());
-	// 	assertThat(problems).hasSize(0);
-	// }
+	@Test
+	public void testLintsMultipleStreams() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0,
+				"stream1 = time|log\nstream2 = time|log");
+		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
+				.collect(Collectors.toList());
+		assertThat(problems).hasSize(0);
+	}
+
+	@Test
+	public void testLintsMultipleStreamsWithEmptyLines() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0,
+				"\nstream1 = time|log\n\nstream2 = time|log\n");
+		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
+				.collect(Collectors.toList());
+		assertThat(problems).hasSize(0);
+	}
 }

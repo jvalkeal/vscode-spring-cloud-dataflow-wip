@@ -15,12 +15,7 @@
  */
 package org.springframework.cloud.dataflow.language.server;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.dsl.document.Document;
 import org.springframework.dsl.domain.CodeLens;
-import org.springframework.dsl.domain.Range;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.Lenser;
 
@@ -31,22 +26,17 @@ public class DataflowStreamLanguageLenser extends DataflowLanguagesService imple
 	@Override
 	public Flux<CodeLens> lense(DslContext context) {
 		return Flux.defer(() -> {
-			return Flux.fromIterable(lenseDocument(context.getDocument()));
+			return Flux.fromIterable(parseStreams(context.getDocument()))
+				.filter(item -> item.getStreamNode() != null)
+				.map(item -> {
+					return CodeLens.codeLens()
+						.range(item.getRange())
+						.command()
+							.command(DataflowLanguages.COMMAND_STREAM_DEPLOY)
+							.title(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE)
+							.and()
+						.build();
+				});
 		});
-	}
-
-	private List<CodeLens> lenseDocument(Document document) {
-		List<CodeLens> lenses = new ArrayList<>();
-		CodeLens test = CodeLens.codeLens()
-			.range(Range.from(0, 0, 0, 1))
-			.command()
-				.command(DataflowLanguages.COMMAND_STREAM_DEPLOY)
-				.title(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE)
-				.argument("argument1")
-				.argument("argument2")
-				.and()
-			.build();
-		lenses.add(test);
-		return lenses;
 	}
 }
