@@ -1,4 +1,4 @@
-import { ExtensionContext, commands, window, workspace, languages } from 'vscode';
+import { ExtensionContext, commands, window, workspace } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions } from 'vscode-languageclient';
 import * as Path from 'path';
 import { extensionGlobals } from './extension-variables';
@@ -19,28 +19,33 @@ export function activate(context: ExtensionContext) {
     // global state is not nice but makes life easier in an extention.
     initializeExtensionGlobals(context);
 
-    // we expect server to be plased in 'out' directory, which is a case when real extension
-    // is built and when extension if run within vscode assuming `npm run build` is run which
-    // copies existing scdf language server either from local maven or remote maven repo.
-    const jarPath = Path.resolve(Path.resolve(context.extensionPath), 'out', LANGUAGE_SERVER_JAR);
-
-    // let disposable = commands.registerCommand('scdf.test', () => {
-    // 	const params = {
-    // 		host: 'localhost'
-    // 	};
-    // 	languageClient.sendNotification('scdf/environment', params);
-    // });
-    // context.subscriptions.push(disposable);
-
-    // let disposable = commands.registerCommand('vscode-spring-cloud-dataflow.streams.deploy', (xxx1, xxx2) => {
-    //     console.log('XXX deploy', xxx1, xxx2);
-    // });
-    // context.subscriptions.push(disposable);
-
     // register needed commands expected to get handled
+    registerCommands(context);
+
+    // register explorer views
+    registerExplorer(context);
+
+    // register language support
+    registerLanguageSupport(context);
+}
+
+export function deactivate() {
+    if (languageClient) {
+        languageClient.stop();
+    }
+}
+
+function initializeExtensionGlobals(context: ExtensionContext) {
+    extensionGlobals.keytar = Keytar.tryCreate();
+    extensionGlobals.context = context;
+}
+
+function registerCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_REGISTER, () => connectServer()));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_UNREGISTER, disconnectServer));
+}
 
+function registerExplorer(context: ExtensionContext) {
     const appsExplorerProvider = new AppsExplorerProvider();
     window.createTreeView('scdfApps', { treeDataProvider: appsExplorerProvider });
 
@@ -50,12 +55,17 @@ export function activate(context: ExtensionContext) {
         appsExplorerProvider.refresh();
         streamsExplorerProvider.refresh();
     }));
+    extensionGlobals.appsExplorerProvider = appsExplorerProvider;
+    extensionGlobals.streamsExplorerProvider = streamsExplorerProvider;
+}
 
+function registerLanguageSupport(context: ExtensionContext) {
+    // we expect server to be plased in 'out' directory, which is a case when real extension
+    // is built and when extension if run within vscode assuming `npm run build` is run which
+    // copies existing scdf language server either from local maven or remote maven repo.
+    const jarPath = Path.resolve(Path.resolve(context.extensionPath), 'out', LANGUAGE_SERVER_JAR);
 
-    // languages.registerCodeLensProvider
-
-    // for scdfs language
-    context.subscriptions.push(workspace.registerTextDocumentContentProvider('scdfs', streamsExplorerProvider));
+    context.subscriptions.push(workspace.registerTextDocumentContentProvider('scdfs', extensionGlobals.streamsExplorerProvider));
     commands.registerCommand(COMMAND_SCDF_STREAMS_SHOW, resource => {
         window.showTextDocument(resource.getResourceUri());
     });
@@ -79,15 +89,4 @@ export function activate(context: ExtensionContext) {
 
     languageClient = new LanguageClient(CONFIG_PREFIX, LANGUAGE_SCDF_DESC, serverOptions, clientOptions);
     languageClient.start();
-}
-
-export function deactivate() {
-    if (languageClient) {
-        languageClient.stop();
-    }
-}
-
-function initializeExtensionGlobals(context: ExtensionContext) {
-    extensionGlobals.keytar = Keytar.tryCreate();
-    extensionGlobals.context = context;
 }
