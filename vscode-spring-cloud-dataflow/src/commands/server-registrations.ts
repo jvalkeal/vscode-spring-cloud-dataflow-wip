@@ -1,8 +1,8 @@
-import { extensionGlobals } from "./extension-variables";
-import { registerServerInput } from "./commands/register-server";
-import { BaseNode } from "./explorer/models/base-node";
+import { extensionGlobals } from "../extension-variables";
+import { registerServerInput } from "./register-server";
+import { BaseNode } from "../explorer/models/base-node";
 import { commands } from "vscode";
-import { keytarConstants } from "./extension-globals";
+import { keytarConstants } from "../extension-globals";
 
 interface ServerRegistrationNonsensitive {
     url: string;

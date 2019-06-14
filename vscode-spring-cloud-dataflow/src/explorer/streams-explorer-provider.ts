@@ -1,8 +1,8 @@
 import { TreeDataProvider, TreeItem, ProviderResult, EventEmitter, TextDocumentContentProvider, Uri, CancellationToken, Event } from "vscode";
 import { BaseNode } from "./models/base-node";
-import { getServers } from "../server-registrations";
+import { getServers } from "../commands/server-registrations";
 import { ServerNode, ServerMode } from "./models/server-node";
-import { ScdfModel } from "../scdf-model";
+import { ScdfModel } from "../service/scdf-model";
 
 export class StreamsExplorerProvider implements TreeDataProvider<BaseNode>, TextDocumentContentProvider {
 	private _onDidChangeTreeData: EventEmitter<BaseNode> = new EventEmitter<BaseNode>();

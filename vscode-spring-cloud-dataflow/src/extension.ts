@@ -3,7 +3,7 @@ import { LanguageClient, LanguageClientOptions, ServerOptions } from 'vscode-lan
 import * as Path from 'path';
 import { extensionGlobals } from './extension-variables';
 import { Keytar } from './utils/keytar';
-import { connectServer, disconnectServer } from './server-registrations';
+import { connectServer, disconnectServer } from './commands/server-registrations';
 import { AppsExplorerProvider } from './explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
 import {

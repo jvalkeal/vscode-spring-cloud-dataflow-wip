@@ -1,8 +1,8 @@
 import { BaseNode } from "./base-node";
 import { AppNode } from "./app-node";
-import { ScdfModel } from "../../scdf-model";
+import { ScdfModel } from "../../service/scdf-model";
 import { StreamNode } from "./stream-node";
-import { ServerRegistration } from "../../server-registrations";
+import { ServerRegistration } from "../../commands/server-registrations";
 import { AppTypeNode, AppType } from "./app-type-node";
 
 /**

@@ -1,6 +1,6 @@
 import { TreeDataProvider, TreeItem, ProviderResult, EventEmitter } from "vscode";
 import { BaseNode } from "./models/base-node";
-import { getServers, ServerRegistration } from "../server-registrations";
+import { getServers, ServerRegistration } from "../commands/server-registrations";
 import { Event } from "vscode-jsonrpc";
 import { ServerNode, ServerMode } from "./models/server-node";
 

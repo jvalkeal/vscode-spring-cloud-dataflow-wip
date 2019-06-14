@@ -1,7 +1,7 @@
 import { BaseNode } from "./base-node";
-import { ScdfModel, ScdfAppEntry } from "../../scdf-model";
+import { ScdfModel, ScdfAppEntry } from "../../service/scdf-model";
 import { AppNode } from "./app-node";
-import { ServerRegistration } from "../../server-registrations";
+import { ServerRegistration } from "../../commands/server-registrations";
 
 /**
  * Enumeration of a possible app types in a dataflow. These are hardcoded
