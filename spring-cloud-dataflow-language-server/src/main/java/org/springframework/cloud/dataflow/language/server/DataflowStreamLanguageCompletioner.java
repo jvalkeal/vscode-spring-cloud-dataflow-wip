@@ -15,10 +15,16 @@
  */
 package org.springframework.cloud.dataflow.language.server;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.net.URI;
+import java.util.List;
+
+import org.springframework.cloud.dataflow.language.server.DataflowEnvironmentParams.Environment;
+import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
+import org.springframework.cloud.dataflow.rest.client.DataFlowTemplate;
+import org.springframework.cloud.dataflow.rest.resource.CompletionProposalsResource;
 import org.springframework.dsl.domain.CompletionItem;
 import org.springframework.dsl.domain.Position;
+import org.springframework.dsl.domain.Range;
 import org.springframework.dsl.jsonrpc.session.JsonRpcSession;
 import org.springframework.dsl.lsp.LspSystemConstants;
 import org.springframework.dsl.service.Completioner;
@@ -28,14 +34,33 @@ import reactor.core.publisher.Flux;
 
 public class DataflowStreamLanguageCompletioner extends DataflowLanguagesService implements Completioner {
 
-	private final static Logger log = LoggerFactory.getLogger(DataflowStreamLanguageCompletioner.class);
-
 	@Override
 	public Flux<CompletionItem> complete(DslContext context, Position position) {
+		return Flux.defer(() -> {
+			Range prefixRange = Range.from(position.getLine(), 0, position.getLine(), position.getCharacter());
+			String prefix = context.getDocument().content(prefixRange);
+			DataFlowOperations dataFlowOperations = getDataFlowOperations(context);
+			CompletionProposalsResource proposals = dataFlowOperations.completionOperations()
+					.streamCompletions(prefix, 1);
+			return Flux.fromIterable(proposals.getProposals())
+				.map(proposal -> {
+					return CompletionItem.completionItem()
+						.label(proposal.getText())
+						.build();
+				});
+		});
+	}
+
+	private DataFlowOperations getDataFlowOperations(DslContext context) {
 		JsonRpcSession session = context.getAttribute(LspSystemConstants.CONTEXT_SESSION_ATTRIBUTE);
 		DataflowEnvironmentParams params = session
 				.getAttribute(DataflowLanguages.CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE);
-		log.info("scdf servers {}", params);
-		return Flux.empty();
+		List<Environment> environments = params.getEnvironments();
+		if (environments.size() > 0) {
+			String url = environments.get(0).getUrl();
+			URI uri = URI.create(url);
+			return new DataFlowTemplate(uri);
+		}
+		return null;
 	}
 }
