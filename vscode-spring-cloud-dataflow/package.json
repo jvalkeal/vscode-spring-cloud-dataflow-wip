@@ -24,19 +24,26 @@
 		"onCommand:vscode-spring-cloud-dataflow.explorer.refresh",
 		"onCommand:vscode-spring-cloud-dataflow.server.register",
 		"onCommand:vscode-spring-cloud-dataflow.server.unregister",
-		"onCommand:vscode-spring-cloud-dataflow.streams.deploy",
-		"onCommand:scdf.test"
+		"onCommand:vscode-spring-cloud-dataflow.server.notify",
+		"onCommand:vscode-spring-cloud-dataflow.streams.deploy"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
 				"command": "vscode-spring-cloud-dataflow.server.register",
-				"title": "Register Spring Cloud Data Flow Server"
+				"title": "Register Spring Cloud Data Flow Server",
+				"category": "SCDF"
 			},
 			{
 				"command": "vscode-spring-cloud-dataflow.server.unregister",
-				"title": "Unregister Spring Cloud Data Flow Server"
+				"title": "Unregister Spring Cloud Data Flow Server",
+				"category": "SCDF"
+			},
+			{
+				"command": "vscode-spring-cloud-dataflow.server.notify",
+				"title": "Notify Language Server of Data Flow Server Endpoints",
+				"category": "SCDF"
 			},
 			{
 				"command": "vscode-spring-cloud-dataflow.streams.show",

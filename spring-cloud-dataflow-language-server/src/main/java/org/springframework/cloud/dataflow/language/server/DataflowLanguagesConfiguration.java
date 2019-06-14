@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dsl.lsp.server.support.JvmLspExiter;
 import org.springframework.dsl.lsp.server.support.LspExiter;
+import org.springframework.dsl.service.Completioner;
 import org.springframework.dsl.service.Hoverer;
 import org.springframework.dsl.service.Lenser;
 import org.springframework.dsl.service.reconcile.Linter;
@@ -55,6 +56,11 @@ public class DataflowLanguagesConfiguration {
     @Bean
     public Symbolizer dataflowStreamLanguageSymbolizer() {
         return new DataflowStreamLanguageSymbolizer();
+    }
+
+    @Bean
+    public Completioner dataflowStreamLanguageCompletioner() {
+        return new DataflowStreamLanguageCompletioner();
     }
 
     @Bean

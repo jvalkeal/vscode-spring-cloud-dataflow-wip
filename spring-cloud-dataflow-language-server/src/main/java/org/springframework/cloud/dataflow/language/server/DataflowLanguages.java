@@ -34,4 +34,6 @@ public class DataflowLanguages {
 	public final static String COMMAND_STREAM_DEPLOY = "vscode-spring-cloud-dataflow.streams.deploy";
 
 	public final static String COMMAND_STREAM_DEPLOY_TITLE = "Deploy Stream";
+
+	public final static String CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE = "jsonRpcSessionEnvironments";
 }

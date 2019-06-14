@@ -15,20 +15,75 @@
  */
 package org.springframework.cloud.dataflow.language.server;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.util.StringUtils;
+
 public class DataflowEnvironmentParams {
 
-    private String host;
+    private List<Environment> environments = new ArrayList<>();
 
-    public String getHost() {
-        return host;
+    public List<Environment> getEnvironments() {
+        return environments;
     }
 
-    public void setHost(String host) {
-        this.host = host;
+    public void setEnvironments(List<Environment> environments) {
+        this.environments = environments;
     }
 
     @Override
     public String toString() {
-        return "DataflowEnvironmentParams host=" + host;
+        return "DataflowEnvironmentParams [" + environments +"]";
+    }
+
+    public static class Environment {
+
+        private String url;
+        private Credentials credentials = new Credentials();
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setHost(String url) {
+            this.url = url;
+        }
+
+        public Credentials getCredentials() {
+            return credentials;
+        }
+
+        public void setCredentials(Credentials credentials) {
+            this.credentials = credentials;
+        }
+
+        @Override
+        public String toString() {
+            return "DataflowEnvironmentParam [url=" + url + ", username=" + credentials.getUsername() + ", password="
+                    + (StringUtils.hasText(credentials.getPassword()) ? "********" : "") + "]";
+        }
+    }
+
+    public static class Credentials {
+
+        private String username;
+        private String password;
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
     }
 }

@@ -3,13 +3,13 @@ import { LanguageClient, LanguageClientOptions, ServerOptions } from 'vscode-lan
 import * as Path from 'path';
 import { extensionGlobals } from './extension-variables';
 import { Keytar } from './utils/keytar';
-import { connectServer, disconnectServer } from './commands/server-registrations';
+import { connectServer, disconnectServer, notifyServers } from './commands/server-registrations';
 import { AppsExplorerProvider } from './explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
 import {
     LANGUAGE_SCDF_STREAM_PREFIX, LANGUAGE_SCDF_TASK_PREFIX, CONFIG_PREFIX, LANGUAGE_SERVER_JAR,
     LANGUAGE_SCDF_DESC, COMMAND_SCDF_SERVER_REGISTER, COMMAND_SCDF_SERVER_UNREGISTER,
-    COMMAND_SCDF_EXPLORER_REFRESH, COMMAND_SCDF_STREAMS_SHOW
+    COMMAND_SCDF_EXPLORER_REFRESH, COMMAND_SCDF_STREAMS_SHOW, COMMAND_SCDF_SERVER_NOTIFY
 } from './extension-globals';
 
 let languageClient: LanguageClient;
@@ -43,6 +43,7 @@ function initializeExtensionGlobals(context: ExtensionContext) {
 function registerCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_REGISTER, () => connectServer()));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_UNREGISTER, disconnectServer));
+    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_NOTIFY, notifyServers));
 }
 
 function registerExplorer(context: ExtensionContext) {
@@ -88,5 +89,6 @@ function registerLanguageSupport(context: ExtensionContext) {
     };
 
     languageClient = new LanguageClient(CONFIG_PREFIX, LANGUAGE_SCDF_DESC, serverOptions, clientOptions);
+    extensionGlobals.languageClient = languageClient;
     languageClient.start();
 }

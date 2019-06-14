@@ -51,6 +51,6 @@ public class DataflowJsonRpcController {
     public void environmentNotification(@JsonRpcRequestParams DataflowEnvironmentParams params,
             JsonRpcSession session) {
         log.debug("Client sending new environment info, params {} and session id {}", params, session.getId());
-        session.getAttributes().put("test", params.getHost());
+        session.getAttributes().put(DataflowLanguages.CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE, params);
     }
 }

@@ -17,6 +17,20 @@ export interface ServerRegistration extends ServerRegistrationNonsensitive {
     credentials: ServerRegistrationCredentials;
 }
 
+interface DataflowEnvironmentParams {
+    environments: ServerRegistration[];
+}
+
+export async function notifyServers(): Promise<void> {
+    const registrations: ServerRegistration[] = [];
+    const servers = await getServers();
+    servers.forEach(registration => registrations.push(registration));
+    const params: DataflowEnvironmentParams = {
+        environments: registrations
+    };
+   	await extensionGlobals.languageClient.sendNotification('scdf/environment', params);
+}
+
 export async function connectServer(): Promise<void> {
     let servers = await getServers();
 
