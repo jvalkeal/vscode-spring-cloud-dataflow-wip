@@ -11,10 +11,11 @@ export abstract class BaseNode {
     public getTreeItem(): TreeItem {
         let iconPath: treeUtils.ThemedIconPath;
         iconPath = this.getThemedIconPath();
+        const collapsibleState = this.getTreeItemCollapsibleState();
         return {
             label: this.label,
             iconPath: iconPath,
-            collapsibleState: TreeItemCollapsibleState.Collapsed,
+            collapsibleState: collapsibleState,
             contextValue: this.contextValue
         };
     }
@@ -25,5 +26,9 @@ export abstract class BaseNode {
 
     protected getThemedIconPath(): treeUtils.ThemedIconPath {
         return treeUtils.getThemedIconPath('cloud_done');
+    }
+
+    protected getTreeItemCollapsibleState(): TreeItemCollapsibleState {
+        return TreeItemCollapsibleState.Collapsed;
     }
 }

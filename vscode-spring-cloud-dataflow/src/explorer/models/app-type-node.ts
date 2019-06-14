@@ -1,5 +1,5 @@
 import { BaseNode } from "./base-node";
-import { ScdfModel } from "../../scdf-model";
+import { ScdfModel, ScdfAppEntry } from "../../scdf-model";
 import { AppNode } from "./app-node";
 import { ServerRegistration } from "../../server-registrations";
 
@@ -31,9 +31,27 @@ export class AppTypeNode extends BaseNode {
     private async getAppNodes(type: AppType): Promise<AppNode[]> {
         const scdfModel = new ScdfModel(this.registration.url);
         return scdfModel.getApps()
-            .then(apps => apps
-                .filter(app => app.type === type.toString())
-                .map(app => new AppNode(app.name, type)))
-            ;
+            .then(apps => {
+                const grouped = new Map<string, Array<ScdfAppEntry>>();
+                apps.forEach(app => {
+                    if (app.type === type.toString()) {
+                        let group = grouped.get(app.name);
+                        if (!group) {
+                            group = new Array<ScdfAppEntry>();
+                            group.push(app);
+                            grouped.set(app.name, group);
+                        } else {
+                            group.push(app);
+                        }
+                    }
+                });
+                const appNodes = new Array<AppNode>();
+                grouped.forEach((v, k) => {
+                    const versions: string[] = [];
+                    v.forEach(app => versions.push(app.version));
+                    appNodes.push(new AppNode(k, type, versions));
+                });
+                return appNodes;
+            });
     }
 }

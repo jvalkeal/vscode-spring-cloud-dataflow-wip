@@ -1,14 +1,25 @@
 import { BaseNode } from "./base-node";
 import { treeUtils } from "../../utils/tree-utils";
 import { AppType } from "./app-type-node";
+import { AppVersionNode } from "./app-version-node";
 
 /**
  * Generic node which is any of {@link AppType}.
  */
 export class AppNode extends BaseNode {
 
-    constructor(label: string, private readonly type: AppType) {
+    constructor(label: string, private readonly type: AppType, private readonly versions?: string[]) {
         super(label);
+    }
+
+    public async getChildren(element: BaseNode): Promise<BaseNode[]> {
+        let nodes: AppVersionNode[] = [];
+        if (this.versions) {
+            this.versions.forEach(v => {
+                nodes.push(new AppVersionNode(v));
+            });
+        }
+        return nodes;
     }
 
     protected getThemedIconPath(): treeUtils.ThemedIconPath {

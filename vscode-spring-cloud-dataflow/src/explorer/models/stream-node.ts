@@ -1,5 +1,5 @@
 import { BaseNode } from "./base-node";
-import { Uri } from "vscode";
+import { Uri, TreeItemCollapsibleState } from "vscode";
 import { treeUtils } from "../../utils/tree-utils";
 
 export class StreamNode extends BaseNode {
@@ -17,5 +17,9 @@ export class StreamNode extends BaseNode {
 
     protected getThemedIconPath(): treeUtils.ThemedIconPath {
         return treeUtils.getThemedIconPath('stream');
+    }
+
+    protected getTreeItemCollapsibleState(): TreeItemCollapsibleState {
+        return TreeItemCollapsibleState.None;
     }
 }
