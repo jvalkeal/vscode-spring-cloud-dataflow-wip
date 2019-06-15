@@ -35,5 +35,13 @@ public class DataflowLanguages {
 
 	public final static String COMMAND_STREAM_DEPLOY_TITLE = "Deploy Stream";
 
+	public final static String COMMAND_STREAM_CREATE = "vscode-spring-cloud-dataflow.streams.create";
+
+	public final static String COMMAND_STREAM_CREATE_TITLE = "Create Stream";
+
+	public final static String COMMAND_STREAM_DESTROY = "vscode-spring-cloud-dataflow.streams.destroy";
+
+	public final static String COMMAND_STREAM_DESTROY_TITLE = "Destroy Stream";
+
 	public final static String CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE = "jsonRpcSessionEnvironments";
 }

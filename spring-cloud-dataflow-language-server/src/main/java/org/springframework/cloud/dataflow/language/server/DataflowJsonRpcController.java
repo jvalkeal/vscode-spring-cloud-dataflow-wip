@@ -16,13 +16,22 @@
 
  package org.springframework.cloud.dataflow.language.server;
 
+import java.net.URI;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.dataflow.language.server.DataflowEnvironmentParams.Environment;
+import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
+import org.springframework.cloud.dataflow.rest.client.DataFlowTemplate;
 import org.springframework.dsl.jsonrpc.annotation.JsonRpcNotification;
 import org.springframework.dsl.jsonrpc.annotation.JsonRpcRequestMapping;
 import org.springframework.dsl.jsonrpc.annotation.JsonRpcRequestParams;
 import org.springframework.dsl.jsonrpc.session.JsonRpcSession;
+import org.springframework.dsl.lsp.client.LspClient;
 import org.springframework.dsl.service.DslContext;
+
+import reactor.core.publisher.Mono;
 
 /**
  * Controller which takes ownership of all lsp protocol communication for
@@ -37,20 +46,66 @@ import org.springframework.dsl.service.DslContext;
 @JsonRpcRequestMapping(method = "scdf/")
 public class DataflowJsonRpcController {
 
-    private final static Logger log = LoggerFactory.getLogger(DataflowJsonRpcController.class);
+	private final static Logger log = LoggerFactory.getLogger(DataflowJsonRpcController.class);
 
-    /**
-     * Blindly inject given params into a session so that other methods can use this
-     * info from a {@link JsonRpcSession} available from a {@link DslContext}.
-     *
-     * @param params the dataflow environment params
-     * @param session th json rpc session
-     */
-    @JsonRpcRequestMapping(method = "environment")
-    @JsonRpcNotification
-    public void environmentNotification(@JsonRpcRequestParams DataflowEnvironmentParams params,
-            JsonRpcSession session) {
-        log.debug("Client sending new environment info, params {} and session id {}", params, session.getId());
-        session.getAttributes().put(DataflowLanguages.CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE, params);
-    }
+	/**
+	 * Blindly inject given params into a session so that other methods can use this
+	 * info from a {@link JsonRpcSession} available from a {@link DslContext}.
+	 *
+	 * @param params the dataflow environment params
+	 * @param session th json rpc session
+	 */
+	@JsonRpcRequestMapping(method = "environment")
+	@JsonRpcNotification
+	public void environmentNotification(@JsonRpcRequestParams DataflowEnvironmentParams params,
+			JsonRpcSession session) {
+		log.debug("Client sending new environment info, params {} and session id {}", params, session.getId());
+		session.getAttributes().put(DataflowLanguages.CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE, params);
+	}
+
+	@JsonRpcRequestMapping(method = "createStream")
+	@JsonRpcNotification
+	public Mono<Void> createStream(@JsonRpcRequestParams DataflowStreamCreateParams params, JsonRpcSession session,
+			LspClient lspClient) {
+		return Mono.fromRunnable(() -> {
+			log.debug("Client sending stream create request, params {}", params);
+			DataFlowOperations operations = getDataFlowOperations(session);
+			if (operations != null) {
+				log.debug("Creating stream {}", params);
+				operations.streamOperations().createStream(params.getName(), params.getDefinition(), false);
+			} else {
+				log.info("Unable to create stream");
+			}
+		})
+		.then(lspClient.notification().method("scdf/createdStream").exchange());
+	}
+
+	@JsonRpcRequestMapping(method = "destroyStream")
+	@JsonRpcNotification
+	public Mono<Void> destroyStream(@JsonRpcRequestParams DataflowStreamCreateParams params, JsonRpcSession session,
+			LspClient lspClient) {
+		return Mono.fromRunnable(() -> {
+			log.debug("Client sending stream destroy request, params {}", params);
+			DataFlowOperations operations = getDataFlowOperations(session);
+			if (operations != null) {
+				log.debug("Destroying stream {}", params);
+				operations.streamOperations().destroy(params.getName());
+			} else {
+				log.info("Unable to destroy stream");
+			}
+		})
+		.then(lspClient.notification().method("scdf/destroyedStream").exchange());
+	}
+
+	protected DataFlowOperations getDataFlowOperations(JsonRpcSession session) {
+		DataflowEnvironmentParams params = session
+				.getAttribute(DataflowLanguages.CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE);
+		List<Environment> environments = params.getEnvironments();
+		if (environments.size() > 0) {
+			String url = environments.get(0).getUrl();
+			URI uri = URI.create(url);
+			return new DataFlowTemplate(uri);
+		}
+		return null;
+	}
 }

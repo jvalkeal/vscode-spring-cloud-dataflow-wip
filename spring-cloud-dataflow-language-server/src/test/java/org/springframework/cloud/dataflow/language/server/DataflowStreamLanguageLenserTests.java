@@ -34,10 +34,10 @@ public class DataflowStreamLanguageLenserTests {
 
 	@Test
 	public void testLintsMultipleStreams() {
-        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0,
-                "stream1 = time|log\nstream2 = time|log");
-        List<CodeLens> problems = lenser.lense(DslContext.builder().document(document).build()).toStream()
-                .collect(Collectors.toList());
-        assertThat(problems).hasSize(2);
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0,
+				"stream1 = time|log\nstream2 = time|log");
+		List<CodeLens> problems = lenser.lense(DslContext.builder().document(document).build()).toStream()
+				.collect(Collectors.toList());
+		assertThat(problems).hasSize(4);
 	}
 }

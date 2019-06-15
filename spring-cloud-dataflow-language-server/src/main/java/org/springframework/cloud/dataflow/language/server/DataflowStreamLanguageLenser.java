@@ -15,6 +15,7 @@
  */
 package org.springframework.cloud.dataflow.language.server;
 
+import org.springframework.cloud.dataflow.core.dsl.StreamNode;
 import org.springframework.dsl.domain.CodeLens;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.Lenser;
@@ -28,15 +29,32 @@ public class DataflowStreamLanguageLenser extends DataflowLanguagesService imple
 		return Flux.defer(() -> {
 			return Flux.fromIterable(parseStreams(context.getDocument()))
 				.filter(item -> item.getStreamNode() != null)
-				.map(item -> {
-					return CodeLens.codeLens()
-						.range(item.getRange())
-						.command()
-							.command(DataflowLanguages.COMMAND_STREAM_DEPLOY)
-							.title(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE)
-							.and()
-						.build();
-				});
+				.flatMap(item -> {
+					return Flux.just(
+						CodeLens.codeLens()
+							.range(item.getRange())
+							.command()
+								.command(DataflowLanguages.COMMAND_STREAM_CREATE)
+								.title(DataflowLanguages.COMMAND_STREAM_CREATE_TITLE)
+								.argument(item.getStreamNode().getName())
+								.argument(getDefinition(item.getStreamNode()))
+								.and()
+							.build(),
+						CodeLens.codeLens()
+							.range(item.getRange())
+							.command()
+								.command(DataflowLanguages.COMMAND_STREAM_DESTROY)
+								.title(DataflowLanguages.COMMAND_STREAM_DESTROY_TITLE)
+								.argument(item.getStreamNode().getName())
+								.argument(getDefinition(item.getStreamNode()))
+								.and()
+							.build()
+					);
+			});
 		});
+	}
+
+	private String getDefinition(StreamNode streamNode) {
+		return streamNode.getStreamText().substring(streamNode.getStartPos());
 	}
 }

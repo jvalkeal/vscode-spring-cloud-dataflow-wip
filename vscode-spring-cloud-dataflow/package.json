@@ -31,6 +31,11 @@
 	"contributes": {
 		"commands": [
 			{
+				"command": "vscode-spring-cloud-dataflow.explorer.refresh",
+				"title": "Refresh Explorer",
+				"category": "SCDF"
+			},
+			{
 				"command": "vscode-spring-cloud-dataflow.server.register",
 				"title": "Register Spring Cloud Data Flow Server",
 				"category": "SCDF"
