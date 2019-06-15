@@ -1,5 +1,6 @@
 import { BaseNode } from "./base-node";
 import { TreeItemCollapsibleState } from "vscode";
+import { treeUtils } from "../../utils/tree-utils";
 
 export class AppVersionNode extends BaseNode {
 
@@ -9,5 +10,9 @@ export class AppVersionNode extends BaseNode {
 
     protected getTreeItemCollapsibleState(): TreeItemCollapsibleState {
         return TreeItemCollapsibleState.None;
+    }
+
+    protected getThemedIconPath(): treeUtils.ThemedIconPath {
+        return treeUtils.getThemedIconPath('tag');
     }
 }
