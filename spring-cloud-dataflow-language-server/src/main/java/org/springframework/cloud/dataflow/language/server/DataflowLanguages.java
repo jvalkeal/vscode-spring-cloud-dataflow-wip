@@ -28,9 +28,6 @@ public class DataflowLanguages {
 	public final static LanguageId LANGUAGEID_STREAM = LanguageId.languageId("scdfs",
 			"Spring Cloud Data Flow Stream Language");
 
-	public final static LanguageId LANGUAGEID_TASK = LanguageId.languageId("scdft",
-			"Spring Cloud Data Flow Task Language");
-
 	public final static String COMMAND_STREAM_DEPLOY = "vscode-spring-cloud-dataflow.streams.deploy";
 
 	public final static String COMMAND_STREAM_DEPLOY_TITLE = "Deploy Stream";

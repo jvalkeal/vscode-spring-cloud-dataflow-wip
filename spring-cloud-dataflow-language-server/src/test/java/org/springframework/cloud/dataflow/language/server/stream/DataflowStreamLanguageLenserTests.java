@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.dataflow.language.server;
+package org.springframework.cloud.dataflow.language.server.stream;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
 import org.springframework.dsl.document.Document;
 import org.springframework.dsl.document.TextDocument;
 import org.springframework.dsl.domain.CodeLens;

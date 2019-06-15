@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.dataflow.language.server;
+package org.springframework.cloud.dataflow.language.server.stream;
 
 import java.util.List;
 
@@ -69,7 +69,7 @@ import org.springframework.dsl.symboltable.support.DocumentSymbolTableVisitor;
  * @author Janne Valkealahti
  *
  */
-public class DataflowStreamLanguageSymbolizer extends DataflowLanguagesService implements Symbolizer {
+public class DataflowStreamLanguageSymbolizer extends AbstractDataflowStreamLanguageService implements Symbolizer {
 
 	@Override
 	public SymbolizeInfo symbolize(DslContext context) {

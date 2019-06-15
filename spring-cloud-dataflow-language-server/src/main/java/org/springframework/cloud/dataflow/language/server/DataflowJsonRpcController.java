@@ -22,6 +22,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.dataflow.language.server.DataflowEnvironmentParams.Environment;
+import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamCreateParams;
 import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
 import org.springframework.cloud.dataflow.rest.client.DataFlowTemplate;
 import org.springframework.dsl.jsonrpc.annotation.JsonRpcNotification;

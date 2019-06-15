@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.dataflow.language.server;
+package org.springframework.cloud.dataflow.language.server.stream;
 
 import org.springframework.cloud.dataflow.core.dsl.StreamNode;
+import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
 import org.springframework.dsl.domain.CodeLens;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.Lenser;
 
 import reactor.core.publisher.Flux;
 
-public class DataflowStreamLanguageLenser extends DataflowLanguagesService implements Lenser {
+public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguageService implements Lenser {
 
 	@Override
 	public Flux<CodeLens> lense(DslContext context) {

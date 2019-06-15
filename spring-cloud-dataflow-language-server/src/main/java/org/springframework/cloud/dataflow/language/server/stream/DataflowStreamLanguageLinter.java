@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.dataflow.language.server;
+package org.springframework.cloud.dataflow.language.server.stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.reconcile.Linter;
 import org.springframework.dsl.service.reconcile.ReconcileProblem;
 
 import reactor.core.publisher.Flux;
 
-public class DataflowTaskLanguageLinter extends DataflowLanguagesService implements Linter {
+public class DataflowStreamLanguageLinter extends AbstractDataflowStreamLanguageService implements Linter {
 
-    private final static Logger log = LoggerFactory.getLogger(DataflowTaskLanguageLinter.class);
-
-    @Override
-    public Flux<ReconcileProblem> lint(DslContext context) {
-        log.debug("Linting document {}", context.getDocument());
-        return Flux.empty();
-    }
+	@Override
+	public Flux<ReconcileProblem> lint(DslContext context) {
+		return Flux.defer(() -> {
+			return Flux.fromIterable(parseStreams(context.getDocument()))
+				.filter(item -> item.getReconcileProblem() != null)
+				.map(item -> item.getReconcileProblem());
+		});
+	}
 }

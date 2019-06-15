@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.dataflow.language.server;
+package org.springframework.cloud.dataflow.language.server.stream;
 
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.cloud.dataflow.language.server.DataflowEnvironmentParams;
+import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
 import org.springframework.cloud.dataflow.language.server.DataflowEnvironmentParams.Environment;
 import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
 import org.springframework.cloud.dataflow.rest.client.DataFlowTemplate;
@@ -32,7 +34,7 @@ import org.springframework.dsl.service.DslContext;
 
 import reactor.core.publisher.Flux;
 
-public class DataflowStreamLanguageCompletioner extends DataflowLanguagesService implements Completioner {
+public class DataflowStreamLanguageCompletioner extends AbstractDataflowStreamLanguageService implements Completioner {
 
 	@Override
 	public Flux<CompletionItem> complete(DslContext context, Position position) {

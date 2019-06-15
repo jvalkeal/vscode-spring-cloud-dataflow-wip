@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.dataflow.language.server;
+package org.springframework.cloud.dataflow.language.server.stream;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.cloud.dataflow.core.dsl.ParseException;
 import org.springframework.cloud.dataflow.core.dsl.StreamNode;
 import org.springframework.cloud.dataflow.core.dsl.StreamParser;
+import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
 import org.springframework.dsl.document.Document;
 import org.springframework.dsl.domain.Range;
 import org.springframework.dsl.service.AbstractDslService;
@@ -31,10 +31,10 @@ import org.springframework.dsl.service.reconcile.ProblemType;
 import org.springframework.dsl.service.reconcile.ReconcileProblem;
 import org.springframework.util.StringUtils;
 
-public abstract class DataflowLanguagesService extends AbstractDslService {
+public abstract class AbstractDataflowStreamLanguageService extends AbstractDslService {
 
-    public DataflowLanguagesService() {
-        super(Arrays.asList(DataflowLanguages.LANGUAGEID_STREAM, DataflowLanguages.LANGUAGEID_TASK));
+    public AbstractDataflowStreamLanguageService() {
+        super(DataflowLanguages.LANGUAGEID_STREAM);
     }
 
     protected List<StreamParseItem> parseStreams(Document document) {

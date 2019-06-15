@@ -13,7 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.dataflow.language.server;
+package org.springframework.cloud.dataflow.language.server.stream;
 
-public class DataflowStreamLanguageHovererTests {
+import org.springframework.dsl.domain.Hover;
+import org.springframework.dsl.domain.Position;
+import org.springframework.dsl.service.DslContext;
+import org.springframework.dsl.service.Hoverer;
+
+import reactor.core.publisher.Mono;
+
+public class DataflowStreamLanguageHoverer extends AbstractDataflowStreamLanguageService implements Hoverer {
+
+    @Override
+    public Mono<Hover> hover(DslContext context, Position position) {
+        return Mono.empty();
+    }
 }
