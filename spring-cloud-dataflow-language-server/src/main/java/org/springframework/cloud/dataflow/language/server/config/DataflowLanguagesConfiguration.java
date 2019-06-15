@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.dataflow.language.server;
+package org.springframework.cloud.dataflow.language.server.config;
 
+import org.springframework.cloud.dataflow.language.server.controller.DataflowJsonRpcController;
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageCompletioner;
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageHoverer;
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageLenser;

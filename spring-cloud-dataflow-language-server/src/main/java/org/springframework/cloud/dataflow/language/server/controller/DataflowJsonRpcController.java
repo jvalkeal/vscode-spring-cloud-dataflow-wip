@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
- package org.springframework.cloud.dataflow.language.server;
+ package org.springframework.cloud.dataflow.language.server.controller;
 
 import java.net.URI;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.dataflow.language.server.DataflowEnvironmentParams.Environment;
+import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams.Environment;
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamCreateParams;
 import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
 import org.springframework.cloud.dataflow.rest.client.DataFlowTemplate;
@@ -99,7 +101,7 @@ public class DataflowJsonRpcController {
 	}
 
 	protected DataFlowOperations getDataFlowOperations(JsonRpcSession session) {
-		DataflowEnvironmentParams params = session
+		org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams params = session
 				.getAttribute(DataflowLanguages.CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE);
 		List<Environment> environments = params.getEnvironments();
 		if (environments.size() > 0) {

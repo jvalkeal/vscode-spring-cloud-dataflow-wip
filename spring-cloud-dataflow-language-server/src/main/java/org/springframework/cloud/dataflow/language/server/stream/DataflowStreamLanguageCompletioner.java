@@ -18,9 +18,8 @@ package org.springframework.cloud.dataflow.language.server.stream;
 import java.net.URI;
 import java.util.List;
 
-import org.springframework.cloud.dataflow.language.server.DataflowEnvironmentParams;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
-import org.springframework.cloud.dataflow.language.server.DataflowEnvironmentParams.Environment;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams.Environment;
 import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
 import org.springframework.cloud.dataflow.rest.client.DataFlowTemplate;
 import org.springframework.cloud.dataflow.rest.resource.CompletionProposalsResource;
@@ -62,7 +61,7 @@ public class DataflowStreamLanguageCompletioner extends AbstractDataflowStreamLa
 
 	protected DataFlowOperations getDataFlowOperations(DslContext context) {
 		JsonRpcSession session = context.getAttribute(LspSystemConstants.CONTEXT_SESSION_ATTRIBUTE);
-		DataflowEnvironmentParams params = session
+		org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams params = session
 				.getAttribute(DataflowLanguages.CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE);
 		List<Environment> environments = params.getEnvironments();
 		if (environments.size() > 0) {
