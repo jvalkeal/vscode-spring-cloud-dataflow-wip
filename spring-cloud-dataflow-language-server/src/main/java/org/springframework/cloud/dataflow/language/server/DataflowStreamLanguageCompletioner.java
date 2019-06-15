@@ -40,18 +40,25 @@ public class DataflowStreamLanguageCompletioner extends DataflowLanguagesService
 			Range prefixRange = Range.from(position.getLine(), 0, position.getLine(), position.getCharacter());
 			String prefix = context.getDocument().content(prefixRange);
 			DataFlowOperations dataFlowOperations = getDataFlowOperations(context);
+			if (dataFlowOperations == null) {
+				return Flux.empty();
+			}
 			CompletionProposalsResource proposals = dataFlowOperations.completionOperations()
 					.streamCompletions(prefix, 1);
 			return Flux.fromIterable(proposals.getProposals())
 				.map(proposal -> {
 					return CompletionItem.completionItem()
 						.label(proposal.getText())
+						.textEdit()
+							.range(Range.from(position.getLine(), 0, position.getLine(), position.getCharacter()))
+							.newText(proposal.getText())
+						.and()
 						.build();
 				});
 		});
 	}
 
-	private DataFlowOperations getDataFlowOperations(DslContext context) {
+	protected DataFlowOperations getDataFlowOperations(DslContext context) {
 		JsonRpcSession session = context.getAttribute(LspSystemConstants.CONTEXT_SESSION_ATTRIBUTE);
 		DataflowEnvironmentParams params = session
 				.getAttribute(DataflowLanguages.CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE);
