@@ -33,7 +33,11 @@
 			{
 				"command": "vscode-spring-cloud-dataflow.explorer.refresh",
 				"title": "Refresh Explorer",
-				"category": "SCDF"
+				"category": "SCDF",
+				"icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
 			},
 			{
 				"command": "vscode-spring-cloud-dataflow.server.register",
@@ -60,6 +64,18 @@
 			}
 		],
 		"menus": {
+			"view/title": [
+				{
+					"command": "vscode-spring-cloud-dataflow.explorer.refresh",
+					"when": "view == scdfApps",
+					"group": "navigation"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.explorer.refresh",
+					"when": "view == scdfStreams",
+					"group": "navigation"
+				}
+			],
 			"view/item/context": [
 				{
 					"command": "vscode-spring-cloud-dataflow.server.unregister",
