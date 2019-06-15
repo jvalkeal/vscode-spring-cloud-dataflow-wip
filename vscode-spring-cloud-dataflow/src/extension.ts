@@ -90,5 +90,7 @@ function registerLanguageSupport(context: ExtensionContext) {
 
     languageClient = new LanguageClient(CONFIG_PREFIX, LANGUAGE_SCDF_DESC, serverOptions, clientOptions);
     extensionGlobals.languageClient = languageClient;
-    languageClient.start();
+    const disposable = languageClient.start();
+    languageClient.onReady().then(() => notifyServers());
+    context.subscriptions.push(disposable);
 }
