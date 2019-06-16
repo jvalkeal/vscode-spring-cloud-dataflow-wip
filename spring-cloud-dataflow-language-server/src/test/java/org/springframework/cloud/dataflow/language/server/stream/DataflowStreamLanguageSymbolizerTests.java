@@ -74,16 +74,27 @@ public class DataflowStreamLanguageSymbolizerTests {
     }
 
     @Test
-    public void testNamedSourceDestination() {
-        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, ":myevents > log");
+    public void testPartialOnlyName() {
+        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "stream1 =");
         SymbolizeInfo symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build());
 
+        List<SymbolInformation> symbolInformations = symbolizeInfo.symbolInformations().toStream()
+                .collect(Collectors.toList());
+        List<DocumentSymbol> documentSymbols = symbolizeInfo.documentSymbols().toStream().collect(Collectors.toList());
+
+        assertThat(symbolInformations).hasSize(0);
+        assertThat(documentSymbols).hasSize(0);
     }
 
-    @Test
-    public void testNamedSinkDestination() {
-        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "time > :myevents");
-        SymbolizeInfo symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build());
+    // @Test
+    // public void testNamedSourceDestination() {
+    //     Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, ":myevents > log");
+    //     SymbolizeInfo symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build());
+    // }
 
-    }
+    // @Test
+    // public void testNamedSinkDestination() {
+    //     Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "time > :myevents");
+    //     SymbolizeInfo symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build());
+    // }
 }

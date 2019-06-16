@@ -77,6 +77,9 @@ public class DataflowStreamLanguageSymbolizer extends AbstractDataflowStreamLang
 
 		for (StreamParseItem item : parseStreams(context.getDocument())) {
 			StreamNode streamNode = item.getStreamNode();
+			if (streamNode == null) {
+				continue;
+			}
 			int line = item.getRange().getStart().getLine();
 			int startPos = streamNode.getStartPos();
 			int endPos = streamNode.getEndPos();
