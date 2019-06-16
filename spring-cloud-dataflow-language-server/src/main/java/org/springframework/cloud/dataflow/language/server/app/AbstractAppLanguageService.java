@@ -46,22 +46,22 @@ public abstract class AbstractAppLanguageService extends AbstractDslService {
 			if (split1.length == 2) {
 				String[] split2 = split1[0].split("\\.");
 				if (split2.length == 2) {
-					String name = split2[1];
+					String name = split2[0] + split2[1];
 					AppEntry ae = apps.get(name);
 					Range appRange = Range.from(line, 0, line, split1[0].length());
 					if (ae == null) {
-						ae = new AppEntry(split2[0], name, appRange, null, split1[1], null);
+						ae = new AppEntry(split2[0], split2[1], appRange, null, split1[1], null);
 						apps.put(name, ae);
 					} else {
 						ae.setAppRange(appRange);
 						ae.setAppUri(split1[1]);
 					}
 				} else if (split2.length == 3) {
-					String name = split2[1];
+					String name = split2[0] + split2[1];
 					AppEntry ae = apps.get(name);
 					Range metadataRange = Range.from(line, 0, line, split1[0].length());
 					if (ae == null) {
-						ae = new AppEntry(split2[0], name, null, metadataRange, null, split1[1]);
+						ae = new AppEntry(split2[0], split2[1], null, metadataRange, null, split1[1]);
 						apps.put(name, ae);
 					} else {
 						ae.setMetadataRange(metadataRange);

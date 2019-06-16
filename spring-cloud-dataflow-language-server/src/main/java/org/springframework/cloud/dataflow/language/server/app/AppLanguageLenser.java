@@ -15,6 +15,8 @@
  */
 package org.springframework.cloud.dataflow.language.server.app;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
 import org.springframework.dsl.domain.CodeLens;
 import org.springframework.dsl.service.DslContext;
@@ -29,6 +31,8 @@ import reactor.core.publisher.Flux;
  *
  */
 public class AppLanguageLenser extends AbstractAppLanguageService implements Lenser {
+
+	private final static Logger log = LoggerFactory.getLogger(AppLanguageLenser.class);
 
 	@Override
 	public Flux<CodeLens> lense(DslContext context) {
@@ -59,6 +63,9 @@ public class AppLanguageLenser extends AbstractAppLanguageService implements Len
 								.and()
 							.build()
 					);
+				})
+				.doOnNext(l -> {
+					log.info("LENS: {}", l.getCommand().getArguments());
 				})
 			;
 		});

@@ -35,6 +35,14 @@ public class AppLanguageLenserTests {
 		"task.timestamp=maven://org.springframework.cloud.task.app:timestamp-task:1.3.0.RELEASE" +
 		"\n" +
 		"task.timestamp.metadata=maven://org.springframework.cloud.task.app:timestamp-task:jar:metadata:1.3.0.RELEASE";
+	private final String CONTENT2 =
+		"sink.tcp=maven://org.springframework.cloud.stream.app:tcp-sink-rabbit:2.0.1.RELEASE" +
+		"\n" +
+		"sink.tcp.metadata=maven://org.springframework.cloud.stream.app:tcp-sink-rabbit:jar:metadata:2.0.1.RELEASE" +
+		"\n" +
+		"source.tcp=maven://org.springframework.cloud.stream.app:tcp-source-rabbit:2.0.1.RELEASE" +
+		"\n" +
+		"source.tcp.metadata=maven://org.springframework.cloud.stream.app:tcp-source-rabbit:jar:metadata:2.0.1.RELEASE";
 
 	@Test
 	public void testOneWithMetadata() {
@@ -53,5 +61,13 @@ public class AppLanguageLenserTests {
 		assertThat(problems.get(1).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_APP_UNREGISTER_TITLE);
 		assertThat(problems.get(1).getCommand().getArguments()).hasSize(4);
 		assertThat(problems.get(1).getCommand().getArguments().get(0)).isEqualTo("task");
+	}
+
+	@Test
+	public void testMixedSameName() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_APP, 0, CONTENT2);
+		List<CodeLens> problems = lenser.lense(DslContext.builder().document(document).build()).toStream()
+				.collect(Collectors.toList());
+		assertThat(problems).hasSize(4);
 	}
 }
