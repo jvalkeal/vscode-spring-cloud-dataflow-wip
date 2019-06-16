@@ -59,7 +59,7 @@ public class AppLanguageLenserTests {
 		assertThat(problems.get(0).getCommand().getArguments().get(3))
 				.isEqualTo("maven://org.springframework.cloud.task.app:timestamp-task:jar:metadata:1.3.0.RELEASE");
 		assertThat(problems.get(1).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_APP_UNREGISTER_TITLE);
-		assertThat(problems.get(1).getCommand().getArguments()).hasSize(4);
+		assertThat(problems.get(1).getCommand().getArguments()).hasSize(2);
 		assertThat(problems.get(1).getCommand().getArguments().get(0)).isEqualTo("task");
 	}
 
