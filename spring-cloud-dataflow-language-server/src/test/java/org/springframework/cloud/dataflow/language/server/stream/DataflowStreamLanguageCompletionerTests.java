@@ -54,7 +54,7 @@ public class DataflowStreamLanguageCompletionerTests {
     @Test
     public void testEmpty() {
         Proposal proposal = new Proposal("completion1", "explanation");
-        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, "");
+        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "");
         Mockito.when(dataFlowOperations.completionOperations()).thenReturn(completionOperations);
         Mockito.when(completionOperations.streamCompletions(any(), anyInt())).thenReturn(proposalsResource);
         Mockito.when(proposalsResource.getProposals()).thenReturn(Arrays.asList(proposal));

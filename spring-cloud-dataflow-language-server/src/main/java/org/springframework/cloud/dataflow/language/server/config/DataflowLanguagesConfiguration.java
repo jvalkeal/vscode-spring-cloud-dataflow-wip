@@ -15,6 +15,8 @@
  */
 package org.springframework.cloud.dataflow.language.server.config;
 
+import org.springframework.cloud.dataflow.language.server.app.AppLanguageLenser;
+import org.springframework.cloud.dataflow.language.server.app.AppLanguageLinter;
 import org.springframework.cloud.dataflow.language.server.controller.DataflowJsonRpcController;
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageCompletioner;
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageHoverer;
@@ -67,5 +69,15 @@ public class DataflowLanguagesConfiguration {
     @Bean
     public Completioner dataflowStreamLanguageCompletioner() {
         return new DataflowStreamLanguageCompletioner();
+    }
+
+    @Bean
+    public Lenser appLanguageLenser() {
+        return new AppLanguageLenser();
+    }
+
+    @Bean
+    public Linter appLanguageLinter() {
+        return new AppLanguageLinter();
     }
 }

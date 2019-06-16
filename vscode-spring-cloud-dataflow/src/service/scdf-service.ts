@@ -37,4 +37,34 @@ export class ScdfService {
             }
         });
     }
+
+    public registerApp(baseUri: string, type: string, name: string, uri: string, metadataUri: string): Thenable<void> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const response = await axios.post(baseUri + '/apps/' + type + '/' + name, {}, {
+                    params: {
+                        uri: uri,
+                        force: false,
+                        'metadata-uri': metadataUri
+                    }
+                });
+                resolve();
+            }
+            catch (error) {
+                resolve();
+            }
+        });
+    }
+
+    public unregisterApp(baseUri: string, type: string, name: string): Thenable<void> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const response = await axios.delete(baseUri + '/apps/' + type + '/' + name);
+                resolve();
+            }
+            catch (error) {
+                resolve();
+            }
+        });
+    }
 }

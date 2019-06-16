@@ -35,7 +35,7 @@ public class DataflowStreamLanguageLinterTests {
 
 	@Test
 	public void testEmpty() {
-		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, "");
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "");
 		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
 		assertThat(problems).hasSize(0);
@@ -43,7 +43,7 @@ public class DataflowStreamLanguageLinterTests {
 
 	@Test
 	public void testJustOneApp() {
-		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, "foo");
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "foo");
 		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
 		assertThat(problems).isEmpty();
@@ -51,7 +51,7 @@ public class DataflowStreamLanguageLinterTests {
 
 	@Test
 	public void testDoublePipeErrorBetweenApps() {
-		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, ":aaa > fff||bbb");
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, ":aaa > fff||bbb");
 		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
 		assertThat(problems).hasSize(1);
@@ -65,7 +65,7 @@ public class DataflowStreamLanguageLinterTests {
 
 	@Test
 	public void testLintsMultipleStreams() {
-		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0,
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
 				"stream1 = time|log\nstream2 = time|log");
 		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
@@ -74,7 +74,7 @@ public class DataflowStreamLanguageLinterTests {
 
 	@Test
 	public void testLintsMultipleStreamsWithEmptyLines() {
-		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0,
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
 				"\nstream1 = time|log\n\nstream2 = time|log\n");
 		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());

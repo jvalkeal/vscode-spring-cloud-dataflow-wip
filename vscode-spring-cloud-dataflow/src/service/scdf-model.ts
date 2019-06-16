@@ -47,4 +47,12 @@ export class ScdfModel {
                 .then(stream => stream.dslText));
         });
     }
+
+    public registerApp(type: string, name: string, uri: string, metadataUri: string): Thenable<void> {
+        return this.scdfService.registerApp(this.baseUri, type, name, uri, metadataUri);
+    }
+
+    public unregisterApp(type: string, name: string): Thenable<void> {
+        return this.scdfService.unregisterApp(this.baseUri, type, name);
+    }
 }

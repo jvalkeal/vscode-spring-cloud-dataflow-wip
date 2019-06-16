@@ -20,11 +20,13 @@
 		"onView:scdfStreams",
 		"onView:scdfTasks",
 		"onLanguage:scdfs",
-		"onLanguage:scdft",
+		"onLanguage:scdfa",
 		"onCommand:vscode-spring-cloud-dataflow.explorer.refresh",
 		"onCommand:vscode-spring-cloud-dataflow.server.register",
 		"onCommand:vscode-spring-cloud-dataflow.server.unregister",
 		"onCommand:vscode-spring-cloud-dataflow.server.notify",
+		"onCommand:vscode-spring-cloud-dataflow.app.register",
+		"onCommand:vscode-spring-cloud-dataflow.app.unregister",
 		"onCommand:vscode-spring-cloud-dataflow.streams.deploy"
 	],
 	"main": "./out/extension.js",
@@ -98,12 +100,12 @@
 				]
 			},
 			{
-				"id": "scdft",
+				"id": "scdfa",
 				"aliases": [
-					"Spring Cloud Data Flow Task Language"
+					"Spring Cloud Data Flow App Import Language"
 				],
 				"extensions": [
-					".scdft"
+					".scdfa"
 				]
 			}
 		],

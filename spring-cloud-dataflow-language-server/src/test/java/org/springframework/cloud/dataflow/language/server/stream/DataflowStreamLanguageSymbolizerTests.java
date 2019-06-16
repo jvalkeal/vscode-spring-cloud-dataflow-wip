@@ -37,7 +37,7 @@ public class DataflowStreamLanguageSymbolizerTests {
 
     @Test
     public void testSimpleStreamWithName() {
-        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, "stream1 = time --initial-delay=1000 | log --name=mylogger");
+        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "stream1 = time --initial-delay=1000 | log --name=mylogger");
         SymbolizeInfo symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build());
 
         List<SymbolInformation> symbolInformations = symbolizeInfo.symbolInformations().toStream()
@@ -75,14 +75,14 @@ public class DataflowStreamLanguageSymbolizerTests {
 
     @Test
     public void testNamedSourceDestination() {
-        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, ":myevents > log");
+        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, ":myevents > log");
         SymbolizeInfo symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build());
 
     }
 
     @Test
     public void testNamedSinkDestination() {
-        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGEID_STREAM, 0, "time > :myevents");
+        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "time > :myevents");
         SymbolizeInfo symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build());
 
     }

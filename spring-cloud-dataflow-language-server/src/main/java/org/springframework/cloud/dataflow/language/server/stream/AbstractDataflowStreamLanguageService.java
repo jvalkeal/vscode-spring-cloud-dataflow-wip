@@ -34,7 +34,7 @@ import org.springframework.util.StringUtils;
 public abstract class AbstractDataflowStreamLanguageService extends AbstractDslService {
 
     public AbstractDataflowStreamLanguageService() {
-        super(DataflowLanguages.LANGUAGEID_STREAM);
+        super(DataflowLanguages.LANGUAGE_STREAM);
     }
 
     protected List<StreamParseItem> parseStreams(Document document) {

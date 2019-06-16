@@ -7,10 +7,13 @@ import { connectServer, disconnectServer, notifyServers } from './commands/serve
 import { AppsExplorerProvider } from './explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
 import {
-    LANGUAGE_SCDF_STREAM_PREFIX, LANGUAGE_SCDF_TASK_PREFIX, CONFIG_PREFIX, LANGUAGE_SERVER_JAR,
+    LANGUAGE_SCDF_STREAM_PREFIX, LANGUAGE_SCDF_APP_PREFIX, CONFIG_PREFIX, LANGUAGE_SERVER_JAR,
     LANGUAGE_SCDF_DESC, COMMAND_SCDF_SERVER_REGISTER, COMMAND_SCDF_SERVER_UNREGISTER,
-    COMMAND_SCDF_EXPLORER_REFRESH, COMMAND_SCDF_STREAMS_SHOW, COMMAND_SCDF_SERVER_NOTIFY, COMMAND_SCDF_STREAMS_DEPLOY, COMMAND_SCDF_STREAMS_CREATE, COMMAND_SCDF_STREAMS_DESTROY
+    COMMAND_SCDF_EXPLORER_REFRESH, COMMAND_SCDF_STREAMS_SHOW, COMMAND_SCDF_SERVER_NOTIFY,
+    COMMAND_SCDF_STREAMS_CREATE, COMMAND_SCDF_STREAMS_DESTROY, COMMAND_SCDF_APPS_REGISTER,
+    COMMAND_SCDF_APPS_UNREGISTER
 } from './extension-globals';
+import { ScdfModel } from './service/scdf-model';
 
 let languageClient: LanguageClient;
 
@@ -63,6 +66,20 @@ function registerCommands(context: ExtensionContext) {
         };
         extensionGlobals.languageClient.sendNotification('scdf/destroyStream', params);
     }));
+    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_APPS_REGISTER, (type, name, appUri, metadataUri) => {
+        const model = new ScdfModel('http://localhost:9393');
+        model.registerApp(type, name, appUri, metadataUri).then(() => {
+            extensionGlobals.appsExplorerProvider.refresh();
+            extensionGlobals.streamsExplorerProvider.refresh();
+        });
+    }));
+    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_APPS_UNREGISTER, (type, name, appUri, metadataUri) => {
+        const model = new ScdfModel('http://localhost:9393');
+        model.unregisterApp(type, name).then(() => {
+            extensionGlobals.appsExplorerProvider.refresh();
+            extensionGlobals.streamsExplorerProvider.refresh();
+        });
+    }));
 
 }
 
@@ -104,7 +121,7 @@ function registerLanguageSupport(context: ExtensionContext) {
     const clientOptions: LanguageClientOptions = {
         documentSelector: [
             LANGUAGE_SCDF_STREAM_PREFIX,
-            LANGUAGE_SCDF_TASK_PREFIX
+            LANGUAGE_SCDF_APP_PREFIX
         ]
     };
 
