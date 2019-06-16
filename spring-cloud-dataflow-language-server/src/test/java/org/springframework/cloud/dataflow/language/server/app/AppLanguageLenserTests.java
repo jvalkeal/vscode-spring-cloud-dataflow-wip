@@ -43,6 +43,14 @@ public class AppLanguageLenserTests {
 		"source.tcp=maven://org.springframework.cloud.stream.app:tcp-source-rabbit:2.0.1.RELEASE" +
 		"\n" +
 		"source.tcp.metadata=maven://org.springframework.cloud.stream.app:tcp-source-rabbit:jar:metadata:2.0.1.RELEASE";
+	private final String CONTENT3 =
+		"source.time=maven://org.springframework.cloud.stream.app:time-source-rabbit:2.0.1.RELEASE" +
+		"\n" +
+		"source.time.metadata=maven://org.springframework.cloud.stream.app:time-source-rabbit:jar:metadata:2.0.1.RELEASE" +
+		"\n" +
+		"source.time=maven://org.springframework.cloud.stream.app:time-source-rabbit:2.0.0.RELEASE" +
+		"\n" +
+		"source.time.metadata=maven://org.springframework.cloud.stream.app:time-source-rabbit:jar:metadata:2.0.0.RELEASE";
 
 	@Test
 	public void testOneWithMetadata() {
@@ -70,4 +78,12 @@ public class AppLanguageLenserTests {
 				.collect(Collectors.toList());
 		assertThat(problems).hasSize(4);
 	}
+
+	// @Test
+	// public void testMultipleVersions() {
+	// 	Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_APP, 0, CONTENT3);
+	// 	List<CodeLens> problems = lenser.lense(DslContext.builder().document(document).build()).toStream()
+	// 			.collect(Collectors.toList());
+	// 	assertThat(problems).hasSize(4);
+	// }
 }
