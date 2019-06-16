@@ -49,6 +49,7 @@ export async function connectServer(): Promise<void> {
         await saveServerRegistrationNonsensitive(servers);
     }
     await refresh();
+    await notifyServers();
 }
 
 export async function disconnectServer(node: BaseNode): Promise<void> {
