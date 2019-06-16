@@ -52,21 +52,32 @@
 				"category": "SCDF"
 			},
 			{
+				"command": "vscode-spring-cloud-dataflow.server.default",
+				"title": "Set as Default Server",
+				"category": "SCDF"
+			},
+			{
 				"command": "vscode-spring-cloud-dataflow.server.notify",
 				"title": "Notify Language Server of Data Flow Server Endpoints",
 				"category": "SCDF"
 			},
 			{
 				"command": "vscode-spring-cloud-dataflow.streams.show",
-				"title": "Show Stream"
+				"title": "Show Stream",
+				"category": "SCDF"
 			},
 			{
 				"command": "vscode-spring-cloud-dataflow.streams.deploy",
-				"title": "Deploy Stream"
+				"title": "Deploy Stream",
+				"category": "SCDF"
 			}
 		],
 		"menus": {
 			"view/title": [
+				{
+					"command": "vscode-spring-cloud-dataflow.server.register",
+					"when": "view == scdfApps"
+				},
 				{
 					"command": "vscode-spring-cloud-dataflow.explorer.refresh",
 					"when": "view == scdfApps",
@@ -81,6 +92,10 @@
 			"view/item/context": [
 				{
 					"command": "vscode-spring-cloud-dataflow.server.unregister",
+					"when": "viewItem == serverRegistration"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.server.default",
 					"when": "viewItem == serverRegistration"
 				},
 				{

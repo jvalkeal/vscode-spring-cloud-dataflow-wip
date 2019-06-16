@@ -66,6 +66,28 @@ export async function disconnectServer(node: BaseNode): Promise<void> {
     }
 }
 
+const customRegistriesKey2 = 'scdfDefaultServer';
+
+export async function setDefaultServer(node: BaseNode): Promise<void> {
+    const server = node.label.toLowerCase();
+    console.log('set default server', server);
+    const registration: ServerRegistrationNonsensitive = {url: server};
+    await extensionGlobals.context.globalState.update(customRegistriesKey2, registration);
+}
+
+export async function getDefaultServer(): Promise<ServerRegistration | undefined | null> {
+    let server: ServerRegistration | undefined | null = null;
+    const defaultServer = extensionGlobals.context.globalState.get<ServerRegistrationNonsensitive>(customRegistriesKey2) || null;
+    const servers = await getServers();
+    if (defaultServer) {
+        server = servers.find(registration => registration.url.toLowerCase() === defaultServer.url.toLowerCase());
+    }
+    if (!server && servers.length === 1) {
+        server = servers[0];
+    }
+    return server;
+}
+
 const customRegistriesKey = 'scdfServers';
 
 function getUsernamePwdKey(registryUrl: string): string {

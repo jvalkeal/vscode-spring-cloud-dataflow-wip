@@ -3,7 +3,7 @@ import { LanguageClient, LanguageClientOptions, ServerOptions, NotificationType 
 import * as Path from 'path';
 import { extensionGlobals } from './extension-variables';
 import { Keytar } from './utils/keytar';
-import { connectServer, disconnectServer, notifyServers } from './commands/server-registrations';
+import { connectServer, disconnectServer, notifyServers, setDefaultServer, getDefaultServer } from './commands/server-registrations';
 import { AppsExplorerProvider } from './explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
 import {
@@ -11,7 +11,7 @@ import {
     LANGUAGE_SCDF_DESC, COMMAND_SCDF_SERVER_REGISTER, COMMAND_SCDF_SERVER_UNREGISTER,
     COMMAND_SCDF_EXPLORER_REFRESH, COMMAND_SCDF_STREAMS_SHOW, COMMAND_SCDF_SERVER_NOTIFY,
     COMMAND_SCDF_STREAMS_CREATE, COMMAND_SCDF_STREAMS_DESTROY, COMMAND_SCDF_APPS_REGISTER,
-    COMMAND_SCDF_APPS_UNREGISTER
+    COMMAND_SCDF_APPS_UNREGISTER, COMMAND_SCDF_SERVER_DEFAULT
 } from './extension-globals';
 import { ScdfModel } from './service/scdf-model';
 
@@ -51,6 +51,7 @@ interface DataflowStreamCreateParams {
 function registerCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_REGISTER, () => connectServer()));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_UNREGISTER, disconnectServer));
+    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_DEFAULT, setDefaultServer));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_NOTIFY, notifyServers));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_CREATE, (name, definition) => {
         const params: DataflowStreamCreateParams = {
@@ -67,18 +68,40 @@ function registerCommands(context: ExtensionContext) {
         extensionGlobals.languageClient.sendNotification('scdf/destroyStream', params);
     }));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_APPS_REGISTER, (type, name, appUri, metadataUri) => {
-        const model = new ScdfModel('http://localhost:9393');
-        model.registerApp(type, name, appUri, metadataUri).then(() => {
+        getDefaultServer().then((s) => {
+            if (s) {
+                return new ScdfModel(s.url);
+            }
+        })
+        .then(x => {
+            if (x) {
+                return x.registerApp(type, name, appUri, metadataUri);
+            }
+        })
+        .then(() => {
             extensionGlobals.appsExplorerProvider.refresh();
             extensionGlobals.streamsExplorerProvider.refresh();
-        });
+        })
+        ;
+
+
     }));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_APPS_UNREGISTER, (type, name, appUri, metadataUri) => {
-        const model = new ScdfModel('http://localhost:9393');
-        model.unregisterApp(type, name).then(() => {
+        getDefaultServer().then((s) => {
+            if (s) {
+                return new ScdfModel(s.url);
+            }
+        })
+        .then(x => {
+            if (x) {
+                return x.unregisterApp(type, name);
+            }
+        })
+        .then(() => {
             extensionGlobals.appsExplorerProvider.refresh();
             extensionGlobals.streamsExplorerProvider.refresh();
-        });
+        })
+        ;
     }));
 
 }
