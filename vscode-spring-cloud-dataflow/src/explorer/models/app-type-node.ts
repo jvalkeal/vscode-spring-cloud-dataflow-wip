@@ -29,7 +29,7 @@ export class AppTypeNode extends BaseNode {
     }
 
     private async getAppNodes(type: AppType): Promise<AppNode[]> {
-        const scdfModel = new ScdfModel(this.registration.url);
+        const scdfModel = new ScdfModel(this.registration);
         return scdfModel.getApps()
             .then(apps => {
                 const grouped = new Map<string, Array<ScdfAppEntry>>();

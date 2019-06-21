@@ -1,19 +1,25 @@
 import axios from 'axios';
 import { ScdfStreamEntry, ScdfAppEntry } from './scdf-model';
+import { ServerRegistration } from '../commands/server-registrations';
 
 export class ScdfService {
 
-    public getStreamDsl(baseUri: string, streamName: string): Thenable<ScdfStreamEntry> {
+    public getStreamDsl(registration: ServerRegistration, streamName: string): Thenable<ScdfStreamEntry> {
         return new Promise(async (resolve, reject) => {
-            const response = await axios.get(baseUri + '/streams/definitions/' + streamName);
+            const response = await axios.get(
+                registration.url + '/streams/definitions/' + streamName, {
+                    auth: registration.credentials
+            });
             resolve((response.data as ScdfStreamEntry));
         });
     }
 
-    public getStreams(baseUri: string): Thenable<ScdfStreamEntry[]> {
+    public getStreams(registration: ServerRegistration): Thenable<ScdfStreamEntry[]> {
         return new Promise(async (resolve, reject) => {
             try {
-                const response = await axios.get(baseUri + '/streams/definitions?page=0&size=1000');
+                const response = await axios.get(registration.url + '/streams/definitions?page=0&size=1000', {
+                    auth: registration.credentials
+                });
                 const data = (response.data._embedded &&
                     response.data._embedded.streamDefinitionResourceList) || [];
                 resolve((data as ScdfStreamEntry[]));
@@ -24,10 +30,12 @@ export class ScdfService {
         });
     }
 
-    public getApps(baseUri: string): Thenable<ScdfAppEntry[]> {
+    public getApps(registration: ServerRegistration): Thenable<ScdfAppEntry[]> {
         return new Promise(async (resolve, reject) => {
             try {
-                const response = await axios.get(baseUri + '/apps?page=0&size=1000');
+                const response = await axios.get(registration.url + '/apps?page=0&size=1000', {
+                    auth: registration.credentials
+                });
                 const data = (response.data._embedded &&
                     response.data._embedded.appRegistrationResourceList) || [];
                 resolve((data as ScdfAppEntry[]));
@@ -38,15 +46,16 @@ export class ScdfService {
         });
     }
 
-    public registerApp(baseUri: string, type: string, name: string, uri: string, metadataUri: string): Thenable<void> {
+    public registerApp(registration: ServerRegistration, type: string, name: string, uri: string, metadataUri: string): Thenable<void> {
         return new Promise(async (resolve, reject) => {
             try {
-                const response = await axios.post(baseUri + '/apps/' + type + '/' + name, {}, {
+                await axios.post(registration.url + '/apps/' + type + '/' + name, {}, {
                     params: {
                         uri: uri,
                         force: false,
                         'metadata-uri': metadataUri
-                    }
+                    },
+                    auth: registration.credentials
                 });
                 resolve();
             }
@@ -56,10 +65,12 @@ export class ScdfService {
         });
     }
 
-    public unregisterApp(baseUri: string, type: string, name: string): Thenable<void> {
+    public unregisterApp(registration: ServerRegistration, type: string, name: string): Thenable<void> {
         return new Promise(async (resolve, reject) => {
             try {
-                const response = await axios.delete(baseUri + '/apps/' + type + '/' + name);
+                await axios.delete(registration.url + '/apps/' + type + '/' + name, {
+                    auth: registration.credentials
+                });
                 resolve();
             }
             catch (error) {

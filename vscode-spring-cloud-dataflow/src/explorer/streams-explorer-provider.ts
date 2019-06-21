@@ -31,7 +31,7 @@ export class StreamsExplorerProvider implements TreeDataProvider<BaseNode>, Text
 			}))
 			.then(registration => {
 				if (registration) {
-					const scdfModel = new ScdfModel(registration.url);
+					const scdfModel = new ScdfModel(registration);
 					return scdfModel.getStreamDsl(streamName);
 				}
 				throw new Error();

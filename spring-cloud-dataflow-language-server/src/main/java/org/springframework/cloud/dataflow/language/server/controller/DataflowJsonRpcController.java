@@ -27,12 +27,15 @@ import org.springframework.cloud.dataflow.language.server.domain.DataflowEnviron
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamCreateParams;
 import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
 import org.springframework.cloud.dataflow.rest.client.DataFlowTemplate;
+import org.springframework.cloud.dataflow.rest.util.HttpClientConfigurer;
 import org.springframework.dsl.jsonrpc.annotation.JsonRpcNotification;
 import org.springframework.dsl.jsonrpc.annotation.JsonRpcRequestMapping;
 import org.springframework.dsl.jsonrpc.annotation.JsonRpcRequestParams;
 import org.springframework.dsl.jsonrpc.session.JsonRpcSession;
 import org.springframework.dsl.lsp.client.LspClient;
 import org.springframework.dsl.service.DslContext;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import reactor.core.publisher.Mono;
 
@@ -105,10 +108,23 @@ public class DataflowJsonRpcController {
 				.getAttribute(DataflowLanguages.CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE);
 		List<Environment> environments = params.getEnvironments();
 		if (environments.size() > 0) {
-			String url = environments.get(0).getUrl();
-			URI uri = URI.create(url);
-			return new DataFlowTemplate(uri);
+			return buildDataFlowTemplate(environments.get(0));
 		}
 		return null;
+	}
+
+	private DataFlowTemplate buildDataFlowTemplate(Environment environment) {
+		URI uri = URI.create(environment.getUrl());
+		String username = environment.getCredentials().getUsername();
+		String password = environment.getCredentials().getPassword();
+		if (StringUtils.hasText(username) && StringUtils.hasText(password)) {
+			RestTemplate restTemplate = new RestTemplate();
+			HttpClientConfigurer httpClientConfigurer = HttpClientConfigurer.create(uri);
+			httpClientConfigurer.basicAuthCredentials(username, password);
+			restTemplate.setRequestFactory(httpClientConfigurer.buildClientHttpRequestFactory());
+			return new DataFlowTemplate(uri, restTemplate);
+		} else {
+			return new DataFlowTemplate(uri);
+		}
 	}
 }

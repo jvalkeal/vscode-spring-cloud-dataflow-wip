@@ -70,7 +70,7 @@ function registerCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_APPS_REGISTER, (type, name, appUri, metadataUri) => {
         getDefaultServer().then((s) => {
             if (s) {
-                return new ScdfModel(s.url);
+                return new ScdfModel(s);
             }
         })
         .then(x => {
@@ -89,7 +89,7 @@ function registerCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_APPS_UNREGISTER, (type, name) => {
         getDefaultServer().then((s) => {
             if (s) {
-                return new ScdfModel(s.url);
+                return new ScdfModel(s);
             }
         })
         .then(x => {

@@ -1,5 +1,6 @@
 import { Uri } from "vscode";
 import { ScdfService } from "./scdf-service";
+import { ServerRegistration } from "../commands/server-registrations";
 
 export interface BaseEntry {
     _links: {self: Uri};
@@ -29,30 +30,30 @@ export class ScdfModel {
 
     private scdfService: ScdfService;
 
-    constructor(readonly baseUri: string) {
+    constructor(readonly registration: ServerRegistration) {
         this.scdfService = new ScdfService();
     }
 
     public getApps(): Thenable<ScdfAppEntry[]> {
-        return this.scdfService.getApps(this.baseUri);
+        return this.scdfService.getApps(this.registration);
     }
 
     public getStreams(): Thenable<ScdfStreamEntry[]> {
-        return this.scdfService.getStreams(this.baseUri);
+        return this.scdfService.getStreams(this.registration);
     }
 
     public getStreamDsl(streamName: string): Thenable<string> {
         return new Promise((resolve, reject) => {
-            resolve(this.scdfService.getStreamDsl(this.baseUri, streamName)
+            resolve(this.scdfService.getStreamDsl(this.registration, streamName)
                 .then(stream => stream.dslText));
         });
     }
 
     public registerApp(type: string, name: string, uri: string, metadataUri: string): Thenable<void> {
-        return this.scdfService.registerApp(this.baseUri, type, name, uri, metadataUri);
+        return this.scdfService.registerApp(this.registration, type, name, uri, metadataUri);
     }
 
     public unregisterApp(type: string, name: string): Thenable<void> {
-        return this.scdfService.unregisterApp(this.baseUri, type, name);
+        return this.scdfService.unregisterApp(this.registration, type, name);
     }
 }
