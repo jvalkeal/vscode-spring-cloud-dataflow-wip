@@ -1,11 +1,13 @@
+import { commands } from "vscode";
 import { extensionGlobals } from "../extension-variables";
 import { registerServerInput } from "./register-server";
+import { registerServerChooseInput } from "./choose-server";
 import { BaseNode } from "../explorer/models/base-node";
-import { commands } from "vscode";
 import { keytarConstants } from "../extension-globals";
 
 interface ServerRegistrationNonsensitive {
     url: string;
+    name: string;
 }
 
 export interface ServerRegistrationCredentials {
@@ -38,12 +40,13 @@ export async function connectServer(): Promise<void> {
 
     let newRegistry: ServerRegistration = {
         url: state.address,
+        name: state.name,
         credentials: { username: state.username, password: state.password }
     };
 
     if (extensionGlobals.keytar) {
         let sensitive: string = JSON.stringify(newRegistry.credentials);
-        let key = getUsernamePwdKey(newRegistry.url);
+        let key = getUsernamePwdKey(newRegistry.name);
         await extensionGlobals.keytar.setPassword(keytarConstants.serviceId, key, sensitive);
         servers.push(newRegistry);
         await saveServerRegistrationNonsensitive(servers);
@@ -54,7 +57,7 @@ export async function connectServer(): Promise<void> {
 
 export async function disconnectServer(node: BaseNode): Promise<void> {
     let servers = await getServers();
-    let registry = servers.find(reg => reg.url.toLowerCase() === node.label.toLowerCase());
+    let registry = servers.find(reg => reg.name.toLowerCase() === node.label.toLowerCase());
 
     if (registry) {
         let key = getUsernamePwdKey(node.label);
@@ -72,7 +75,17 @@ const customRegistriesKey2 = 'scdfDefaultServer';
 export async function setDefaultServer(node: BaseNode): Promise<void> {
     const server = node.label.toLowerCase();
     console.log('set default server', server);
-    const registration: ServerRegistrationNonsensitive = {url: server};
+    // TODO: maybe custom type as we get only label from node
+    const registration: ServerRegistrationNonsensitive = {url: server, name: server};
+    await extensionGlobals.context.globalState.update(customRegistriesKey2, registration);
+}
+
+export async function chooseDefaultServer(): Promise<void> {
+    const registration = await registerServerChooseInput(extensionGlobals.context);
+    console.log('new default registration', registration);
+    if (registration) {
+        extensionGlobals.statusBarItem.text = '$(database) ' + registration.name;
+    }
     await extensionGlobals.context.globalState.update(customRegistriesKey2, registration);
 }
 
@@ -91,8 +104,8 @@ export async function getDefaultServer(): Promise<ServerRegistration | undefined
 
 const customRegistriesKey = 'scdfServers';
 
-function getUsernamePwdKey(registryUrl: string): string {
-    return `usernamepwd_${registryUrl}`;
+function getUsernamePwdKey(registryName: string): string {
+    return `usernamepwd_${registryName}`;
 }
 
 async function refresh(): Promise<void> {
@@ -104,15 +117,15 @@ export async function getServers(): Promise<ServerRegistration[]> {
     let servers: ServerRegistration[] = [];
 
     for (let reg of nonsensitive) {
-
         try {
             if (extensionGlobals.keytar) {
-                let key = getUsernamePwdKey(reg.url);
+                let key = getUsernamePwdKey(reg.name);
                 let credentialsString = await extensionGlobals.keytar.getPassword(keytarConstants.serviceId, key);
                 // let credentials = <ServerRegistrationCredentials>JSON.parse(nonNullValue(credentialsString, 'Invalid stored password'));
                 let credentials = <ServerRegistrationCredentials>JSON.parse(credentialsString || '');
                 servers.push({
                     url: reg.url,
+                    name: reg.name,
                     credentials
                 });
             }
@@ -126,6 +139,9 @@ export async function getServers(): Promise<ServerRegistration[]> {
 }
 
 async function saveServerRegistrationNonsensitive(registries: ServerRegistration[]): Promise<void> {
-    let minimal: ServerRegistrationNonsensitive[] = registries.map(reg => <ServerRegistrationNonsensitive>{ url: reg.url });
+    const minimal: ServerRegistrationNonsensitive[] = registries
+        .map(reg => <ServerRegistrationNonsensitive>{
+            url: reg.url,
+            name: reg.name });
     await extensionGlobals.context.globalState.update(customRegistriesKey, minimal);
 }

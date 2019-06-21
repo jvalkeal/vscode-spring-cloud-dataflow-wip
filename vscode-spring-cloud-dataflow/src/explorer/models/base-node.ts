@@ -2,6 +2,7 @@ import { TreeItem, TreeItemCollapsibleState } from "vscode";
 import { treeUtils } from "../../utils/tree-utils";
 
 export abstract class BaseNode {
+
     public readonly label: string;
 
     protected constructor(label: string, private readonly contextValue?: string) {

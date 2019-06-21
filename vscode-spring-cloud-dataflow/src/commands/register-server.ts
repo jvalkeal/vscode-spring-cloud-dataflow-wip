@@ -17,9 +17,23 @@ export async function registerServerInput(context: ExtensionContext) {
 		state.address = await input.showInputBox({
 			title,
 			step: 1,
-			totalSteps: 3,
-			value: '',
+			totalSteps: 4,
+			value: 'http://localhost:9393',
             prompt: 'Choose server address',
+            password: false,
+			validate: validateNameIsUnique,
+			shouldResume: shouldResume
+		});
+		return (input: MultiStepInput) => inputName(input, state);
+	}
+
+	async function inputName(input: MultiStepInput, state: Partial<State>) {
+		state.name = await input.showInputBox({
+			title,
+			step: 2,
+			totalSteps: 4,
+			value: state.address || '',
+			prompt: 'Choose server environment name',
             password: false,
 			validate: validateNameIsUnique,
 			shouldResume: shouldResume
@@ -30,8 +44,8 @@ export async function registerServerInput(context: ExtensionContext) {
 	async function inputUsername(input: MultiStepInput, state: Partial<State>) {
 		state.username = await input.showInputBox({
 			title,
-			step: 2,
-			totalSteps: 3,
+			step: 3,
+			totalSteps: 4,
 			value: '',
 			prompt: 'Choose username',
             password: false,
@@ -44,8 +58,8 @@ export async function registerServerInput(context: ExtensionContext) {
 	async function inputPassword(input: MultiStepInput, state: Partial<State>) {
 		state.password = await input.showInputBox({
 			title,
-			step: 3,
-			totalSteps: 3,
+			step: 4,
+			totalSteps: 4,
 			value: '',
 			prompt: 'Choose password',
             password: true,
@@ -76,6 +90,7 @@ export interface State {
     step: number;
     totalSteps: number;
     address: string;
+    name: string;
     username: string;
     password: string;
 }

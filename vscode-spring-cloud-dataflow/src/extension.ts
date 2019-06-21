@@ -1,9 +1,11 @@
-import { ExtensionContext, commands, window, workspace } from 'vscode';
+import { ExtensionContext, commands, window, workspace, StatusBarItem, StatusBarAlignment } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, NotificationType } from 'vscode-languageclient';
 import * as Path from 'path';
 import { extensionGlobals } from './extension-variables';
 import { Keytar } from './utils/keytar';
-import { connectServer, disconnectServer, notifyServers, setDefaultServer, getDefaultServer } from './commands/server-registrations';
+import {
+    connectServer, disconnectServer, notifyServers, setDefaultServer, getDefaultServer, chooseDefaultServer
+} from './commands/server-registrations';
 import { AppsExplorerProvider } from './explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
 import {
@@ -11,7 +13,7 @@ import {
     LANGUAGE_SCDF_DESC, COMMAND_SCDF_SERVER_REGISTER, COMMAND_SCDF_SERVER_UNREGISTER,
     COMMAND_SCDF_EXPLORER_REFRESH, COMMAND_SCDF_STREAMS_SHOW, COMMAND_SCDF_SERVER_NOTIFY,
     COMMAND_SCDF_STREAMS_CREATE, COMMAND_SCDF_STREAMS_DESTROY, COMMAND_SCDF_APPS_REGISTER,
-    COMMAND_SCDF_APPS_UNREGISTER, COMMAND_SCDF_SERVER_DEFAULT
+    COMMAND_SCDF_APPS_UNREGISTER, COMMAND_SCDF_SERVER_DEFAULT, COMMAND_SCDF_SERVER_CHOOSE
 } from './extension-globals';
 import { ScdfModel } from './service/scdf-model';
 
@@ -27,6 +29,9 @@ export function activate(context: ExtensionContext) {
 
     // register explorer views
     registerExplorer(context);
+
+    // register status bar
+    registerStatusBar(context);
 
     // register language support
     registerLanguageSupport(context);
@@ -48,10 +53,18 @@ interface DataflowStreamCreateParams {
     definition: string;
 }
 
+function registerStatusBar(context: ExtensionContext) {
+    const statusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 0);
+    statusBarItem.command = COMMAND_SCDF_SERVER_CHOOSE;
+    statusBarItem.show();
+    extensionGlobals.statusBarItem = statusBarItem;
+}
+
 function registerCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_REGISTER, () => connectServer()));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_UNREGISTER, disconnectServer));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_DEFAULT, setDefaultServer));
+    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_CHOOSE, chooseDefaultServer));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_NOTIFY, notifyServers));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_CREATE, (name, definition) => {
         const params: DataflowStreamCreateParams = {

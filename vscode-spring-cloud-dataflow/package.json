@@ -57,6 +57,11 @@
 				"category": "SCDF"
 			},
 			{
+				"command": "vscode-spring-cloud-dataflow.server.choose",
+				"title": "Choose Default Server",
+				"category": "SCDF"
+			},
+			{
 				"command": "vscode-spring-cloud-dataflow.server.notify",
 				"title": "Notify Language Server of Data Flow Server Endpoints",
 				"category": "SCDF"
