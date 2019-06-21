@@ -38,6 +38,8 @@ public class DataflowLanguages {
 	// commands and titles
 	public final static String COMMAND_STREAM_DEPLOY = "vscode-spring-cloud-dataflow.streams.deploy";
 	public final static String COMMAND_STREAM_DEPLOY_TITLE = "Deploy Stream";
+	public final static String COMMAND_STREAM_UNDEPLOY = "vscode-spring-cloud-dataflow.streams.undeploy";
+	public final static String COMMAND_STREAM_UNDEPLOY_TITLE = "Undeploy Stream";
 	public final static String COMMAND_STREAM_CREATE = "vscode-spring-cloud-dataflow.streams.create";
 	public final static String COMMAND_STREAM_CREATE_TITLE = "Create Stream";
 	public final static String COMMAND_STREAM_DESTROY = "vscode-spring-cloud-dataflow.streams.destroy";
