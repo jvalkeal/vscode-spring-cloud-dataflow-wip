@@ -17,6 +17,7 @@
  package org.springframework.cloud.dataflow.language.server.controller;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -84,6 +85,40 @@ public class DataflowJsonRpcController {
 			}
 		})
 		.then(lspClient.notification().method("scdf/createdStream").exchange());
+	}
+
+	@JsonRpcRequestMapping(method = "deployStream")
+	@JsonRpcNotification
+	public Mono<Void> deployStream(@JsonRpcRequestParams DataflowStreamCreateParams params, JsonRpcSession session,
+			LspClient lspClient) {
+		return Mono.fromRunnable(() -> {
+			log.debug("Client sending stream create request, params {}", params);
+			DataFlowOperations operations = getDataFlowOperations(session);
+			if (operations != null) {
+				log.debug("Deploying stream {}", params);
+				operations.streamOperations().deploy(params.getName(), Collections.emptyMap());
+			} else {
+				log.info("Unable to deploy stream");
+			}
+		})
+		.then(lspClient.notification().method("scdf/deployedStream").exchange());
+	}
+
+	@JsonRpcRequestMapping(method = "undeployStream")
+	@JsonRpcNotification
+	public Mono<Void> undeployStream(@JsonRpcRequestParams DataflowStreamCreateParams params, JsonRpcSession session,
+			LspClient lspClient) {
+		return Mono.fromRunnable(() -> {
+			log.debug("Client sending stream create request, params {}", params);
+			DataFlowOperations operations = getDataFlowOperations(session);
+			if (operations != null) {
+				log.debug("Undeploying stream {}", params);
+				operations.streamOperations().undeploy(params.getName());
+			} else {
+				log.info("Unable to undeploy stream");
+			}
+		})
+		.then(lspClient.notification().method("scdf/undeployedStream").exchange());
 	}
 
 	@JsonRpcRequestMapping(method = "destroyStream")

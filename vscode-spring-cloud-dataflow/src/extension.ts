@@ -13,7 +13,8 @@ import {
     LANGUAGE_SCDF_DESC, COMMAND_SCDF_SERVER_REGISTER, COMMAND_SCDF_SERVER_UNREGISTER,
     COMMAND_SCDF_EXPLORER_REFRESH, COMMAND_SCDF_STREAMS_SHOW, COMMAND_SCDF_SERVER_NOTIFY,
     COMMAND_SCDF_STREAMS_CREATE, COMMAND_SCDF_STREAMS_DESTROY, COMMAND_SCDF_APPS_REGISTER,
-    COMMAND_SCDF_APPS_UNREGISTER, COMMAND_SCDF_SERVER_DEFAULT, COMMAND_SCDF_SERVER_CHOOSE
+    COMMAND_SCDF_APPS_UNREGISTER, COMMAND_SCDF_SERVER_DEFAULT, COMMAND_SCDF_SERVER_CHOOSE,
+    COMMAND_SCDF_STREAMS_DEPLOY, COMMAND_SCDF_STREAMS_UNDEPLOY
 } from './extension-globals';
 import { ScdfModel } from './service/scdf-model';
 
@@ -72,6 +73,20 @@ function registerCommands(context: ExtensionContext) {
             definition: definition
         };
         extensionGlobals.languageClient.sendNotification('scdf/createStream', params);
+    }));
+    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_DEPLOY, (name, definition) => {
+        const params: DataflowStreamCreateParams = {
+            name: name,
+            definition: definition
+        };
+        extensionGlobals.languageClient.sendNotification('scdf/deployStream', params);
+    }));
+    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_UNDEPLOY, (name, definition) => {
+        const params: DataflowStreamCreateParams = {
+            name: name,
+            definition: definition
+        };
+        extensionGlobals.languageClient.sendNotification('scdf/undeployStream', params);
     }));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_DESTROY, (name, definition) => {
         const params: DataflowStreamCreateParams = {
@@ -163,6 +178,8 @@ function registerLanguageSupport(context: ExtensionContext) {
 
     const destroyedStreamNotification = new NotificationType<void,void>("scdf/destroyedStream");
     const createdStreamNotification = new NotificationType<void,void>("scdf/createdStream");
+    const deployedStreamNotification = new NotificationType<void,void>("scdf/deployedStream");
+    const undeployedStreamNotification = new NotificationType<void,void>("scdf/undeployedStream");
 
     languageClient = new LanguageClient(CONFIG_PREFIX, LANGUAGE_SCDF_DESC, serverOptions, clientOptions);
     extensionGlobals.languageClient = languageClient;
@@ -173,6 +190,14 @@ function registerLanguageSupport(context: ExtensionContext) {
             extensionGlobals.streamsExplorerProvider.refresh();
         });
         languageClient.onNotification(createdStreamNotification, () => {
+            extensionGlobals.appsExplorerProvider.refresh();
+            extensionGlobals.streamsExplorerProvider.refresh();
+        });
+        languageClient.onNotification(deployedStreamNotification, () => {
+            extensionGlobals.appsExplorerProvider.refresh();
+            extensionGlobals.streamsExplorerProvider.refresh();
+        });
+        languageClient.onNotification(undeployedStreamNotification, () => {
             extensionGlobals.appsExplorerProvider.refresh();
             extensionGlobals.streamsExplorerProvider.refresh();
         });

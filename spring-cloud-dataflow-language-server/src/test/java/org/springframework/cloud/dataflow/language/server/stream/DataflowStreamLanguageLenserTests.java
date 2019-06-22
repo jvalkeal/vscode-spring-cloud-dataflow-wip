@@ -39,6 +39,6 @@ public class DataflowStreamLanguageLenserTests {
 				"stream1 = time|log\nstream2 = time|log");
 		List<CodeLens> problems = lenser.lense(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
-		assertThat(problems).hasSize(4);
+		assertThat(problems).hasSize(8);
 	}
 }

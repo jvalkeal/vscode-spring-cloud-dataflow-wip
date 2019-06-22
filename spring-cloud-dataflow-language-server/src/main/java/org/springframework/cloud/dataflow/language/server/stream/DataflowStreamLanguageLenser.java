@@ -49,6 +49,24 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 								.argument(item.getStreamNode().getName())
 								.argument(getDefinition(item.getStreamNode()))
 								.and()
+							.build(),
+						CodeLens.codeLens()
+							.range(item.getRange())
+							.command()
+								.command(DataflowLanguages.COMMAND_STREAM_DEPLOY)
+								.title(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE)
+								.argument(item.getStreamNode().getName())
+								.argument(getDefinition(item.getStreamNode()))
+								.and()
+							.build(),
+						CodeLens.codeLens()
+							.range(item.getRange())
+							.command()
+								.command(DataflowLanguages.COMMAND_STREAM_UNDEPLOY)
+								.title(DataflowLanguages.COMMAND_STREAM_UNDEPLOY_TITLE)
+								.argument(item.getStreamNode().getName())
+								.argument(getDefinition(item.getStreamNode()))
+								.and()
 							.build()
 					);
 			});
