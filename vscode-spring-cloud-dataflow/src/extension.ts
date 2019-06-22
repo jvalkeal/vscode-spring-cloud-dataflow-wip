@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ExtensionContext, commands, window, workspace, StatusBarItem, StatusBarAlignment } from 'vscode';
+import { ExtensionContext, commands, window, workspace, StatusBarItem, StatusBarAlignment, debug } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, NotificationType } from 'vscode-languageclient';
 import * as Path from 'path';
 import { extensionGlobals } from './extension-variables';
@@ -27,12 +27,12 @@ import {
     LANGUAGE_SCDF_STREAM_PREFIX, LANGUAGE_SCDF_APP_PREFIX, CONFIG_PREFIX, LANGUAGE_SERVER_JAR,
     LANGUAGE_SCDF_DESC, COMMAND_SCDF_SERVER_REGISTER, COMMAND_SCDF_SERVER_UNREGISTER,
     COMMAND_SCDF_EXPLORER_REFRESH, COMMAND_SCDF_STREAMS_SHOW, COMMAND_SCDF_SERVER_NOTIFY,
-    COMMAND_SCDF_STREAMS_CREATE, COMMAND_SCDF_STREAMS_DESTROY, COMMAND_SCDF_APPS_REGISTER,
-    COMMAND_SCDF_APPS_UNREGISTER, COMMAND_SCDF_SERVER_DEFAULT, COMMAND_SCDF_SERVER_CHOOSE,
-    COMMAND_SCDF_STREAMS_DEPLOY, COMMAND_SCDF_STREAMS_UNDEPLOY
+    COMMAND_SCDF_APPS_REGISTER, COMMAND_SCDF_APPS_UNREGISTER, COMMAND_SCDF_SERVER_DEFAULT,
+    COMMAND_SCDF_SERVER_CHOOSE
 } from './extension-globals';
 import { ScdfModel } from './service/scdf-model';
 import { registerStreamCommands } from './commands/stream-commands';
+import { StreamDebugConfigurationProvider } from './debug/stream-debug';
 
 let languageClient: LanguageClient;
 
@@ -55,12 +55,18 @@ export function activate(context: ExtensionContext) {
 
     // register stream commands
     registerStreamCommands(context);
+
+    registerDebug(context);
 }
 
 export function deactivate() {
     if (languageClient) {
         languageClient.stop();
     }
+}
+
+function registerDebug(context: ExtensionContext) {
+    context.subscriptions.push(debug.registerDebugConfigurationProvider(LANGUAGE_SCDF_STREAM_PREFIX, new StreamDebugConfigurationProvider()));
 }
 
 function initializeExtensionGlobals(context: ExtensionContext) {

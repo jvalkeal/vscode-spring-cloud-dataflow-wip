@@ -16,9 +16,11 @@
 import { ExtensionContext, commands } from "vscode";
 import {
     COMMAND_SCDF_STREAMS_CREATE, LSP_SCDF_CREATE_STREAM, LSP_SCDF_DEPLOY_STREAM, LSP_SCDF_UNDEPLOY_STREAM,
-    LSP_SCDF_DESTROY_STREAM, COMMAND_SCDF_STREAMS_DEPLOY, COMMAND_SCDF_STREAMS_UNDEPLOY, COMMAND_SCDF_STREAMS_DESTROY
+    LSP_SCDF_DESTROY_STREAM, COMMAND_SCDF_STREAMS_DEPLOY, COMMAND_SCDF_STREAMS_UNDEPLOY, COMMAND_SCDF_STREAMS_DESTROY,
+    COMMAND_SCDF_STREAM_DEBUG_ATTACH
 } from "../extension-globals";
 import { extensionGlobals } from "../extension-variables";
+import { streamDebugAttach } from "../debug/stream-debug";
 
 interface DataflowStreamCreateParams {
     name: string;
@@ -53,5 +55,8 @@ export function registerStreamCommands(context: ExtensionContext) {
             definition: definition
         };
         extensionGlobals.languageClient.sendNotification(LSP_SCDF_DESTROY_STREAM, params);
+    }));
+    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAM_DEBUG_ATTACH, (name, definition) => {
+        streamDebugAttach();
     }));
 }

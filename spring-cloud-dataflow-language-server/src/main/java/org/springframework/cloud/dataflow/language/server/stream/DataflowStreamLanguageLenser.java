@@ -32,45 +32,31 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 				.filter(item -> item.getStreamNode() != null)
 				.flatMap(item -> {
 					return Flux.just(
-						CodeLens.codeLens()
-							.range(item.getRange())
-							.command()
-								.command(DataflowLanguages.COMMAND_STREAM_CREATE)
-								.title(DataflowLanguages.COMMAND_STREAM_CREATE_TITLE)
-								.argument(item.getStreamNode().getName())
-								.argument(getDefinition(item.getStreamNode()))
-								.and()
-							.build(),
-						CodeLens.codeLens()
-							.range(item.getRange())
-							.command()
-								.command(DataflowLanguages.COMMAND_STREAM_DESTROY)
-								.title(DataflowLanguages.COMMAND_STREAM_DESTROY_TITLE)
-								.argument(item.getStreamNode().getName())
-								.argument(getDefinition(item.getStreamNode()))
-								.and()
-							.build(),
-						CodeLens.codeLens()
-							.range(item.getRange())
-							.command()
-								.command(DataflowLanguages.COMMAND_STREAM_DEPLOY)
-								.title(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE)
-								.argument(item.getStreamNode().getName())
-								.argument(getDefinition(item.getStreamNode()))
-								.and()
-							.build(),
-						CodeLens.codeLens()
-							.range(item.getRange())
-							.command()
-								.command(DataflowLanguages.COMMAND_STREAM_UNDEPLOY)
-								.title(DataflowLanguages.COMMAND_STREAM_UNDEPLOY_TITLE)
-								.argument(item.getStreamNode().getName())
-								.argument(getDefinition(item.getStreamNode()))
-								.and()
-							.build()
-					);
+						codeLens(item, DataflowLanguages.COMMAND_STREAM_CREATE,
+							DataflowLanguages.COMMAND_STREAM_CREATE_TITLE),
+						codeLens(item, DataflowLanguages.COMMAND_STREAM_DESTROY,
+							DataflowLanguages.COMMAND_STREAM_DESTROY_TITLE),
+						codeLens(item, DataflowLanguages.COMMAND_STREAM_DEPLOY,
+							DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE),
+						codeLens(item, DataflowLanguages.COMMAND_STREAM_UNDEPLOY,
+							DataflowLanguages.COMMAND_STREAM_UNDEPLOY_TITLE),
+						codeLens(item, DataflowLanguages.COMMAND_STREAM_DEBUG_ATTACH,
+							DataflowLanguages.COMMAND_STREAM_DEBUG_ATTACH_TITLE)
+				);
 			});
 		});
+	}
+
+	private CodeLens codeLens(StreamParseItem item, String command, String title) {
+		return CodeLens.codeLens()
+			.range(item.getRange())
+			.command()
+				.command(command)
+				.title(title)
+				.argument(item.getStreamNode().getName())
+				.argument(getDefinition(item.getStreamNode()))
+				.and()
+			.build();
 	}
 
 	private String getDefinition(StreamNode streamNode) {

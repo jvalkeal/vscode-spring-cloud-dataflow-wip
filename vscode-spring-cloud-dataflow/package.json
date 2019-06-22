@@ -16,6 +16,7 @@
 		"Other"
 	],
 	"activationEvents": [
+		"onDebugInitialConfigurations",
 		"onView:scdfApps",
 		"onView:scdfStreams",
 		"onView:scdfTasks",
@@ -167,7 +168,16 @@
 					"name": "Streams"
 				}
 			]
-		}
+		},
+		"debuggers": [
+			{
+				"type": "scdfs",
+				"label": "SCDF Stream Debug",
+				"languages": [
+					"scdfs"
+				]
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
