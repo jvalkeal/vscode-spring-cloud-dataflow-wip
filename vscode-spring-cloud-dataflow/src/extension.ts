@@ -17,6 +17,7 @@ import {
     COMMAND_SCDF_STREAMS_DEPLOY, COMMAND_SCDF_STREAMS_UNDEPLOY
 } from './extension-globals';
 import { ScdfModel } from './service/scdf-model';
+import { registerStreamCommands } from './commands/stream-commands';
 
 let languageClient: LanguageClient;
 
@@ -36,6 +37,9 @@ export function activate(context: ExtensionContext) {
 
     // register language support
     registerLanguageSupport(context);
+
+    // register stream commands
+    registerStreamCommands(context);
 }
 
 export function deactivate() {
@@ -67,34 +71,6 @@ function registerCommands(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_DEFAULT, setDefaultServer));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_CHOOSE, chooseDefaultServer));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_SERVER_NOTIFY, notifyServers));
-    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_CREATE, (name, definition) => {
-        const params: DataflowStreamCreateParams = {
-            name: name,
-            definition: definition
-        };
-        extensionGlobals.languageClient.sendNotification('scdf/createStream', params);
-    }));
-    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_DEPLOY, (name, definition) => {
-        const params: DataflowStreamCreateParams = {
-            name: name,
-            definition: definition
-        };
-        extensionGlobals.languageClient.sendNotification('scdf/deployStream', params);
-    }));
-    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_UNDEPLOY, (name, definition) => {
-        const params: DataflowStreamCreateParams = {
-            name: name,
-            definition: definition
-        };
-        extensionGlobals.languageClient.sendNotification('scdf/undeployStream', params);
-    }));
-    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_DESTROY, (name, definition) => {
-        const params: DataflowStreamCreateParams = {
-            name: name,
-            definition: definition
-        };
-        extensionGlobals.languageClient.sendNotification('scdf/destroyStream', params);
-    }));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_APPS_REGISTER, (type, name, appUri, metadataUri) => {
         getDefaultServer().then((s) => {
             if (s) {

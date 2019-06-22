@@ -20,6 +20,10 @@ export const COMMAND_SCDF_STREAMS_UNDEPLOY: string = 'vscode-spring-cloud-datafl
 export const COMMAND_SCDF_STREAMS_DESTROY: string = 'vscode-spring-cloud-dataflow.streams.destroy';
 export const COMMAND_SCDF_APPS_REGISTER: string = 'vscode-spring-cloud-dataflow.apps.register';
 export const COMMAND_SCDF_APPS_UNREGISTER: string = 'vscode-spring-cloud-dataflow.apps.unregister';
+export const LSP_SCDF_CREATE_STREAM: string = CONFIG_PREFIX + '/createStream';
+export const LSP_SCDF_DEPLOY_STREAM: string = CONFIG_PREFIX + '/deployStream';
+export const LSP_SCDF_UNDEPLOY_STREAM: string = CONFIG_PREFIX + '/undeployStream';
+export const LSP_SCDF_DESTROY_STREAM: string = CONFIG_PREFIX + '/destroyStream';
 
 // native os dependant keytar id's
 export namespace keytarConstants {
