@@ -15,23 +15,14 @@
  */
 package org.springframework.cloud.dataflow.language.server.stream;
 
-import java.util.List;
-
 import org.springframework.cloud.dataflow.core.dsl.AppNode;
 import org.springframework.cloud.dataflow.core.dsl.ArgumentNode;
-import org.springframework.cloud.dataflow.core.dsl.ParseException;
-import org.springframework.cloud.dataflow.core.dsl.SinkDestinationNode;
-import org.springframework.cloud.dataflow.core.dsl.SourceDestinationNode;
 import org.springframework.cloud.dataflow.core.dsl.StreamNode;
-import org.springframework.cloud.dataflow.core.dsl.StreamParser;
-import org.springframework.dsl.document.Document;
-import org.springframework.dsl.domain.Position;
 import org.springframework.dsl.domain.Range;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.symbol.SymbolizeInfo;
 import org.springframework.dsl.service.symbol.Symbolizer;
 import org.springframework.dsl.symboltable.model.ClassSymbol;
-import org.springframework.dsl.symboltable.model.PredefinedScope;
 import org.springframework.dsl.symboltable.support.DefaultSymbolTable;
 import org.springframework.dsl.symboltable.support.DocumentSymbolTableVisitor;
 
@@ -87,9 +78,6 @@ public class DataflowStreamLanguageSymbolizer extends AbstractDataflowStreamLang
 			ClassSymbol streamClass = new ClassSymbol(streamName != null ? streamName : "[unnamed]");
 			streamClass.setRange(Range.from(line, startPos, line, endPos));
 			table.defineGlobal(streamClass);
-
-			SourceDestinationNode sourceDestinationNode = streamNode.getSourceDestinationNode();
-			SinkDestinationNode sinkDestinationNode = streamNode.getSinkDestinationNode();
 
 			for (AppNode appNode : streamNode.getAppNodes()) {
 				String appName = appNode.getName();
