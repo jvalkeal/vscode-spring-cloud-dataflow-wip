@@ -128,7 +128,6 @@ function registerCommands(context: ExtensionContext) {
         })
         ;
     }));
-
 }
 
 function registerExplorer(context: ExtensionContext) {

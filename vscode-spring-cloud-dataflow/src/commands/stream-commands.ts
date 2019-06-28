@@ -17,14 +17,21 @@ import { ExtensionContext, commands } from "vscode";
 import {
     COMMAND_SCDF_STREAMS_CREATE, LSP_SCDF_CREATE_STREAM, LSP_SCDF_DEPLOY_STREAM, LSP_SCDF_UNDEPLOY_STREAM,
     LSP_SCDF_DESTROY_STREAM, COMMAND_SCDF_STREAMS_DEPLOY, COMMAND_SCDF_STREAMS_UNDEPLOY, COMMAND_SCDF_STREAMS_DESTROY,
-    COMMAND_SCDF_STREAM_DEBUG_ATTACH
+    COMMAND_SCDF_STREAM_DEBUG_ATTACH, COMMAND_SCDF_STREAM_DEBUG_LAUNCH
 } from "../extension-globals";
 import { extensionGlobals } from "../extension-variables";
 import { streamDebugAttach } from "../debug/stream-debug";
+import { getDefaultServer, ServerRegistration } from "./server-registrations";
+import { ScdfModel, ScdfStreamDeploymentEntry } from "../service/scdf-model";
+
+interface DeploymentProperties {
+    [key: string]: string;
+}
 
 interface DataflowStreamCreateParams {
     name: string;
     definition: string;
+    properties?: DeploymentProperties;
 }
 
 export function registerStreamCommands(context: ExtensionContext) {
@@ -57,6 +64,61 @@ export function registerStreamCommands(context: ExtensionContext) {
         extensionGlobals.languageClient.sendNotification(LSP_SCDF_DESTROY_STREAM, params);
     }));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAM_DEBUG_ATTACH, (name, definition) => {
-        streamDebugAttach();
+        // streamDebugAttach();
+
+        new Promise<ServerRegistration>(async (resolve, reject) => {
+            const registration = await getDefaultServer();
+            if (registration) {
+                resolve(registration);
+            } else {
+                reject();
+            }
+        })
+        .then(value => {
+            const model = new ScdfModel(value);
+            return model.getStreamDeployment(name);
+        })
+        .then(entry => {
+            console.log('xxx', entry);
+        })
+        ;
+
     }));
+
+    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAM_DEBUG_LAUNCH, (name, definition) => {
+
+
+        // const x1: Promise<ServerRegistration> = new Promise(async (resolve, reject) => {
+        //     const registration = await getDefaultServer();
+        //     if (registration) {
+        //         resolve(registration);
+        //     } else {
+        //         reject();
+        //     }
+        // });
+
+        // const x2 = x1.then(value => {
+        //     const model = new ScdfModel(value);
+        //     return model.getStreamDeployment(name);
+        // });
+
+        // x2.then(entry => {
+        //     console.log('xxx', entry);
+        // });
+
+
+
+        // const params: DataflowStreamCreateParams = {
+        //     name: name,
+        //     definition: definition,
+        //     properties: {
+        //         "deployer.time.local.debugPort": "8888",
+        //         "deployer.time.local.debugSuspend": "n",
+        //         "deployer.log.local.debugPort": "8889",
+        //         "deployer.log.local.debugSuspend": "n"
+        //     }
+        // };
+        // extensionGlobals.languageClient.sendNotification(LSP_SCDF_DEPLOY_STREAM, params);
+    }));
+
 }

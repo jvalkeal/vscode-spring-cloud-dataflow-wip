@@ -36,6 +36,17 @@ export interface ScdfStreamEntry extends BaseEntry {
     statusDescription: string;
 }
 
+interface DeploymentProperties {
+    [key: string]: string;
+}
+
+export interface ScdfStreamDeploymentEntry extends BaseEntry {
+    streamName: string;
+    dslText: string;
+    status: string;
+    deploymentProperties: DeploymentProperties;
+}
+
 export interface ScdfNode {
     name: string;
     resource: Uri;
@@ -62,6 +73,10 @@ export class ScdfModel {
             resolve(this.scdfService.getStreamDsl(this.registration, streamName)
                 .then(stream => stream.dslText));
         });
+    }
+
+    public getStreamDeployment(streamName: string): Thenable<ScdfStreamDeploymentEntry> {
+        return this.scdfService.getStreamDeployment(this.registration, streamName);
     }
 
     public registerApp(type: string, name: string, uri: string, metadataUri: string): Thenable<void> {

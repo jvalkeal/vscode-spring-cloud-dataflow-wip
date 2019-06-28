@@ -17,7 +17,6 @@
  package org.springframework.cloud.dataflow.language.server.controller;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -41,11 +40,11 @@ import org.springframework.web.client.RestTemplate;
 import reactor.core.publisher.Mono;
 
 /**
- * Controller which takes ownership of all lsp protocol communication for
- * a {@code scdf} namespace. Functionality behind this controller is defined
- * together with a lsp client which for correct functionality need to
- * be aware of these rules working with Spring Cloud Data Flow specific extensions
- * of a lsp protocol.
+ * Controller which takes ownership of all lsp protocol communication for a
+ * {@code scdf} namespace. Functionality behind this controller is defined
+ * together with a lsp client which for correct functionality need to be aware
+ * of these rules working with Spring Cloud Data Flow specific extensions of a
+ * lsp protocol.
  *
  * @author Janne Valkealahti
  *
@@ -59,7 +58,7 @@ public class DataflowJsonRpcController {
 	 * Blindly inject given params into a session so that other methods can use this
 	 * info from a {@link JsonRpcSession} available from a {@link DslContext}.
 	 *
-	 * @param params the dataflow environment params
+	 * @param params  the dataflow environment params
 	 * @param session th json rpc session
 	 */
 	@JsonRpcRequestMapping(method = "environment")
@@ -83,8 +82,7 @@ public class DataflowJsonRpcController {
 			} else {
 				log.info("Unable to create stream");
 			}
-		})
-		.then(lspClient.notification().method("scdf/createdStream").exchange());
+		}).then(lspClient.notification().method("scdf/createdStream").exchange());
 	}
 
 	@JsonRpcRequestMapping(method = "deployStream")
@@ -96,12 +94,11 @@ public class DataflowJsonRpcController {
 			DataFlowOperations operations = getDataFlowOperations(session);
 			if (operations != null) {
 				log.debug("Deploying stream {}", params);
-				operations.streamOperations().deploy(params.getName(), Collections.emptyMap());
+				operations.streamOperations().deploy(params.getName(), params.getProperties());
 			} else {
 				log.info("Unable to deploy stream");
 			}
-		})
-		.then(lspClient.notification().method("scdf/deployedStream").exchange());
+		}).then(lspClient.notification().method("scdf/deployedStream").exchange());
 	}
 
 	@JsonRpcRequestMapping(method = "undeployStream")
@@ -117,8 +114,7 @@ public class DataflowJsonRpcController {
 			} else {
 				log.info("Unable to undeploy stream");
 			}
-		})
-		.then(lspClient.notification().method("scdf/undeployedStream").exchange());
+		}).then(lspClient.notification().method("scdf/undeployedStream").exchange());
 	}
 
 	@JsonRpcRequestMapping(method = "destroyStream")
@@ -134,8 +130,7 @@ public class DataflowJsonRpcController {
 			} else {
 				log.info("Unable to destroy stream");
 			}
-		})
-		.then(lspClient.notification().method("scdf/destroyedStream").exchange());
+		}).then(lspClient.notification().method("scdf/destroyedStream").exchange());
 	}
 
 	protected DataFlowOperations getDataFlowOperations(JsonRpcSession session) {

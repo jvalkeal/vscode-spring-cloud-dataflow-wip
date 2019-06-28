@@ -15,10 +15,14 @@
  */
 package org.springframework.cloud.dataflow.language.server.stream;
 
+import java.util.Collections;
+import java.util.Map;
+
 public class DataflowStreamCreateParams {
 
 	private String name;
 	private String definition;
+	private Map<String, String> properties = Collections.emptyMap();
 
 	public String getName() {
 		return name;
@@ -34,5 +38,13 @@ public class DataflowStreamCreateParams {
 
 	public void setDefinition(String definition) {
 		this.definition = definition;
+	}
+
+	public Map<String, String> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Map<String, String> properties) {
+		this.properties = properties;
 	}
 }

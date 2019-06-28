@@ -46,6 +46,8 @@ public class DataflowLanguages {
 	public final static String COMMAND_STREAM_DESTROY_TITLE = "Destroy Stream";
 	public final static String COMMAND_STREAM_DEBUG_ATTACH = "vscode-spring-cloud-dataflow.streams.debugattach";
 	public final static String COMMAND_STREAM_DEBUG_ATTACH_TITLE = "Debug Attach Stream";
+	public final static String COMMAND_STREAM_DEBUG_LAUNCH = "vscode-spring-cloud-dataflow.streams.debuglaunch";
+	public final static String COMMAND_STREAM_DEBUG_LAUNCH_TITLE = "Debug Launch Stream";
 	public final static String COMMAND_APP_REGISTER = "vscode-spring-cloud-dataflow.apps.register";
 	public final static String COMMAND_APP_REGISTER_TITLE = "Register Application";
 	public final static String COMMAND_APP_UNREGISTER = "vscode-spring-cloud-dataflow.apps.unregister";

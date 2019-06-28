@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import axios from 'axios';
-import { ScdfStreamEntry, ScdfAppEntry } from './scdf-model';
+import { ScdfStreamEntry, ScdfAppEntry, ScdfStreamDeploymentEntry } from './scdf-model';
 import { ServerRegistration } from '../commands/server-registrations';
 
 export class ScdfService {
@@ -26,6 +26,20 @@ export class ScdfService {
                     auth: registration.credentials
             });
             resolve((response.data as ScdfStreamEntry));
+        });
+    }
+
+    public getStreamDeployment(registration: ServerRegistration, streamName: string): Thenable<ScdfStreamDeploymentEntry> {
+        return new Promise(async (resolve, reject) => {
+            const response = await axios.get(
+                registration.url + '/streams/deployments/' + streamName, {
+                    auth: registration.credentials
+            });
+            const entry = response.data as ScdfStreamDeploymentEntry;
+            // TODO: don't like this manual parsing, can axios do it?
+            entry.deploymentProperties = JSON.parse(response.data.deploymentProperties);
+            resolve(entry);
+            // resolve((response.data as ScdfStreamDeploymentEntry));
         });
     }
 
