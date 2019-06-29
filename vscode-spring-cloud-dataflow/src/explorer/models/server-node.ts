@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { BaseNode } from "./base-node";
-import { AppNode } from "./app-node";
 import { ScdfModel } from "../../service/scdf-model";
 import { StreamNode } from "./stream-node";
 import { ServerRegistration } from "../../commands/server-registrations";
@@ -62,6 +61,6 @@ export class ServerNode extends BaseNode {
     private async getStreamNodes(): Promise<StreamNode[]> {
         const scdfModel = new ScdfModel(this.registration);
         const serverId = this.registration.url.replace(/[^\w]/g, '');
-        return scdfModel.getStreams().then(streams => streams.map(app => new StreamNode(app.name, serverId)));
+        return scdfModel.getStreams().then(streams => streams.map(app => new StreamNode(app.name, serverId, this.registration)));
     }
 }

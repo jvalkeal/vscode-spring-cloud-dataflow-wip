@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import axios from 'axios';
-import { ScdfStreamEntry, ScdfAppEntry, ScdfStreamDeploymentEntry } from './scdf-model';
+import { ScdfStreamEntry, ScdfAppEntry, ScdfStreamDeploymentEntry, ScdfStreamRuntimeEntry } from './scdf-model';
 import { ServerRegistration } from '../commands/server-registrations';
 
 export class ScdfService {
@@ -40,6 +40,16 @@ export class ScdfService {
             entry.deploymentProperties = JSON.parse(response.data.deploymentProperties);
             resolve(entry);
             // resolve((response.data as ScdfStreamDeploymentEntry));
+        });
+    }
+
+    public getStreamRuntime(registration: ServerRegistration, streamName: string): Thenable<ScdfStreamRuntimeEntry[]> {
+        return new Promise(async (resolve, reject) => {
+            const response = await axios.get(
+                registration.url + '/runtime/streams?names=' + streamName, {
+                    auth: registration.credentials
+            });
+            resolve((response.data as ScdfStreamRuntimeEntry[]));
         });
     }
 

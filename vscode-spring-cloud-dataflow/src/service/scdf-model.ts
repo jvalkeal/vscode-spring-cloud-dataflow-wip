@@ -52,6 +52,26 @@ export interface ScdfNode {
     resource: Uri;
 }
 
+export interface ScdfStreamRuntimeEntry {
+    name: string;
+    version: string;
+    applications: ScdfStreamRuntimeApplicationEntry[];
+}
+
+export interface ScdfStreamRuntimeApplicationEntry {
+    id: string;
+    name: string;
+    instances: ScdfStreamRuntimeApplicationInstanceEntry[];
+}
+
+export interface ScdfStreamRuntimeApplicationInstanceEntry {
+    guid: string;
+    id: string;
+    index: number;
+    properties: any;
+    state: string;
+}
+
 export class ScdfModel {
 
     private scdfService: ScdfService;
@@ -77,6 +97,10 @@ export class ScdfModel {
 
     public getStreamDeployment(streamName: string): Thenable<ScdfStreamDeploymentEntry> {
         return this.scdfService.getStreamDeployment(this.registration, streamName);
+    }
+
+    public getStreamRuntime(streamName: string): Thenable<ScdfStreamRuntimeEntry[]> {
+        return this.scdfService.getStreamRuntime(this.registration, streamName);
     }
 
     public registerApp(type: string, name: string, uri: string, metadataUri: string): Thenable<void> {

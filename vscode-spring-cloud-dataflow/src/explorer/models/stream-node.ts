@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 import { BaseNode } from "./base-node";
-import { Uri, TreeItemCollapsibleState } from "vscode";
+import { Uri } from "vscode";
 import { treeUtils } from "../../utils/tree-utils";
+import { ScdfModel } from "../../service/scdf-model";
+import { ServerRegistration } from "../../commands/server-registrations";
+import { RuntimeNode } from "./runtime-node";
 
 export class StreamNode extends BaseNode {
 
-    constructor(label: string, private readonly serverId: string) {
+    constructor(label: string, private readonly serverId: string, private readonly registration: ServerRegistration) {
         super(label, 'definedStream');
     }
 
@@ -34,7 +37,22 @@ export class StreamNode extends BaseNode {
         return treeUtils.getThemedIconPath('stream');
     }
 
-    protected getTreeItemCollapsibleState(): TreeItemCollapsibleState {
-        return TreeItemCollapsibleState.None;
+    public async getChildren(element: BaseNode): Promise<BaseNode[]> {
+        return this.getAppNodes();
+    }
+
+    private async getAppNodes(): Promise<RuntimeNode[]> {
+        const appNodes: RuntimeNode[] = [];
+        const scdfModel = new ScdfModel(this.registration);
+        await scdfModel.getStreamRuntime(this.label)
+            .then(runtimes => runtimes
+                .filter(runtime => runtime.name === this.label)
+                .forEach(runtime => {
+                    runtime.applications.forEach(application => {
+                        appNodes.push(new RuntimeNode(application.name, application.instances));
+                    });
+                })
+            );
+        return appNodes;
     }
 }
