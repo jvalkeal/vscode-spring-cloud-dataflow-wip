@@ -11,15 +11,18 @@ jobs:
       - task: Npm@1
         displayName: 'Install dependencies'
         inputs:
+          workingDir: /vscode-spring-cloud-dataflow
           verbose: false
       - task: Npm@1
         displayName: 'Compile sources'
         inputs:
+          workingDir: /vscode-spring-cloud-dataflow
           command: custom
           verbose: false
           customCommand: 'run compile'
       - script: 'node node_modules/vscode/bin/test'
         displayName: 'Run tests'
+        workingDirectory: /vscode-spring-cloud-dataflow
   - job: macOS
     pool:
       name: Hosted macOS
@@ -32,15 +35,18 @@ jobs:
       - task: Npm@1
         displayName: 'Install dependencies'
         inputs:
+          workingDir: /vscode-spring-cloud-dataflow
           verbose: false
       - task: Npm@1
         displayName: 'Compile sources'
         inputs:
+          workingDir: /vscode-spring-cloud-dataflow
           command: custom
           verbose: false
           customCommand: 'run compile'
       - script: 'node node_modules/vscode/bin/test'
         displayName: 'Run tests'
+        workingDirectory: /vscode-spring-cloud-dataflow
   - job: Linux
     pool:
       name: Hosted Ubuntu 1604
@@ -53,10 +59,12 @@ jobs:
       - task: Npm@1
         displayName: 'Install dependencies'
         inputs:
+          workingDir: /vscode-spring-cloud-dataflow
           verbose: false
       - task: Npm@1
         displayName: 'Compile sources'
         inputs:
+          workingDir: /vscode-spring-cloud-dataflow
           command: custom
           verbose: false
           customCommand: 'run compile'
@@ -67,5 +75,6 @@ jobs:
         displayName: 'Start xvfb'
       - script: 'node node_modules/vscode/bin/test'
         displayName: 'Run tests'
+        workingDirectory: /vscode-spring-cloud-dataflow
         env:
           DISPLAY: :10
