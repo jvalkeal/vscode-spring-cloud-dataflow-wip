@@ -24,14 +24,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
 import org.springframework.dsl.document.Document;
 import org.springframework.dsl.document.TextDocument;
-import org.springframework.dsl.domain.Range;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.reconcile.ReconcileProblem;
 
 public class DataflowStreamLanguageLinterTests {
 
 	private final DataflowStreamLanguageLinter linter = new DataflowStreamLanguageLinter();
-	private static Range zeroRange = Range.from(0, 0, 0, 0);
 
 	@Test
 	public void testEmpty() {
