@@ -67,6 +67,51 @@ public class DataflowStreamLanguageCompletionerTests {
         assertThat(completes.get(0).getTextEdit().getNewText()).isEqualTo("completion1");
     }
 
+    @Test
+    public void testTickTockCompletionFromBeforePipe() {
+        Proposal proposal1 = new Proposal("ticktock = time --time-unit=", "The TimeUnit to apply to delay values.");
+        Proposal proposal2 = new Proposal("ticktock = time --fixed-delay=", "Fixed delay for periodic triggers.");
+        Proposal proposal3 = new Proposal("ticktock = time --cron=", "Cron expression value for the Cron Trigger.");
+        Proposal proposal4 = new Proposal("ticktock = time --initial-delay=", "Initial delay for periodic triggers.");
+        Proposal proposal5 = new Proposal("ticktock = time --max-messages=", "Maximum messages per poll, -1 means infinity.");
+        Proposal proposal6 = new Proposal("ticktock = time --date-format=", "Format for the date value.");
+        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "ticktock = time | log");
+        Mockito.when(dataFlowOperations.completionOperations()).thenReturn(completionOperations);
+        Mockito.when(completionOperations.streamCompletions(any(), anyInt())).thenReturn(proposalsResource);
+        Mockito.when(proposalsResource.getProposals())
+                .thenReturn(Arrays.asList(proposal1, proposal2, proposal3, proposal4, proposal5, proposal6));
+        DataflowStreamLanguageCompletioner completioner = mockCompletioner();
+
+        List<CompletionItem> completes = completioner
+                .complete(DslContext.builder().document(document).build(), Position.from(0, 16)).toStream()
+                .collect(Collectors.toList());
+        assertThat(completes).hasSize(6);
+
+        assertThat(completes.get(0).getLabel()).isEqualTo("--time-unit=");
+        assertThat(completes.get(0).getFilterText()).isEqualTo("ticktock = time --time-unit=");
+        assertThat(completes.get(0).getTextEdit().getNewText()).isEqualTo("ticktock = time --time-unit=");
+
+        assertThat(completes.get(1).getLabel()).isEqualTo("--fixed-delay=");
+        assertThat(completes.get(1).getFilterText()).isEqualTo("ticktock = time --fixed-delay=");
+        assertThat(completes.get(1).getTextEdit().getNewText()).isEqualTo("ticktock = time --fixed-delay=");
+
+        assertThat(completes.get(2).getLabel()).isEqualTo("--cron=");
+        assertThat(completes.get(2).getFilterText()).isEqualTo("ticktock = time --cron=");
+        assertThat(completes.get(2).getTextEdit().getNewText()).isEqualTo("ticktock = time --cron=");
+
+        assertThat(completes.get(3).getLabel()).isEqualTo("--initial-delay=");
+        assertThat(completes.get(3).getFilterText()).isEqualTo("ticktock = time --initial-delay=");
+        assertThat(completes.get(3).getTextEdit().getNewText()).isEqualTo("ticktock = time --initial-delay=");
+
+        assertThat(completes.get(4).getLabel()).isEqualTo("--max-messages=");
+        assertThat(completes.get(4).getFilterText()).isEqualTo("ticktock = time --max-messages=");
+        assertThat(completes.get(4).getTextEdit().getNewText()).isEqualTo("ticktock = time --max-messages=");
+
+        assertThat(completes.get(5).getLabel()).isEqualTo("--date-format=");
+        assertThat(completes.get(5).getFilterText()).isEqualTo("ticktock = time --date-format=");
+        assertThat(completes.get(5).getTextEdit().getNewText()).isEqualTo("ticktock = time --date-format=");
+    }
+
     private DataflowStreamLanguageCompletioner mockCompletioner() {
         return new DataflowStreamLanguageCompletioner() {
             @Override

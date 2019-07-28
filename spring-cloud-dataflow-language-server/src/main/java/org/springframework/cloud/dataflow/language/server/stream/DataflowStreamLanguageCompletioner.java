@@ -52,7 +52,9 @@ public class DataflowStreamLanguageCompletioner extends AbstractDataflowStreamLa
 			return Flux.fromIterable(proposals.getProposals())
 				.map(proposal -> {
 					return CompletionItem.completionItem()
-						.label(proposal.getText())
+						.label(proposal.getText().substring(position.getCharacter()))
+						// need to have filter as it defaults to label and we changed it and it doesn't match newText
+						.filterText(proposal.getText())
 						.textEdit()
 							.range(Range.from(position.getLine(), 0, position.getLine(), position.getCharacter()))
 							.newText(proposal.getText())
