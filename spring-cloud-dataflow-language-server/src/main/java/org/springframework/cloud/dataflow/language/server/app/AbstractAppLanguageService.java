@@ -15,11 +15,18 @@
  */
 package org.springframework.cloud.dataflow.language.server.app;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
+import org.springframework.cloud.dataflow.language.server.support.DockerImage;
+import org.springframework.cloud.deployer.resource.maven.MavenResource;
 import org.springframework.dsl.document.Document;
 import org.springframework.dsl.domain.Range;
 import org.springframework.dsl.service.AbstractDslService;
@@ -45,8 +52,9 @@ public abstract class AbstractAppLanguageService extends AbstractDslService {
 			String[] split1 = content.split("=");
 			if (split1.length == 2) {
 				String[] split2 = split1[0].split("\\.");
+				String version = getVersion(split1[1]);
 				if (split2.length == 2) {
-					String name = split2[0] + split2[1];
+					String name = split2[0] + split2[1] + version;
 					AppEntry ae = apps.get(name);
 					Range appRange = Range.from(line, 0, line, split1[0].length());
 					if (ae == null) {
@@ -57,7 +65,10 @@ public abstract class AbstractAppLanguageService extends AbstractDslService {
 						ae.setAppUri(split1[1]);
 					}
 				} else if (split2.length == 3) {
-					String name = split2[0] + split2[1];
+					String name = split2[0] + split2[1] + version;
+					if (name.endsWith("-metadata")) {
+						name = name.substring(0, name.length() - 9);
+					}
 					AppEntry ae = apps.get(name);
 					Range metadataRange = Range.from(line, 0, line, split1[0].length());
 					if (ae == null) {
@@ -72,6 +83,39 @@ public abstract class AbstractAppLanguageService extends AbstractDslService {
 		}
 		return apps.values();
 	}
+
+	private String getVersion(String uri) {
+		String version = "";
+		try {
+			String scheme = new URI(uri).getScheme();
+			switch (scheme) {
+				case "maven":
+					String coordinates = uri.replaceFirst("maven:\\/*", "");
+					MavenResource resource1 = MavenResource.parse(coordinates);
+					version = resource1.getVersion();
+					break;
+				case "docker":
+					String dockerUri = uri.replaceFirst("docker:\\/*", "");
+					DockerImage dockerImage = DockerImage.fromImageName(dockerUri);
+					version =  dockerImage.getTag();
+					break;
+				case "http":
+				case "https":
+					URI resourceUri = URI.create(uri);
+					String uriPath = resourceUri.getPath();
+					String lastSegment = new File(uriPath).getName();
+					lastSegment = lastSegment.substring(0, lastSegment.lastIndexOf("."));
+					Pattern pattern = Pattern.compile("(.*)-(\\d)(.*?)");
+					Matcher m = pattern.matcher(lastSegment);
+					m.matches();
+					version =  m.group(2) + m.group(3);
+					break;
+			}
+		} catch (URISyntaxException e) {
+		}
+		return version;
+	}
+
 
 	protected static class AppEntry {
 
@@ -131,4 +175,5 @@ public abstract class AbstractAppLanguageService extends AbstractDslService {
 			return metadataUri;
 		}
 	}
+
 }

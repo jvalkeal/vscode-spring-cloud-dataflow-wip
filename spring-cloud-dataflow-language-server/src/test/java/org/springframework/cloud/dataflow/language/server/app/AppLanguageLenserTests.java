@@ -51,9 +51,13 @@ public class AppLanguageLenserTests {
 		"source.time=maven://org.springframework.cloud.stream.app:time-source-rabbit:2.0.0.RELEASE" +
 		"\n" +
 		"source.time.metadata=maven://org.springframework.cloud.stream.app:time-source-rabbit:jar:metadata:2.0.0.RELEASE";
+	private final String CONTENT4 =
+		"source.time=https://repo.spring.io/libs-release/org/springframework/cloud/stream/app/time-source-rabbit/2.1.0.RELEASE/time-source-rabbit-2.1.0.RELEASE.jar" +
+		"\n" +
+		"source.time.metadata=https://repo.spring.io/libs-release/org/springframework/cloud/stream/app/time-source-rabbit/2.1.0.RELEASE/time-source-rabbit-2.1.0.RELEASE-metadata.jar";
 
 	@Test
-	public void testOneWithMetadata() {
+	public void testOneMavenWithMetadata() {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_APP, 0, CONTENT1);
 		List<CodeLens> problems = lenser.lense(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
@@ -72,6 +76,25 @@ public class AppLanguageLenserTests {
 	}
 
 	@Test
+	public void testOneHttpWithMetadata() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_APP, 0, CONTENT4);
+		List<CodeLens> problems = lenser.lense(DslContext.builder().document(document).build()).toStream()
+				.collect(Collectors.toList());
+		assertThat(problems).hasSize(2);
+		assertThat(problems.get(0).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_APP_REGISTER_TITLE);
+		assertThat(problems.get(0).getCommand().getArguments()).hasSize(4);
+		assertThat(problems.get(0).getCommand().getArguments().get(0)).isEqualTo("source");
+		assertThat(problems.get(0).getCommand().getArguments().get(1)).isEqualTo("time");
+		assertThat(problems.get(0).getCommand().getArguments().get(2))
+				.isEqualTo("https://repo.spring.io/libs-release/org/springframework/cloud/stream/app/time-source-rabbit/2.1.0.RELEASE/time-source-rabbit-2.1.0.RELEASE.jar");
+		assertThat(problems.get(0).getCommand().getArguments().get(3))
+				.isEqualTo("https://repo.spring.io/libs-release/org/springframework/cloud/stream/app/time-source-rabbit/2.1.0.RELEASE/time-source-rabbit-2.1.0.RELEASE-metadata.jar");
+		assertThat(problems.get(1).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_APP_UNREGISTER_TITLE);
+		assertThat(problems.get(1).getCommand().getArguments()).hasSize(2);
+		assertThat(problems.get(1).getCommand().getArguments().get(0)).isEqualTo("source");
+	}
+
+	@Test
 	public void testMixedSameName() {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_APP, 0, CONTENT2);
 		List<CodeLens> problems = lenser.lense(DslContext.builder().document(document).build()).toStream()
@@ -79,11 +102,11 @@ public class AppLanguageLenserTests {
 		assertThat(problems).hasSize(4);
 	}
 
-	// @Test
-	// public void testMultipleVersions() {
-	// 	Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_APP, 0, CONTENT3);
-	// 	List<CodeLens> problems = lenser.lense(DslContext.builder().document(document).build()).toStream()
-	// 			.collect(Collectors.toList());
-	// 	assertThat(problems).hasSize(4);
-	// }
+	@Test
+	public void testMultipleVersions() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_APP, 0, CONTENT3);
+		List<CodeLens> problems = lenser.lense(DslContext.builder().document(document).build()).toStream()
+				.collect(Collectors.toList());
+		assertThat(problems).hasSize(4);
+	}
 }
