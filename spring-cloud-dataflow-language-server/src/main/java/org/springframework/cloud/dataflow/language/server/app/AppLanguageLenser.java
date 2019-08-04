@@ -58,6 +58,7 @@ public class AppLanguageLenser extends AbstractAppLanguageService implements Len
 								.title(DataflowLanguages.COMMAND_APP_UNREGISTER_TITLE)
 								.argument(item.getType())
 								.argument(item.getName())
+								.argument(item.getVersion())
 								.and()
 							.build()
 					);

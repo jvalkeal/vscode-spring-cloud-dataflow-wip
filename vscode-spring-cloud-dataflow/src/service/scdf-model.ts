@@ -107,7 +107,7 @@ export class ScdfModel {
         return this.scdfService.registerApp(this.registration, type, name, uri, metadataUri);
     }
 
-    public unregisterApp(type: string, name: string): Thenable<void> {
-        return this.scdfService.unregisterApp(this.registration, type, name);
+    public unregisterApp(type: string, name: string, version?: string): Thenable<void> {
+        return this.scdfService.unregisterApp(this.registration, type, name, version);
     }
 }

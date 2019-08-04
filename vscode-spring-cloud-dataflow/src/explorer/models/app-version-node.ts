@@ -16,11 +16,12 @@
 import { BaseNode } from "./base-node";
 import { TreeItemCollapsibleState } from "vscode";
 import { treeUtils } from "../../utils/tree-utils";
+import { AppType } from "./app-type-node";
 
 export class AppVersionNode extends BaseNode {
 
-    constructor(label: string) {
-        super(label);
+    constructor(label: string, public readonly type: AppType, public readonly name: string, public readonly version: string) {
+        super(label, 'definedAppVersion');
     }
 
     protected getTreeItemCollapsibleState(): TreeItemCollapsibleState {

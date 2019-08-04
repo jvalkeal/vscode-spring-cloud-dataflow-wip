@@ -24,14 +24,14 @@ import { AppVersionNode } from "./app-version-node";
 export class AppNode extends BaseNode {
 
     constructor(label: string, private readonly type: AppType, private readonly versions?: string[]) {
-        super(label);
+        super(label, 'definedApp');
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {
         let nodes: AppVersionNode[] = [];
         if (this.versions) {
             this.versions.forEach(v => {
-                nodes.push(new AppVersionNode(v));
+                nodes.push(new AppVersionNode(v, this.type, this.label, v));
             });
         }
         return nodes;

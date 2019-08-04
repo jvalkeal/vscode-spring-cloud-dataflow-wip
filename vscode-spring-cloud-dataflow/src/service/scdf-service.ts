@@ -104,10 +104,14 @@ export class ScdfService {
         });
     }
 
-    public unregisterApp(registration: ServerRegistration, type: string, name: string): Thenable<void> {
+    public unregisterApp(registration: ServerRegistration, type: string, name: string, version?: string): Thenable<void> {
         return new Promise(async (resolve, reject) => {
             try {
-                await axios.delete(registration.url + '/apps/' + type + '/' + name, {
+                let url = registration.url + '/apps/' + type + '/' + name;
+                if (version) {
+                    url = url + '/' + version;
+                }
+                await axios.delete(url, {
                     auth: registration.credentials
                 });
                 resolve();

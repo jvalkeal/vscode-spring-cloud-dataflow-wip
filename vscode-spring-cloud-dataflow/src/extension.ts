@@ -108,10 +108,20 @@ function registerCommands(context: ExtensionContext) {
             extensionGlobals.streamsExplorerProvider.refresh();
         })
         ;
-
-
     }));
-    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_APPS_UNREGISTER, (type, name) => {
+    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_APPS_UNREGISTER, (type, name, version) => {
+        let resolvedType: string;
+        let resolvedName: string;
+        let resolvedVersion: string;
+        if (name) {
+            resolvedType = type;
+            resolvedName = name;
+            resolvedVersion = version;
+        } else {
+            resolvedType = type.type;
+            resolvedName = type.name;
+            resolvedVersion = type.version;
+        }
         getDefaultServer().then((s) => {
             if (s) {
                 return new ScdfModel(s);
@@ -119,7 +129,7 @@ function registerCommands(context: ExtensionContext) {
         })
         .then(x => {
             if (x) {
-                return x.unregisterApp(type, name);
+                return x.unregisterApp(resolvedType, resolvedName, resolvedVersion);
             }
         })
         .then(() => {

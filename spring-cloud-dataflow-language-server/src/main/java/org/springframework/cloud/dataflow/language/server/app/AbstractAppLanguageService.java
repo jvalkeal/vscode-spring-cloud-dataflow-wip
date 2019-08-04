@@ -58,7 +58,7 @@ public abstract class AbstractAppLanguageService extends AbstractDslService {
 					AppEntry ae = apps.get(name);
 					Range appRange = Range.from(line, 0, line, split1[0].length());
 					if (ae == null) {
-						ae = new AppEntry(split2[0], split2[1], appRange, null, split1[1], null);
+						ae = new AppEntry(split2[0], split2[1], version, appRange, null, split1[1], null);
 						apps.put(name, ae);
 					} else {
 						ae.setAppRange(appRange);
@@ -72,7 +72,7 @@ public abstract class AbstractAppLanguageService extends AbstractDslService {
 					AppEntry ae = apps.get(name);
 					Range metadataRange = Range.from(line, 0, line, split1[0].length());
 					if (ae == null) {
-						ae = new AppEntry(split2[0], split2[1], null, metadataRange, null, split1[1]);
+						ae = new AppEntry(split2[0], split2[1], version, null, metadataRange, null, split1[1]);
 						apps.put(name, ae);
 					} else {
 						ae.setMetadataRange(metadataRange);
@@ -121,14 +121,16 @@ public abstract class AbstractAppLanguageService extends AbstractDslService {
 
 		private String type;
 		private String name;
+		private String version;
 		private String appUri;
 		private String metadataUri;
 		private Range appRange;
 		private Range metadataRange;
 
-		AppEntry(String type, String name, Range appRange, Range metadataRange, String appUri, String metadataUri) {
+		AppEntry(String type, String name, String version, Range appRange, Range metadataRange, String appUri, String metadataUri) {
 			this.type = type;
 			this.name = name;
+			this.version = version;
 			this.appRange = appRange;
 			this.metadataRange = metadataRange;
 			this.appUri = appUri;
@@ -141,6 +143,10 @@ public abstract class AbstractAppLanguageService extends AbstractDslService {
 
 		public String getName() {
 			return name;
+		}
+
+		public String getVersion() {
+			return version;
 		}
 
 		public Range getAppRange() {
