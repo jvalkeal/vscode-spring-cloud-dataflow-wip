@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import axios from 'axios';
-import { ScdfStreamEntry, ScdfAppEntry, ScdfStreamDeploymentEntry, ScdfStreamRuntimeEntry } from './scdf-model';
+import { ScdfStreamEntry, ScdfAppEntry, ScdfStreamDeploymentEntry, ScdfStreamRuntimeEntry, ScdfStreamLogs } from './scdf-model';
 import { ServerRegistration } from '../commands/server-registrations';
 
 export class ScdfService {
@@ -115,6 +115,24 @@ export class ScdfService {
                     auth: registration.credentials
                 });
                 resolve();
+            }
+            catch (error) {
+                resolve();
+            }
+        });
+    }
+
+    public streamLogs(registration: ServerRegistration, streamName: string, appName?: string): Thenable<ScdfStreamLogs> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let url = registration.url + '/streams/logs/' + streamName;
+                if (appName) {
+                    url = url + '/' + appName;
+                }
+                const response = await axios.get(url, {
+                    auth: registration.credentials
+                });
+                resolve(response.data as ScdfStreamLogs);
             }
             catch (error) {
                 resolve();

@@ -78,6 +78,11 @@
 				"category": "SCDF"
 			},
 			{
+				"command": "vscode-spring-cloud-dataflow.streams.log",
+				"title": "Show Stream Logs",
+				"category": "SCDF"
+			},
+			{
 				"command": "vscode-spring-cloud-dataflow.streams.deploy",
 				"title": "Deploy Stream",
 				"category": "SCDF"
@@ -92,6 +97,10 @@
 			"commandPalette": [
 				{
 					"command": "vscode-spring-cloud-dataflow.streams.show",
+					"when": "never"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.streams.log",
 					"when": "never"
 				},
 				{
@@ -142,6 +151,10 @@
 				},
 				{
 					"command": "vscode-spring-cloud-dataflow.streams.show",
+					"when": "viewItem == definedStream"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.streams.log",
 					"when": "viewItem == definedStream"
 				},
 				{

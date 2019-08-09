@@ -72,6 +72,11 @@ export interface ScdfStreamRuntimeApplicationInstanceEntry {
     state: string;
 }
 
+export interface ScdfStreamLogs {
+    logs: {[key: string]: string};
+    // logs: Map<string, string>;
+}
+
 export class ScdfModel {
 
     private scdfService: ScdfService;
@@ -109,5 +114,9 @@ export class ScdfModel {
 
     public unregisterApp(type: string, name: string, version?: string): Thenable<void> {
         return this.scdfService.unregisterApp(this.registration, type, name, version);
+    }
+
+    public streamLogs(streamName: string, appName?: string): Thenable<ScdfStreamLogs> {
+        return this.scdfService.streamLogs(this.registration, streamName, appName);
     }
 }

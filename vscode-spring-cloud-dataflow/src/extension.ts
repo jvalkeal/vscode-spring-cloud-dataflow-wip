@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ExtensionContext, commands, window, workspace, StatusBarItem, StatusBarAlignment, debug } from 'vscode';
+import { ExtensionContext, commands, window, workspace, StatusBarItem, StatusBarAlignment, debug, TerminalOptions } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, NotificationType } from 'vscode-languageclient';
 import * as Path from 'path';
 import { extensionGlobals } from './extension-variables';
 import { Keytar } from './utils/keytar';
 import {
-    connectServer, disconnectServer, notifyServers, setDefaultServer, getDefaultServer, chooseDefaultServer
+    connectServer, disconnectServer, notifyServers, setDefaultServer, getDefaultServer, chooseDefaultServer, ServerRegistration
 } from './commands/server-registrations';
 import { AppsExplorerProvider } from './explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
@@ -28,7 +28,8 @@ import {
     LANGUAGE_SCDF_DESC, COMMAND_SCDF_SERVER_REGISTER, COMMAND_SCDF_SERVER_UNREGISTER,
     COMMAND_SCDF_EXPLORER_REFRESH, COMMAND_SCDF_STREAMS_SHOW, COMMAND_SCDF_SERVER_NOTIFY,
     COMMAND_SCDF_APPS_REGISTER, COMMAND_SCDF_APPS_UNREGISTER, COMMAND_SCDF_SERVER_DEFAULT,
-    COMMAND_SCDF_SERVER_CHOOSE
+    COMMAND_SCDF_SERVER_CHOOSE,
+    COMMAND_SCDF_STREAMS_LOG
 } from './extension-globals';
 import { ScdfModel } from './service/scdf-model';
 import { registerStreamCommands } from './commands/stream-commands';
@@ -138,6 +139,32 @@ function registerCommands(context: ExtensionContext) {
         })
         ;
     }));
+
+    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_LOG, (xxx) => {
+
+        const server: ServerRegistration = xxx.registration;
+        const model = new ScdfModel(server);
+        model.streamLogs(xxx.label)
+            .then(logs => {
+                console.log('LOGS');
+
+                // let terminalOptions: TerminalOptions = {};
+                // terminalOptions.name = 'hi';
+                // const terminal = window.createTerminal(terminalOptions);
+                // terminal.sendText(logs.toString());
+                // terminal.show();
+
+                Object.keys(logs.logs).map(key => {
+                    const output = window.createOutputChannel('SCDF ' + key);
+                    output.clear();
+                    output.append(logs.logs[key]);
+                    output.show();
+                });
+
+            });
+
+    }));
+
 }
 
 function registerExplorer(context: ExtensionContext) {
