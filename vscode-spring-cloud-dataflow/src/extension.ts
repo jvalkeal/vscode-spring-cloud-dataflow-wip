@@ -35,6 +35,9 @@ import { ScdfModel } from './service/scdf-model';
 import { registerStreamCommands } from './commands/stream-commands';
 import { StreamDebugConfigurationProvider } from './debug/stream-debug';
 
+import container from './di.config';
+import { TYPES, ExtensionActivateManager } from '@pivotal-tools/vscode-extension-di';
+
 let languageClient: LanguageClient;
 
 export function activate(context: ExtensionContext) {
@@ -58,6 +61,8 @@ export function activate(context: ExtensionContext) {
     registerStreamCommands(context);
 
     registerDebug(context);
+
+    container.get<ExtensionActivateManager>(TYPES.ExtensionActivateAware).onExtensionActivate(context);
 }
 
 export function deactivate() {

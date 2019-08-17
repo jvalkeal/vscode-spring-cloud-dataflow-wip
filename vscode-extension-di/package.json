@@ -1,0 +1,36 @@
+{
+  "name": "@pivotal-tools/vscode-extension-di",
+  "version": "0.0.1",
+  "description": "vscode-extension-di",
+  "license": "MIT",
+  "repository": "",
+  "author": "Janne Valkealahti <janne.valkealahti@gmail.com>",
+  "engines": {
+    "npm": "^3.0.0",
+    "vscode": "^1.34.0"
+  },
+  "keywords": [],
+  "files": [
+    "src",
+    "lib",
+    "icons"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf lib node_modules package-lock.json",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "prepack": "node ./node_modules/vscode/bin/install && tsc -p ./"
+  },
+  "dependencies": {
+    "inversify": "^5.0.1",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "typescript": "2.6.1",
+    "@types/node": "^7.0.43",
+    "vscode": "^1.1.28",
+    "vscode-languageclient": "5.2.1"
+  }
+}

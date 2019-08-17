@@ -38,9 +38,9 @@
 				"title": "Refresh Explorer",
 				"category": "SCDF",
 				"icon": {
-                    "light": "resources/light/refresh.svg",
-                    "dark": "resources/dark/refresh.svg"
-                }
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
 			},
 			{
 				"command": "vscode-spring-cloud-dataflow.server.register",
@@ -235,7 +235,10 @@
 		"vscode": "^1.1.28"
 	},
 	"dependencies": {
+		"@pivotal-tools/vscode-extension-di": "file:../vscode-extension-di/pivotal-tools-vscode-extension-di-0.0.1.tgz",
 		"axios": "^0.19.0",
+		"inversify": "^5.0.1",
+		"reflect-metadata": "^0.1.13",
 		"vscode-languageclient": "^5.2.1"
 	}
 }

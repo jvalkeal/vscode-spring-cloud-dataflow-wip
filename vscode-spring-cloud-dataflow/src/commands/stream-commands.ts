@@ -28,20 +28,20 @@ interface DeploymentProperties {
     [key: string]: string;
 }
 
-interface DataflowStreamCreateParams {
+export interface DataflowStreamCreateParams {
     name: string;
     definition: string;
     properties?: DeploymentProperties;
 }
 
 export function registerStreamCommands(context: ExtensionContext) {
-    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_CREATE, (name, definition) => {
-        const params: DataflowStreamCreateParams = {
-            name: name,
-            definition: definition
-        };
-        extensionGlobals.languageClient.sendNotification(LSP_SCDF_CREATE_STREAM, params);
-    }));
+    // context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_CREATE, (name, definition) => {
+    //     const params: DataflowStreamCreateParams = {
+    //         name: name,
+    //         definition: definition
+    //     };
+    //     extensionGlobals.languageClient.sendNotification(LSP_SCDF_CREATE_STREAM, params);
+    // }));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_DEPLOY, (name, definition) => {
         const params: DataflowStreamCreateParams = {
             name: name,
