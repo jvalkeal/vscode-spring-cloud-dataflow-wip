@@ -42,27 +42,27 @@ export function registerStreamCommands(context: ExtensionContext) {
     //     };
     //     extensionGlobals.languageClient.sendNotification(LSP_SCDF_CREATE_STREAM, params);
     // }));
-    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_DEPLOY, (name, definition) => {
-        const params: DataflowStreamCreateParams = {
-            name: name,
-            definition: definition
-        };
-        extensionGlobals.languageClient.sendNotification(LSP_SCDF_DEPLOY_STREAM, params);
-    }));
-    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_UNDEPLOY, (name, definition) => {
-        const params: DataflowStreamCreateParams = {
-            name: name,
-            definition: definition
-        };
-        extensionGlobals.languageClient.sendNotification(LSP_SCDF_UNDEPLOY_STREAM, params);
-    }));
-    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_DESTROY, (name, definition) => {
-        const params: DataflowStreamCreateParams = {
-            name: name,
-            definition: definition
-        };
-        extensionGlobals.languageClient.sendNotification(LSP_SCDF_DESTROY_STREAM, params);
-    }));
+    // context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_DEPLOY, (name, definition) => {
+    //     const params: DataflowStreamCreateParams = {
+    //         name: name,
+    //         definition: definition
+    //     };
+    //     extensionGlobals.languageClient.sendNotification(LSP_SCDF_DEPLOY_STREAM, params);
+    // }));
+    // context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_UNDEPLOY, (name, definition) => {
+    //     const params: DataflowStreamCreateParams = {
+    //         name: name,
+    //         definition: definition
+    //     };
+    //     extensionGlobals.languageClient.sendNotification(LSP_SCDF_UNDEPLOY_STREAM, params);
+    // }));
+    // context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_DESTROY, (name, definition) => {
+    //     const params: DataflowStreamCreateParams = {
+    //         name: name,
+    //         definition: definition
+    //     };
+    //     extensionGlobals.languageClient.sendNotification(LSP_SCDF_DESTROY_STREAM, params);
+    // }));
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAM_DEBUG_ATTACH, (name, definition) => {
         // streamDebugAttach();
 

@@ -24,5 +24,4 @@ const coreContainerModule = new ContainerModule((bind, unbind, isBound, rebind) 
     bind<ExtensionActivateAware>(TYPES.ExtensionActivateAware).to(ExtensionActivateManager);
     bind<ExtensionContextAware>(TYPES.ExtensionContextAware).to(CommandsManager);
 });
-
 export default coreContainerModule;

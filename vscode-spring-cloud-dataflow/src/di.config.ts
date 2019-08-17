@@ -15,13 +15,9 @@
  */
 import 'reflect-metadata';
 import { Container } from 'inversify';
-import { StreamsCreateCommand } from './commands/streams-create-command';
-import {
-    Command, TYPES, coreContainerModule
-} from '@pivotal-tools/vscode-extension-di';
+import { coreContainerModule } from '@pivotal-tools/vscode-extension-di';
+import commandsContainerModule from './commands/di.config';
 
 const container = new Container();
-container.load(coreContainerModule);
-container.bind<Command>(TYPES.Command).to(StreamsCreateCommand);
-
+container.load(coreContainerModule, commandsContainerModule);
 export default container;

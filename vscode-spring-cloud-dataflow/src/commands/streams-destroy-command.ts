@@ -15,18 +15,18 @@
  */
 import { injectable, inject } from 'inversify';
 import { Command } from '@pivotal-tools/vscode-extension-di';
-import { COMMAND_SCDF_STREAMS_CREATE, LSP_SCDF_CREATE_STREAM } from '../extension-globals';
+import { COMMAND_SCDF_STREAMS_DESTROY, LSP_SCDF_DESTROY_STREAM } from '../extension-globals';
 import { extensionGlobals } from '../extension-variables';
 import { DataflowStreamCreateParams } from './stream-commands';
 
 @injectable()
-export class StreamsCreateCommand implements Command {
+export class StreamsDestroyCommand implements Command {
 
     constructor(
     ) {}
 
     get id() {
-        return COMMAND_SCDF_STREAMS_CREATE;
+        return COMMAND_SCDF_STREAMS_DESTROY;
     }
 
     execute(...args: any[]) {
@@ -34,6 +34,6 @@ export class StreamsCreateCommand implements Command {
             name: args[0],
             definition: args[1]
         };
-        extensionGlobals.languageClient.sendNotification(LSP_SCDF_CREATE_STREAM, params);
+        extensionGlobals.languageClient.sendNotification(LSP_SCDF_DESTROY_STREAM, params);
     }
 }
