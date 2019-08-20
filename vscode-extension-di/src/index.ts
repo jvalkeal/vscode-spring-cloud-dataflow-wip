@@ -15,8 +15,6 @@
  */
 export * from './core/command/command';
 export * from './core/command/commands-manager';
-export * from './core/extension-activate-aware';
-export * from './core/extension-context-aware';
 export * from './core/extension-activate-manager';
 export * from './core/types';
 import coreContainerModule from './core/di.config';

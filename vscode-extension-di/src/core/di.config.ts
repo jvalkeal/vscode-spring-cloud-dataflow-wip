@@ -13,15 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ContainerModule } from "inversify";
-import { TYPES } from "./types";
-import { ExtensionActivateAware } from "./extension-activate-aware";
-import { ExtensionContextAware } from "./extension-context-aware";
-import { ExtensionActivateManager } from "./extension-activate-manager";
-import { CommandsManager } from "./command/commands-manager";
+import { ExtensionContext } from 'vscode';
+import { ContainerModule, decorate, injectable, inject } from 'inversify';
+import {
+    ExtensionActivateAware, ExtensionContextAware, SettingsManager, DefaultSettingsManager
+} from '@pivotal-tools/vscode-extension-core';
+import { TYPES } from './types';
+import { ExtensionActivateManager } from './extension-activate-manager';
+import { CommandsManager } from './command/commands-manager';
 
 const coreContainerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     bind<ExtensionActivateAware>(TYPES.ExtensionActivateAware).to(ExtensionActivateManager);
     bind<ExtensionContextAware>(TYPES.ExtensionContextAware).to(CommandsManager);
+
+    bind<SettingsManager>(TYPES.SettingsManager).toDynamicValue(
+        context => {
+            const xxx = context.container.get<ExtensionContext>(TYPES.ExtensionContext);
+            return new DefaultSettingsManager(xxx);
+        }
+    );
+
 });
 export default coreContainerModule;

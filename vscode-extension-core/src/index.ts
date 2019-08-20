@@ -13,21 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ExtensionContext } from 'vscode';
-import { multiInject, injectable } from 'inversify';
-import { ExtensionActivateAware, ExtensionContextAware } from '@pivotal-tools/vscode-extension-core';
-import { TYPES } from './types';
-
-@injectable()
-export class ExtensionActivateManager implements ExtensionActivateAware {
-
-    constructor(
-        @multiInject(TYPES.ExtensionContextAware) private awares: ExtensionContextAware[]
-    ) {}
-
-    onExtensionActivate(context: ExtensionContext) {
-        for (const aware of this.awares) {
-            aware.onExtensionContext(context);
-        }
-    }
-}
+export * from './core/security/keytar';
+export * from './core/security/settings-manager';
+export * from './core/extension-context-aware';
+export * from './core/extension-activate-aware';

@@ -42,10 +42,3 @@ export const LSP_SCDF_CREATE_STREAM: string = CONFIG_PREFIX + '/createStream';
 export const LSP_SCDF_DEPLOY_STREAM: string = CONFIG_PREFIX + '/deployStream';
 export const LSP_SCDF_UNDEPLOY_STREAM: string = CONFIG_PREFIX + '/undeployStream';
 export const LSP_SCDF_DESTROY_STREAM: string = CONFIG_PREFIX + '/destroyStream';
-
-// native os dependant keytar id's
-export namespace keytarConstants {
-    export const serviceId: string = EXTENSION_ID;
-    export const usernameKey: string = CONFIG_PREFIX + '.username';
-    export const passwordKey: string = CONFIG_PREFIX + '.password';
-}

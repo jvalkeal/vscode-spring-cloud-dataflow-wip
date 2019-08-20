@@ -16,6 +16,8 @@
 export const TYPES = {
     ExtensionActivateAware: Symbol('ExtensionActivateAware'),
     ExtensionContextAware: Symbol('ExtensionContextAware'),
+    ExtensionContext: Symbol('ExtensionContext'),
     Command: Symbol('Command'),
-    CommandManager: Symbol('CommandManager')
+    CommandManager: Symbol('CommandManager'),
+    SettingsManager: Symbol('SettingsManager')
 };

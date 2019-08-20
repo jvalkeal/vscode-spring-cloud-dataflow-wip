@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 import { commands } from "vscode";
+import { SettingsManager } from "@pivotal-tools/vscode-extension-core";
 import { extensionGlobals } from "../extension-variables";
 import { registerServerInput } from "./register-server";
 import { registerServerChooseInput } from "./choose-server";
 import { BaseNode } from "../explorer/models/base-node";
-import { keytarConstants } from "../extension-globals";
+import container from "../di.config";
+import { TYPES } from "@pivotal-tools/vscode-extension-di";
 
 interface ServerRegistrationNonsensitive {
     url: string;
@@ -59,13 +61,12 @@ export async function connectServer(): Promise<void> {
         credentials: { username: state.username, password: state.password }
     };
 
-    if (extensionGlobals.keytar) {
-        let sensitive: string = JSON.stringify(newRegistry.credentials);
-        let key = getUsernamePwdKey(newRegistry.name);
-        await extensionGlobals.keytar.setPassword(keytarConstants.serviceId, key, sensitive);
-        servers.push(newRegistry);
-        await saveServerRegistrationNonsensitive(servers);
-    }
+    const settingManager: SettingsManager = container.get(TYPES.SettingsManager);
+    let sensitive: string = JSON.stringify(newRegistry.credentials);
+    let key = getUsernamePwdKey(newRegistry.name);
+    await settingManager.setSensitive(key, sensitive);
+    servers.push(newRegistry);
+    await saveServerRegistrationNonsensitive(servers);
     await refresh();
     await notifyServers();
 }
@@ -76,9 +77,9 @@ export async function disconnectServer(node: BaseNode): Promise<void> {
 
     if (registry) {
         let key = getUsernamePwdKey(node.label);
-        if (extensionGlobals.keytar) {
-            await extensionGlobals.keytar.deletePassword(keytarConstants.serviceId, key);
-        }
+
+        const settingManager: SettingsManager = container.get(TYPES.SettingsManager);
+        await settingManager.deleteSensitive(key);
         servers.splice(servers.indexOf(registry), 1);
         await saveServerRegistrationNonsensitive(servers);
         await refresh();
@@ -128,28 +129,21 @@ async function refresh(): Promise<void> {
 }
 
 export async function getServers(): Promise<ServerRegistration[]> {
-    let nonsensitive = extensionGlobals.context.globalState.get<ServerRegistrationNonsensitive[]>(customRegistriesKey) || [];
+    const settingManager: SettingsManager = container.get(TYPES.SettingsManager);
     let servers: ServerRegistration[] = [];
+    const nonsensitive = await settingManager.getNonsensitive<ServerRegistrationNonsensitive[]>(customRegistriesKey) || [];
 
     for (let reg of nonsensitive) {
-        try {
-            if (extensionGlobals.keytar) {
-                let key = getUsernamePwdKey(reg.name);
-                let credentialsString = await extensionGlobals.keytar.getPassword(keytarConstants.serviceId, key);
-                // let credentials = <ServerRegistrationCredentials>JSON.parse(nonNullValue(credentialsString, 'Invalid stored password'));
-                let credentials = <ServerRegistrationCredentials>JSON.parse(credentialsString || '');
-                servers.push({
-                    url: reg.url,
-                    name: reg.name,
-                    credentials
-                });
-            }
-        } catch (error) {
-            throw new Error(`Unable to retrieve password for container registry ${reg.url}: ${error}`);
+        let key = getUsernamePwdKey(reg.name);
+        let credentials = await settingManager.getSensitive<ServerRegistrationCredentials>(key);
+        if (credentials) {
+            servers.push({
+                url: reg.url,
+                name: reg.name,
+                credentials
+            });
         }
-
     }
-
     return servers;
 }
 
@@ -158,5 +152,6 @@ async function saveServerRegistrationNonsensitive(registries: ServerRegistration
         .map(reg => <ServerRegistrationNonsensitive>{
             url: reg.url,
             name: reg.name });
-    await extensionGlobals.context.globalState.update(customRegistriesKey, minimal);
+    const settingManager: SettingsManager = container.get(TYPES.SettingsManager);
+    await settingManager.setNonsensitive(customRegistriesKey, minimal);
 }

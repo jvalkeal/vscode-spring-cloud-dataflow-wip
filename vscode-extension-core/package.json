@@ -1,7 +1,7 @@
 {
-  "name": "@pivotal-tools/vscode-extension-di",
+  "name": "@pivotal-tools/vscode-extension-core",
   "version": "0.0.1",
-  "description": "vscode-extension-di",
+  "description": "vscode-extension-core",
   "license": "MIT",
   "repository": "",
   "author": "Janne Valkealahti <janne.valkealahti@gmail.com>",
@@ -24,12 +24,12 @@
     "prepack": "node ./node_modules/vscode/bin/install && tsc -p ./"
   },
   "dependencies": {
-    "@pivotal-tools/vscode-extension-core": "file:../vscode-extension-core/pivotal-tools-vscode-extension-core-0.0.1.tgz",
     "inversify": "^5.0.1",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "typescript": "2.6.1",
+    "@types/keytar": "^4.4.0",
     "@types/node": "^7.0.43",
     "vscode": "^1.1.28",
     "vscode-languageclient": "5.2.1"

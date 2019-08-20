@@ -15,7 +15,7 @@
  */
 import { ExtensionContext, commands } from 'vscode';
 import { multiInject, injectable } from 'inversify';
-import { ExtensionContextAware } from '../extension-context-aware';
+import { ExtensionContextAware } from '@pivotal-tools/vscode-extension-core';
 import { Command } from './command';
 import { TYPES } from '../types';
 

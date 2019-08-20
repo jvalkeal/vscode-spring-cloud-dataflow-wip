@@ -17,7 +17,6 @@ import { ExtensionContext, commands, window, workspace, StatusBarItem, StatusBar
 import { LanguageClient, LanguageClientOptions, ServerOptions, NotificationType } from 'vscode-languageclient';
 import * as Path from 'path';
 import { extensionGlobals } from './extension-variables';
-import { Keytar } from './utils/keytar';
 import {
     connectServer, disconnectServer, notifyServers, setDefaultServer, getDefaultServer, chooseDefaultServer, ServerRegistration
 } from './commands/server-registrations';
@@ -41,6 +40,9 @@ import { TYPES, ExtensionActivateManager } from '@pivotal-tools/vscode-extension
 let languageClient: LanguageClient;
 
 export function activate(context: ExtensionContext) {
+    container.bind<ExtensionContext>(TYPES.ExtensionContext).toConstantValue(context);
+    container.get<ExtensionActivateManager>(TYPES.ExtensionActivateAware).onExtensionActivate(context);
+
     // stash needed global variables to get used in this extension in its lifecycle.
     // global state is not nice but makes life easier in an extention.
     initializeExtensionGlobals(context);
@@ -62,7 +64,6 @@ export function activate(context: ExtensionContext) {
 
     registerDebug(context);
 
-    container.get<ExtensionActivateManager>(TYPES.ExtensionActivateAware).onExtensionActivate(context);
 }
 
 export function deactivate() {
@@ -76,7 +77,6 @@ function registerDebug(context: ExtensionContext) {
 }
 
 function initializeExtensionGlobals(context: ExtensionContext) {
-    extensionGlobals.keytar = Keytar.tryCreate();
     extensionGlobals.context = context;
 }
 

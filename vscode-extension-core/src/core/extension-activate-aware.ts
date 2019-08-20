@@ -13,9 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ExtensionContext } from "vscode";
+import { ExtensionContext } from 'vscode';
 
-export interface ExtensionContextAware {
+export interface ExtensionActivateAware {
 
-    onExtensionContext(context: ExtensionContext): void;
+    /**
+     * Called when vscode extension is activated.
+     *
+     * @param context the vscode extension context
+     */
+    onExtensionActivate(context: ExtensionContext): void;
 }
