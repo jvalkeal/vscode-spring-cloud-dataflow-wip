@@ -70,6 +70,9 @@ jobs:
           command: custom
           verbose: false
           customCommand: 'pack'
+      - script: 'rm package-lock.json'
+        displayName: 'Delete lock file vscode-extension-di'
+        workingDirectory: vscode-extension-di
       - task: Npm@1
         displayName: 'Install dependencies vscode-extension-di'
         inputs:
@@ -82,6 +85,9 @@ jobs:
           command: custom
           verbose: false
           customCommand: 'pack'
+      - script: 'rm package-lock.json'
+        displayName: 'Delete lock file'
+        workingDirectory: vscode-spring-cloud-dataflow
       - task: Npm@1
         displayName: 'Install dependencies'
         inputs:
