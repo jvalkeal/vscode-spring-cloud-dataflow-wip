@@ -57,6 +57,30 @@ jobs:
         inputs:
           versionSpec: 8.x
       - task: Npm@1
+        displayName: 'Install dependencies vscode-extension-core'
+        inputs:
+          workingDir: vscode-extension-core
+          verbose: false
+      - task: Npm@1
+        displayName: 'Pack vscode-extension-core'
+        inputs:
+          workingDir: vscode-extension-core
+          command: custom
+          verbose: false
+          customCommand: 'pack'
+      - task: Npm@1
+        displayName: 'Install dependencies vscode-extension-di'
+        inputs:
+          workingDir: vscode-extension-di
+          verbose: false
+      - task: Npm@1
+        displayName: 'Pack vscode-extension-di'
+        inputs:
+          workingDir: vscode-extension-di
+          command: custom
+          verbose: false
+          customCommand: 'pack'
+      - task: Npm@1
         displayName: 'Install dependencies'
         inputs:
           workingDir: vscode-spring-cloud-dataflow
