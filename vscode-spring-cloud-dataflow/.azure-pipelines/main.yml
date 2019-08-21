@@ -8,6 +8,38 @@ jobs:
         displayName: 'Use Node 8.x'
         inputs:
           versionSpec: 8.x
+      - script: 'npm i -g npm@6.10.0'
+        displayName: 'Change npm version'
+      - task: Npm@1
+        displayName: 'Install dependencies vscode-extension-core'
+        inputs:
+          workingDir: vscode-extension-core
+          verbose: false
+      - task: Npm@1
+        displayName: 'Pack vscode-extension-core'
+        inputs:
+          workingDir: vscode-extension-core
+          command: custom
+          verbose: false
+          customCommand: 'pack'
+      - script: 'rm package-lock.json'
+        displayName: 'Delete lock file vscode-extension-di'
+        workingDirectory: vscode-extension-di
+      - task: Npm@1
+        displayName: 'Install dependencies vscode-extension-di'
+        inputs:
+          workingDir: vscode-extension-di
+          verbose: false
+      - task: Npm@1
+        displayName: 'Pack vscode-extension-di'
+        inputs:
+          workingDir: vscode-extension-di
+          command: custom
+          verbose: false
+          customCommand: 'pack'
+      - script: 'rm package-lock.json'
+        displayName: 'Delete lock file'
+        workingDirectory: vscode-spring-cloud-dataflow
       - task: Npm@1
         displayName: 'Install dependencies'
         inputs:
@@ -32,6 +64,38 @@ jobs:
         displayName: 'Use Node 8.x'
         inputs:
           versionSpec: 8.x
+      - script: 'npm i -g npm@6.10.0'
+        displayName: 'Change npm version'
+      - task: Npm@1
+        displayName: 'Install dependencies vscode-extension-core'
+        inputs:
+          workingDir: vscode-extension-core
+          verbose: false
+      - task: Npm@1
+        displayName: 'Pack vscode-extension-core'
+        inputs:
+          workingDir: vscode-extension-core
+          command: custom
+          verbose: false
+          customCommand: 'pack'
+      - script: 'rm package-lock.json'
+        displayName: 'Delete lock file vscode-extension-di'
+        workingDirectory: vscode-extension-di
+      - task: Npm@1
+        displayName: 'Install dependencies vscode-extension-di'
+        inputs:
+          workingDir: vscode-extension-di
+          verbose: false
+      - task: Npm@1
+        displayName: 'Pack vscode-extension-di'
+        inputs:
+          workingDir: vscode-extension-di
+          command: custom
+          verbose: false
+          customCommand: 'pack'
+      - script: 'rm package-lock.json'
+        displayName: 'Delete lock file'
+        workingDirectory: vscode-spring-cloud-dataflow
       - task: Npm@1
         displayName: 'Install dependencies'
         inputs:
