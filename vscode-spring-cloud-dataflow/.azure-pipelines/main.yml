@@ -56,6 +56,8 @@ jobs:
         displayName: 'Use Node 8.x'
         inputs:
           versionSpec: 8.x
+      - script: 'npm i -g npm@6.10.0'
+        displayName: 'Change npm version'
       - task: Npm@1
         displayName: 'Install dependencies vscode-extension-core'
         inputs:
