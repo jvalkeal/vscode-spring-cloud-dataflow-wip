@@ -22,7 +22,7 @@ import { BaseNode } from "../explorer/models/base-node";
 import container from "../di.config";
 import { TYPES } from "@pivotal-tools/vscode-extension-di";
 
-interface ServerRegistrationNonsensitive {
+export interface ServerRegistrationNonsensitive {
     url: string;
     name: string;
 }
@@ -36,7 +36,7 @@ export interface ServerRegistration extends ServerRegistrationNonsensitive {
     credentials: ServerRegistrationCredentials;
 }
 
-interface DataflowEnvironmentParams {
+export interface DataflowEnvironmentParams {
     environments: ServerRegistration[];
 }
 

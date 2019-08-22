@@ -14,16 +14,29 @@
  * limitations under the License.
  */
 import { ContainerModule } from "inversify";
-import { Command, TYPES } from "@pivotal-tools/vscode-extension-di";
+import { Command, TYPES as DITYPES } from "@pivotal-tools/vscode-extension-di";
 import { StreamsCreateCommand } from "./streams-create-command";
 import { StreamsDeployCommand } from "./streams-deploy-command";
 import { StreamsUndeployCommand } from "./streams-undeploy-command";
 import { StreamsDestroyCommand } from "./streams-destroy-command";
+import { ServerUnregisterCommand } from "./server-unregister-command";
+import { ServerRegisterCommand } from "./server-register-command";
+import { ServerRegistrationManager } from "../service/server-registration-manager";
+import { TYPES } from "../types";
+import { ServerNotifyCommand } from "./server-notify-command";
+import { ServerDefaultCommand } from "./server-default-command";
+import { ServerChooseCommand } from "./server-choose-command";
 
 const commandsContainerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
-    bind<Command>(TYPES.Command).to(StreamsCreateCommand);
-    bind<Command>(TYPES.Command).to(StreamsDeployCommand);
-    bind<Command>(TYPES.Command).to(StreamsUndeployCommand);
-    bind<Command>(TYPES.Command).to(StreamsDestroyCommand);
+    bind<ServerRegistrationManager>(TYPES.ServerRegistrationManager).to(ServerRegistrationManager);
+    bind<Command>(DITYPES.Command).to(StreamsCreateCommand);
+    bind<Command>(DITYPES.Command).to(StreamsDeployCommand);
+    bind<Command>(DITYPES.Command).to(StreamsUndeployCommand);
+    bind<Command>(DITYPES.Command).to(StreamsDestroyCommand);
+    bind<Command>(DITYPES.Command).to(ServerRegisterCommand);
+    bind<Command>(DITYPES.Command).to(ServerUnregisterCommand);
+    bind<Command>(DITYPES.Command).to(ServerNotifyCommand);
+    bind<Command>(DITYPES.Command).to(ServerDefaultCommand);
+    bind<Command>(DITYPES.Command).to(ServerChooseCommand);
 });
 export default commandsContainerModule;
