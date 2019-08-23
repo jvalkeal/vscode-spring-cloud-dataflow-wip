@@ -27,6 +27,7 @@ import { ServerDefaultCommand } from './server-default-command';
 import { ServerChooseCommand } from './server-choose-command';
 import { AppsRegisterCommand } from './apps-register-command';
 import { AppsUnregisterCommand } from './apps-unregister-command';
+import { StreamsLogCommand } from './streams-log-command';
 import { TYPES } from '../types';
 
 const commandsContainerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
@@ -42,5 +43,6 @@ const commandsContainerModule = new ContainerModule((bind, unbind, isBound, rebi
     bind<Command>(DITYPES.Command).to(ServerChooseCommand);
     bind<Command>(DITYPES.Command).to(AppsRegisterCommand);
     bind<Command>(DITYPES.Command).to(AppsUnregisterCommand);
+    bind<Command>(DITYPES.Command).to(StreamsLogCommand);
 });
 export default commandsContainerModule;

@@ -19,15 +19,13 @@ import * as Path from 'path';
 import container from './di.config';
 import { TYPES, ExtensionActivateManager } from '@pivotal-tools/vscode-extension-di';
 import { extensionGlobals } from './extension-variables';
-import { notifyServers, getDefaultServer, ServerRegistration } from './commands/server-registrations';
+import { notifyServers } from './commands/server-registrations';
 import { AppsExplorerProvider } from './explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
 import {
     LANGUAGE_SCDF_STREAM_PREFIX, LANGUAGE_SCDF_APP_PREFIX, CONFIG_PREFIX, LANGUAGE_SERVER_JAR,
-    LANGUAGE_SCDF_DESC, COMMAND_SCDF_EXPLORER_REFRESH, COMMAND_SCDF_STREAMS_SHOW, COMMAND_SCDF_APPS_UNREGISTER,
-    COMMAND_SCDF_SERVER_CHOOSE, COMMAND_SCDF_STREAMS_LOG
+    LANGUAGE_SCDF_DESC, COMMAND_SCDF_EXPLORER_REFRESH, COMMAND_SCDF_STREAMS_SHOW, COMMAND_SCDF_SERVER_CHOOSE
 } from './extension-globals';
-import { ScdfModel } from './service/scdf-model';
 import { registerStreamCommands } from './commands/stream-commands';
 import { StreamDebugConfigurationProvider } from './debug/stream-debug';
 
@@ -40,9 +38,6 @@ export function activate(context: ExtensionContext) {
     // stash needed global variables to get used in this extension in its lifecycle.
     // global state is not nice but makes life easier in an extention.
     initializeExtensionGlobals(context);
-
-    // register needed commands expected to get handled
-    registerCommands(context);
 
     // register explorer views
     registerExplorer(context);
@@ -84,34 +79,6 @@ function registerStatusBar(context: ExtensionContext) {
     statusBarItem.command = COMMAND_SCDF_SERVER_CHOOSE;
     statusBarItem.show();
     extensionGlobals.statusBarItem = statusBarItem;
-}
-
-function registerCommands(context: ExtensionContext) {
-    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_LOG, (xxx) => {
-
-        const server: ServerRegistration = xxx.registration;
-        const model = new ScdfModel(server);
-        model.streamLogs(xxx.label)
-            .then(logs => {
-                console.log('LOGS');
-
-                // let terminalOptions: TerminalOptions = {};
-                // terminalOptions.name = 'hi';
-                // const terminal = window.createTerminal(terminalOptions);
-                // terminal.sendText(logs.toString());
-                // terminal.show();
-
-                Object.keys(logs.logs).map(key => {
-                    const output = window.createOutputChannel('SCDF ' + key);
-                    output.clear();
-                    output.append(logs.logs[key]);
-                    output.show();
-                });
-
-            });
-
-    }));
-
 }
 
 function registerExplorer(context: ExtensionContext) {
