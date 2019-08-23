@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ExtensionContext, commands, window, workspace, StatusBarItem, StatusBarAlignment, debug, TerminalOptions } from 'vscode';
+import { ExtensionContext, commands, window, workspace, StatusBarItem, StatusBarAlignment, debug } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, NotificationType } from 'vscode-languageclient';
 import * as Path from 'path';
+import container from './di.config';
 import { TYPES, ExtensionActivateManager } from '@pivotal-tools/vscode-extension-di';
 import { extensionGlobals } from './extension-variables';
 import { notifyServers, getDefaultServer, ServerRegistration } from './commands/server-registrations';
@@ -23,14 +24,12 @@ import { AppsExplorerProvider } from './explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
 import {
     LANGUAGE_SCDF_STREAM_PREFIX, LANGUAGE_SCDF_APP_PREFIX, CONFIG_PREFIX, LANGUAGE_SERVER_JAR,
-    LANGUAGE_SCDF_DESC, COMMAND_SCDF_EXPLORER_REFRESH, COMMAND_SCDF_STREAMS_SHOW,
-    COMMAND_SCDF_APPS_REGISTER, COMMAND_SCDF_APPS_UNREGISTER, COMMAND_SCDF_SERVER_CHOOSE,
-    COMMAND_SCDF_STREAMS_LOG
+    LANGUAGE_SCDF_DESC, COMMAND_SCDF_EXPLORER_REFRESH, COMMAND_SCDF_STREAMS_SHOW, COMMAND_SCDF_APPS_UNREGISTER,
+    COMMAND_SCDF_SERVER_CHOOSE, COMMAND_SCDF_STREAMS_LOG
 } from './extension-globals';
 import { ScdfModel } from './service/scdf-model';
 import { registerStreamCommands } from './commands/stream-commands';
 import { StreamDebugConfigurationProvider } from './debug/stream-debug';
-import container from './di.config';
 
 let languageClient: LanguageClient;
 
@@ -88,53 +87,6 @@ function registerStatusBar(context: ExtensionContext) {
 }
 
 function registerCommands(context: ExtensionContext) {
-    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_APPS_REGISTER, (type, name, appUri, metadataUri) => {
-        getDefaultServer().then((s) => {
-            if (s) {
-                return new ScdfModel(s);
-            }
-        })
-        .then(x => {
-            if (x) {
-                return x.registerApp(type, name, appUri, metadataUri);
-            }
-        })
-        .then(() => {
-            extensionGlobals.appsExplorerProvider.refresh();
-            extensionGlobals.streamsExplorerProvider.refresh();
-        })
-        ;
-    }));
-    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_APPS_UNREGISTER, (type, name, version) => {
-        let resolvedType: string;
-        let resolvedName: string;
-        let resolvedVersion: string;
-        if (name) {
-            resolvedType = type;
-            resolvedName = name;
-            resolvedVersion = version;
-        } else {
-            resolvedType = type.type;
-            resolvedName = type.name;
-            resolvedVersion = type.version;
-        }
-        getDefaultServer().then((s) => {
-            if (s) {
-                return new ScdfModel(s);
-            }
-        })
-        .then(x => {
-            if (x) {
-                return x.unregisterApp(resolvedType, resolvedName, resolvedVersion);
-            }
-        })
-        .then(() => {
-            extensionGlobals.appsExplorerProvider.refresh();
-            extensionGlobals.streamsExplorerProvider.refresh();
-        })
-        ;
-    }));
-
     context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_STREAMS_LOG, (xxx) => {
 
         const server: ServerRegistration = xxx.registration;

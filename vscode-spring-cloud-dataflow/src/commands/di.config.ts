@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ContainerModule } from "inversify";
-import { Command, TYPES as DITYPES } from "@pivotal-tools/vscode-extension-di";
-import { StreamsCreateCommand } from "./streams-create-command";
-import { StreamsDeployCommand } from "./streams-deploy-command";
-import { StreamsUndeployCommand } from "./streams-undeploy-command";
-import { StreamsDestroyCommand } from "./streams-destroy-command";
-import { ServerUnregisterCommand } from "./server-unregister-command";
-import { ServerRegisterCommand } from "./server-register-command";
-import { ServerRegistrationManager } from "../service/server-registration-manager";
-import { TYPES } from "../types";
-import { ServerNotifyCommand } from "./server-notify-command";
-import { ServerDefaultCommand } from "./server-default-command";
-import { ServerChooseCommand } from "./server-choose-command";
+import { ContainerModule } from 'inversify';
+import { Command, TYPES as DITYPES } from '@pivotal-tools/vscode-extension-di';
+import { StreamsCreateCommand } from './streams-create-command';
+import { StreamsDeployCommand } from './streams-deploy-command';
+import { StreamsUndeployCommand } from './streams-undeploy-command';
+import { StreamsDestroyCommand } from './streams-destroy-command';
+import { ServerUnregisterCommand } from './server-unregister-command';
+import { ServerRegisterCommand } from './server-register-command';
+import { ServerRegistrationManager } from '../service/server-registration-manager';
+import { ServerNotifyCommand } from './server-notify-command';
+import { ServerDefaultCommand } from './server-default-command';
+import { ServerChooseCommand } from './server-choose-command';
+import { AppsRegisterCommand } from './apps-register-command';
+import { AppsUnregisterCommand } from './apps-unregister-command';
+import { TYPES } from '../types';
 
 const commandsContainerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     bind<ServerRegistrationManager>(TYPES.ServerRegistrationManager).to(ServerRegistrationManager);
@@ -38,5 +40,7 @@ const commandsContainerModule = new ContainerModule((bind, unbind, isBound, rebi
     bind<Command>(DITYPES.Command).to(ServerNotifyCommand);
     bind<Command>(DITYPES.Command).to(ServerDefaultCommand);
     bind<Command>(DITYPES.Command).to(ServerChooseCommand);
+    bind<Command>(DITYPES.Command).to(AppsRegisterCommand);
+    bind<Command>(DITYPES.Command).to(AppsUnregisterCommand);
 });
 export default commandsContainerModule;

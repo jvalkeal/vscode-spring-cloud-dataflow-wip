@@ -21,6 +21,7 @@ import { registerServerInput } from '../commands/register-server';
 import { BaseNode } from '../explorer/models/base-node';
 import { registerServerChooseInput } from '../commands/choose-server';
 import { commands } from 'vscode';
+import { resolve } from 'url';
 
 export interface ServerRegistrationNonsensitive {
     url: string;
@@ -123,6 +124,25 @@ export class ServerRegistrationManager {
             server = servers[0];
         }
         return server;
+    }
+
+    public async getDefaultServerx(): Promise<ServerRegistration> {
+        const xxx1 = this.settingsManager.getNonsensitivex<ServerRegistrationNonsensitive>(this.customRegistriesKey2);
+        const xxx2 = this.getServers();
+
+        return Promise.all([xxx1, xxx2]).then((a) => {
+            let server: ServerRegistration | undefined;
+            if (a[0]) {
+                server = a[1].find(registration => registration.url.toLowerCase() === a[0].url.toLowerCase());
+            }
+            if (!server && a[1].length === 1) {
+                server = a[1][0];
+            }
+            if (server) {
+                return Promise.resolve(server);
+            }
+            return Promise.reject(new Error());
+        });
     }
 
     private getUsernamePwdKey(registryName: string): string {
