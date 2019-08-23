@@ -24,7 +24,7 @@ import { AppsExplorerProvider } from './explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
 import {
     LANGUAGE_SCDF_STREAM_PREFIX, LANGUAGE_SCDF_APP_PREFIX, CONFIG_PREFIX, LANGUAGE_SERVER_JAR,
-    LANGUAGE_SCDF_DESC, COMMAND_SCDF_EXPLORER_REFRESH, COMMAND_SCDF_STREAMS_SHOW, COMMAND_SCDF_SERVER_CHOOSE
+    LANGUAGE_SCDF_DESC, COMMAND_SCDF_SERVER_CHOOSE
 } from './extension-globals';
 import { registerStreamCommands } from './commands/stream-commands';
 import { StreamDebugConfigurationProvider } from './debug/stream-debug';
@@ -87,10 +87,6 @@ function registerExplorer(context: ExtensionContext) {
 
     const streamsExplorerProvider = new StreamsExplorerProvider();
     window.createTreeView('scdfStreams', { treeDataProvider: streamsExplorerProvider });
-    context.subscriptions.push(commands.registerCommand(COMMAND_SCDF_EXPLORER_REFRESH, () => {
-        appsExplorerProvider.refresh();
-        streamsExplorerProvider.refresh();
-    }));
     extensionGlobals.appsExplorerProvider = appsExplorerProvider;
     extensionGlobals.streamsExplorerProvider = streamsExplorerProvider;
 }
@@ -102,9 +98,6 @@ function registerLanguageSupport(context: ExtensionContext) {
     const jarPath = Path.resolve(Path.resolve(context.extensionPath), 'out', LANGUAGE_SERVER_JAR);
 
     context.subscriptions.push(workspace.registerTextDocumentContentProvider('scdfs', extensionGlobals.streamsExplorerProvider));
-    commands.registerCommand(COMMAND_SCDF_STREAMS_SHOW, resource => {
-        window.showTextDocument(resource.getResourceUri());
-    });
 
     const serverOptions: ServerOptions = {
         run: {

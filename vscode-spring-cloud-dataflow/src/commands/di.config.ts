@@ -15,6 +15,7 @@
  */
 import { ContainerModule } from 'inversify';
 import { Command, TYPES as DITYPES } from '@pivotal-tools/vscode-extension-di';
+import { TYPES } from '../types';
 import { StreamsCreateCommand } from './streams-create-command';
 import { StreamsDeployCommand } from './streams-deploy-command';
 import { StreamsUndeployCommand } from './streams-undeploy-command';
@@ -28,7 +29,8 @@ import { ServerChooseCommand } from './server-choose-command';
 import { AppsRegisterCommand } from './apps-register-command';
 import { AppsUnregisterCommand } from './apps-unregister-command';
 import { StreamsLogCommand } from './streams-log-command';
-import { TYPES } from '../types';
+import { StreamsShowCommand } from './streams-show-command';
+import { ExplorerRefreshCommand } from './explorer-refresh-command';
 
 const commandsContainerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     bind<ServerRegistrationManager>(TYPES.ServerRegistrationManager).to(ServerRegistrationManager);
@@ -44,5 +46,7 @@ const commandsContainerModule = new ContainerModule((bind, unbind, isBound, rebi
     bind<Command>(DITYPES.Command).to(AppsRegisterCommand);
     bind<Command>(DITYPES.Command).to(AppsUnregisterCommand);
     bind<Command>(DITYPES.Command).to(StreamsLogCommand);
+    bind<Command>(DITYPES.Command).to(StreamsShowCommand);
+    bind<Command>(DITYPES.Command).to(ExplorerRefreshCommand);
 });
 export default commandsContainerModule;
