@@ -16,7 +16,6 @@
 import { injectable, inject } from 'inversify';
 import { Command } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_EXPLORER_REFRESH } from '../extension-globals';
-import { extensionGlobals } from '../extension-variables';
 import { AppsExplorerProvider } from '../explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from '../explorer/streams-explorer-provider';
 import { TYPES } from '../types';

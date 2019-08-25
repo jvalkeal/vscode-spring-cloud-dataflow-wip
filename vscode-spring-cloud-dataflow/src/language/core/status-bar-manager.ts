@@ -13,11 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ExtensionContext, StatusBarItem } from "vscode";
-import { AppsExplorerProvider } from "./explorer/apps-explorer-provider";
-import { StreamsExplorerProvider } from "./explorer/streams-explorer-provider";
-import { LanguageClient } from "vscode-languageclient";
+import { injectable } from "inversify";
+import { StatusBarItem, StatusBarAlignment, window } from "vscode";
+import { COMMAND_SCDF_SERVER_CHOOSE } from "../../extension-globals";
 
-export namespace extensionGlobals {
-    export let statusBarItem: StatusBarItem;
+@injectable()
+export class StatusBarManager {
+
+    private statusBarItem: StatusBarItem;
+
+    constructor(
+    ){
+        this.statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 0);
+        this.statusBarItem.command = COMMAND_SCDF_SERVER_CHOOSE;
+        this.statusBarItem.show();
+    }
+
+    public setText(text: string):void {
+        this.statusBarItem.text = text;
+    }
 }

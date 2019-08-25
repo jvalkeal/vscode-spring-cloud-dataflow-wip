@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ExtensionContext, window, StatusBarItem, StatusBarAlignment, debug } from 'vscode';
+import { ExtensionContext, debug } from 'vscode';
 import { LanguageClient } from 'vscode-languageclient';
 import container from './di.config';
 import { TYPES, ExtensionActivateManager } from '@pivotal-tools/vscode-extension-di';
-import { extensionGlobals } from './extension-variables';
 import { AppsExplorerProvider } from './explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
-import { LANGUAGE_SCDF_STREAM_PREFIX, COMMAND_SCDF_SERVER_CHOOSE } from './extension-globals';
+import { LANGUAGE_SCDF_STREAM_PREFIX } from './extension-globals';
 import { StreamDebugConfigurationProvider } from './debug/stream-debug';
 import { TYPES as SCDFTYPES } from './types';
 import { LanguageServerManager } from './language/core/language-server-manager';
@@ -31,17 +30,12 @@ export function activate(context: ExtensionContext) {
     container.bind<ExtensionContext>(TYPES.ExtensionContext).toConstantValue(context);
     container.get<ExtensionActivateManager>(TYPES.ExtensionActivateAware).onExtensionActivate(context);
 
-    // register explorer views
-    registerExplorer(context);
-
-    // register status bar
-    registerStatusBar(context);
-
-    // register language support
-    // for now to get manager created
+    // for now to get all stuff created
+    const appsExplorerProvider = container.get<AppsExplorerProvider>(SCDFTYPES.AppsExplorerProvider);
+    const streamsExplorerProvider = container.get<StreamsExplorerProvider>(SCDFTYPES.StreamsExplorerProvider);
     const lsm = container.get<LanguageServerManager>(SCDFTYPES.LanguageServerManager);
 
-    registerDebug(context);
+    context.subscriptions.push(debug.registerDebugConfigurationProvider(LANGUAGE_SCDF_STREAM_PREFIX, new StreamDebugConfigurationProvider()));
 }
 
 export function deactivate() {
@@ -50,23 +44,7 @@ export function deactivate() {
     }
 }
 
-function registerDebug(context: ExtensionContext) {
-    context.subscriptions.push(debug.registerDebugConfigurationProvider(LANGUAGE_SCDF_STREAM_PREFIX, new StreamDebugConfigurationProvider()));
-}
-
 interface DataflowStreamCreateParams {
     name: string;
     definition: string;
-}
-
-function registerStatusBar(context: ExtensionContext) {
-    const statusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 0);
-    statusBarItem.command = COMMAND_SCDF_SERVER_CHOOSE;
-    statusBarItem.show();
-    extensionGlobals.statusBarItem = statusBarItem;
-}
-
-function registerExplorer(context: ExtensionContext) {
-    const appsExplorerProvider = container.get<AppsExplorerProvider>(SCDFTYPES.AppsExplorerProvider);
-    const streamsExplorerProvider = container.get<StreamsExplorerProvider>(SCDFTYPES.StreamsExplorerProvider);
 }

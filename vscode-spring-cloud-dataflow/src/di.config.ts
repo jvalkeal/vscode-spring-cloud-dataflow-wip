@@ -25,6 +25,7 @@ import { ScdfLanguageSupport } from './language/scdf-language-support';
 import { AppsExplorerProvider } from './explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
 import { IconManager } from './language/core/icon-manager';
+import { StatusBarManager } from './language/core/status-bar-manager';
 
 const container = new Container();
 container.load(coreContainerModule, commandsContainerModule);
@@ -45,5 +46,6 @@ container.bind<IconManager>(TYPES.IconManager).toDynamicValue(
 ).inSingletonScope();
 container.bind<AppsExplorerProvider>(TYPES.AppsExplorerProvider).to(AppsExplorerProvider).inSingletonScope();
 container.bind<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider).to(StreamsExplorerProvider).inSingletonScope();
+container.bind<StatusBarManager>(TYPES.StatusBarManager).to(StatusBarManager).inSingletonScope();
 
 export default container;

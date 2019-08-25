@@ -16,12 +16,12 @@
 import { injectable, inject } from 'inversify';
 import { SettingsManager } from '@pivotal-tools/vscode-extension-core';
 import { TYPES } from '@pivotal-tools/vscode-extension-di';
-import { extensionGlobals } from '../extension-variables';
 import { registerServerInput } from '../commands/register-server';
 import { BaseNode } from '../explorer/models/base-node';
 import { commands, window, ExtensionContext } from 'vscode';
 import { TYPES as SCDFTYPES } from '../types';
 import { LanguageServerManager } from '../language/core/language-server-manager';
+import { StatusBarManager } from '../language/core/status-bar-manager';
 
 export interface ServerRegistrationNonsensitive {
     url: string;
@@ -50,7 +50,8 @@ export class ServerRegistrationManager {
     constructor(
         @inject(TYPES.ExtensionContext)private context: ExtensionContext,
         @inject(TYPES.SettingsManager) private settingsManager: SettingsManager,
-        @inject(SCDFTYPES.LanguageServerManager)private languageServerManager: LanguageServerManager
+        @inject(SCDFTYPES.LanguageServerManager)private languageServerManager: LanguageServerManager,
+        @inject(SCDFTYPES.StatusBarManager)private statusBarManager: StatusBarManager
     ) {}
 
     public async notifyServers(): Promise<void> {
@@ -118,7 +119,7 @@ export class ServerRegistrationManager {
 
         console.log('new default registration', registration);
         if (registration) {
-            extensionGlobals.statusBarItem.text = '$(database) ' + registration.name;
+            this.statusBarManager.setText('$(database) ' + registration.name);
         }
         await this.context.globalState.update(this.customRegistriesKey2, registration);
     }
