@@ -40,7 +40,6 @@ export class AppNode extends BaseNode {
     protected getThemedIconPath(): ThemedIconPath {
         switch (this.type) {
             case AppType.App:
-                console.log('XXX1 app');
                 return this.getIconManager().getThemedIconPath('app');
             case AppType.Source:
                 return this.getIconManager().getThemedIconPath('source');
@@ -51,7 +50,6 @@ export class AppNode extends BaseNode {
             case AppType.Task:
                 return this.getIconManager().getThemedIconPath('task');
             default:
-                console.log('XXX1 default');
                 return super.getThemedIconPath();
         }
     }
