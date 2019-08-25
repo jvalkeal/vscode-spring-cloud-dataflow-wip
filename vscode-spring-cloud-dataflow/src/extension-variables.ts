@@ -20,7 +20,5 @@ import { LanguageClient } from "vscode-languageclient";
 
 export namespace extensionGlobals {
     export let context: ExtensionContext;
-    export let appsExplorerProvider: AppsExplorerProvider;
-    export let streamsExplorerProvider: StreamsExplorerProvider;
     export let statusBarItem: StatusBarItem;
 }

@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { injectable } from 'inversify';
+import { injectable, inject } from 'inversify';
 import { Command } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_EXPLORER_REFRESH } from '../extension-globals';
 import { extensionGlobals } from '../extension-variables';
+import { AppsExplorerProvider } from '../explorer/apps-explorer-provider';
+import { StreamsExplorerProvider } from '../explorer/streams-explorer-provider';
+import { TYPES } from '../types';
 
 @injectable()
 export class ExplorerRefreshCommand implements Command {
 
     constructor(
+        @inject(TYPES.AppsExplorerProvider) private appsExplorerProvider: AppsExplorerProvider,
+        @inject(TYPES.StreamsExplorerProvider) private streamsExplorerProvider: StreamsExplorerProvider
     ) {}
 
     get id() {
@@ -29,7 +34,7 @@ export class ExplorerRefreshCommand implements Command {
     }
 
     execute(...args: any[]) {
-        extensionGlobals.appsExplorerProvider.refresh();
-        extensionGlobals.streamsExplorerProvider.refresh();
+        this.appsExplorerProvider.refresh();
+        this.streamsExplorerProvider.refresh();
     }
 }

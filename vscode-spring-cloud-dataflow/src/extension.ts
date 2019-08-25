@@ -76,11 +76,5 @@ function registerStatusBar(context: ExtensionContext) {
 
 function registerExplorer(context: ExtensionContext) {
     const appsExplorerProvider = container.get<AppsExplorerProvider>(SCDFTYPES.AppsExplorerProvider);
-    window.createTreeView('scdfApps', { treeDataProvider: appsExplorerProvider });
-
     const streamsExplorerProvider = container.get<StreamsExplorerProvider>(SCDFTYPES.StreamsExplorerProvider);
-    window.createTreeView('scdfStreams', { treeDataProvider: streamsExplorerProvider });
-
-    extensionGlobals.appsExplorerProvider = appsExplorerProvider;
-    extensionGlobals.streamsExplorerProvider = streamsExplorerProvider;
 }

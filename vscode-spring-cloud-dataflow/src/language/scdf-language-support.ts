@@ -21,9 +21,9 @@ import { TYPES } from '@pivotal-tools/vscode-extension-di';
 import { LanguageSupport } from './core/language-support';
 import {
     LANGUAGE_SERVER_JAR, LANGUAGE_SCDF_STREAM_PREFIX, LANGUAGE_SCDF_APP_PREFIX, CONFIG_PREFIX, LANGUAGE_SCDF_DESC,
-    COMMAND_SCDF_SERVER_NOTIFY
+    COMMAND_SCDF_SERVER_NOTIFY,
+    COMMAND_SCDF_EXPLORER_REFRESH
 } from '../extension-globals';
-import { extensionGlobals } from '../extension-variables';
 
 @injectable()
 export class ScdfLanguageSupport implements LanguageSupport {
@@ -48,20 +48,16 @@ export class ScdfLanguageSupport implements LanguageSupport {
         const languageClient= new LanguageClient(CONFIG_PREFIX, LANGUAGE_SCDF_DESC, this.getServerOptions(), this.getLanguageClientOptions());
         languageClient.onReady().then(() => {
             languageClient.onNotification(this.destroyedStreamNotification, () => {
-                extensionGlobals.appsExplorerProvider.refresh();
-                extensionGlobals.streamsExplorerProvider.refresh();
+                commands.executeCommand(COMMAND_SCDF_EXPLORER_REFRESH);
             });
             languageClient.onNotification(this.createdStreamNotification, () => {
-                extensionGlobals.appsExplorerProvider.refresh();
-                extensionGlobals.streamsExplorerProvider.refresh();
+                commands.executeCommand(COMMAND_SCDF_EXPLORER_REFRESH);
             });
             languageClient.onNotification(this.deployedStreamNotification, () => {
-                extensionGlobals.appsExplorerProvider.refresh();
-                extensionGlobals.streamsExplorerProvider.refresh();
+                commands.executeCommand(COMMAND_SCDF_EXPLORER_REFRESH);
             });
             languageClient.onNotification(this.undeployedStreamNotification, () => {
-                extensionGlobals.appsExplorerProvider.refresh();
-                extensionGlobals.streamsExplorerProvider.refresh();
+                commands.executeCommand(COMMAND_SCDF_EXPLORER_REFRESH);
             });
             commands.executeCommand(COMMAND_SCDF_SERVER_NOTIFY);
         });

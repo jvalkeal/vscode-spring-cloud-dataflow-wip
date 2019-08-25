@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TreeDataProvider, TreeItem, ProviderResult, EventEmitter, TextDocumentContentProvider, Uri, CancellationToken, Event } from "vscode";
+import { TreeDataProvider, TreeItem, ProviderResult, EventEmitter, TextDocumentContentProvider, Uri, CancellationToken, Event, window } from "vscode";
 import { BaseNode } from "./models/base-node";
 import { ServerNode, ServerMode } from "./models/server-node";
 import { ScdfModel } from "../service/scdf-model";
@@ -30,7 +30,9 @@ export class StreamsExplorerProvider implements TreeDataProvider<BaseNode>, Text
 
     constructor(
         @inject(TYPES.ServerRegistrationManager)private serverRegistrationManager: ServerRegistrationManager
-    ) {}
+    ) {
+		window.createTreeView('scdfStreams', { treeDataProvider: this });
+	}
 
 	getChildren(element?: BaseNode | undefined): ProviderResult<BaseNode[]> {
 		if (!element) {

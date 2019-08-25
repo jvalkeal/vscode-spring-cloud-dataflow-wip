@@ -19,13 +19,16 @@ import { COMMAND_SCDF_APPS_REGISTER } from '../extension-globals';
 import { ServerRegistrationManager } from '../service/server-registration-manager';
 import { TYPES } from '../types';
 import { ScdfModel } from '../service/scdf-model';
-import { extensionGlobals } from '../extension-variables';
+import { AppsExplorerProvider } from '../explorer/apps-explorer-provider';
+import { StreamsExplorerProvider } from '../explorer/streams-explorer-provider';
 
 @injectable()
 export class AppsRegisterCommand implements Command {
 
     constructor(
-        @inject(TYPES.ServerRegistrationManager)private serverRegistrationManager: ServerRegistrationManager
+        @inject(TYPES.ServerRegistrationManager)private serverRegistrationManager: ServerRegistrationManager,
+        @inject(TYPES.AppsExplorerProvider) private appsExplorerProvider: AppsExplorerProvider,
+        @inject(TYPES.StreamsExplorerProvider) private streamsExplorerProvider: StreamsExplorerProvider
     ) {}
 
     get id() {
@@ -36,7 +39,7 @@ export class AppsRegisterCommand implements Command {
         const defaultServer = await this.serverRegistrationManager.getDefaultServer();
         const model = new ScdfModel(defaultServer);
         await model.registerApp(args[0], args[1], args[2], args[3]);
-        extensionGlobals.appsExplorerProvider.refresh();
-        extensionGlobals.streamsExplorerProvider.refresh();
+        this.appsExplorerProvider.refresh();
+        this.streamsExplorerProvider.refresh();
     }
 }

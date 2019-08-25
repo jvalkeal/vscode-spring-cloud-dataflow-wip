@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TreeDataProvider, TreeItem, ProviderResult, EventEmitter } from "vscode";
+import { TreeDataProvider, TreeItem, ProviderResult, EventEmitter, window } from "vscode";
 import { BaseNode } from "./models/base-node";
 import { Event } from "vscode-jsonrpc";
 import { ServerNode, ServerMode } from "./models/server-node";
@@ -28,7 +28,9 @@ export class AppsExplorerProvider implements TreeDataProvider<BaseNode> {
 
     constructor(
         @inject(TYPES.ServerRegistrationManager)private serverRegistrationManager: ServerRegistrationManager
-    ) {}
+    ) {
+        window.createTreeView('scdfApps', { treeDataProvider: this });
+    }
 
     getChildren(element?: BaseNode | undefined): ProviderResult<BaseNode[]> {
         if (!element) {

@@ -36,7 +36,7 @@ container.bind<LanguageServerManager>(TYPES.LanguageServerManager).toDynamicValu
         return new LanguageServerManager(extensionContext, languageSupports);
     }
 ).inSingletonScope();
-container.bind<AppsExplorerProvider>(TYPES.AppsExplorerProvider).to(AppsExplorerProvider);
-container.bind<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider).to(StreamsExplorerProvider);
+container.bind<AppsExplorerProvider>(TYPES.AppsExplorerProvider).to(AppsExplorerProvider).inSingletonScope();
+container.bind<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider).to(StreamsExplorerProvider).inSingletonScope();
 
 export default container;
