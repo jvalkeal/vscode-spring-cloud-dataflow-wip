@@ -15,4 +15,8 @@
  */
 export const TYPES = {
     ServerRegistrationManager: Symbol('ServerRegistrationManager'),
+    LanguageServerManager: Symbol('LanguageServerManager'),
+    LanguageSupport: Symbol('LanguageSupport'),
+    AppsExplorerProvider: Symbol('AppsExplorerProvider'),
+    StreamsExplorerProvider: Symbol('StreamsExplorerProvider')
 };

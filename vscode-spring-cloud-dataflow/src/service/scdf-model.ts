@@ -15,7 +15,7 @@
  */
 import { Uri } from "vscode";
 import { ScdfService } from "./scdf-service";
-import { ServerRegistration } from "../commands/server-registrations";
+import { ServerRegistration } from "./server-registration-manager";
 
 export interface BaseEntry {
     _links: {self: Uri};

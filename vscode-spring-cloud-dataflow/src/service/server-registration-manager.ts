@@ -19,9 +19,9 @@ import { TYPES } from '@pivotal-tools/vscode-extension-di';
 import { extensionGlobals } from '../extension-variables';
 import { registerServerInput } from '../commands/register-server';
 import { BaseNode } from '../explorer/models/base-node';
-import { registerServerChooseInput } from '../commands/choose-server';
-import { commands } from 'vscode';
-import { resolve } from 'url';
+import { commands, window } from 'vscode';
+import { TYPES as SCDFTYPES } from '../types';
+import { LanguageServerManager } from '../language/core/language-server-manager';
 
 export interface ServerRegistrationNonsensitive {
     url: string;
@@ -47,9 +47,9 @@ export class ServerRegistrationManager {
     private customRegistriesKey2 = 'scdfDefaultServer';
     private customRegistriesKey = 'scdfServers';
 
-
     constructor(
-        @inject(TYPES.SettingsManager) private settingsManager: SettingsManager
+        @inject(TYPES.SettingsManager) private settingsManager: SettingsManager,
+        @inject(SCDFTYPES.LanguageServerManager)private languageServerManager: LanguageServerManager
     ) {}
 
     public async notifyServers(): Promise<void> {
@@ -59,7 +59,7 @@ export class ServerRegistrationManager {
         const params: DataflowEnvironmentParams = {
             environments: registrations
         };
-        await extensionGlobals.languageClient.sendNotification('scdf/environment', params);
+        await this.languageServerManager.getLanguageClient('scdfs').sendNotification('scdf/environment', params);
     }
 
     public async connectServer(): Promise<void> {
@@ -105,7 +105,16 @@ export class ServerRegistrationManager {
     }
 
     public async chooseDefaultServer(): Promise<void> {
-        const registration = await registerServerChooseInput(extensionGlobals.context);
+        const servers = await this.getServers();
+        const names: string[] = [];
+        servers.forEach(server => {
+            names.push(server.name);
+        });
+        const result = await window.showQuickPick(names, {
+            placeHolder: ''
+        });
+        const registration = servers.find(server => server.name === result);
+
         console.log('new default registration', registration);
         if (registration) {
             extensionGlobals.statusBarItem.text = '$(database) ' + registration.name;
@@ -127,10 +136,10 @@ export class ServerRegistrationManager {
     }
 
     public async getDefaultServerx(): Promise<ServerRegistration> {
-        const xxx1 = this.settingsManager.getNonsensitivex<ServerRegistrationNonsensitive>(this.customRegistriesKey2);
-        const xxx2 = this.getServers();
+        const nonsensitive = this.settingsManager.getNonsensitive<ServerRegistrationNonsensitive>(this.customRegistriesKey2);
+        const servers = this.getServers();
 
-        return Promise.all([xxx1, xxx2]).then((a) => {
+        return Promise.all([nonsensitive, servers]).then((a) => {
             let server: ServerRegistration | undefined;
             if (a[0]) {
                 server = a[1].find(registration => registration.url.toLowerCase() === a[0].url.toLowerCase());
@@ -155,8 +164,7 @@ export class ServerRegistrationManager {
 
     public async getServers(): Promise<ServerRegistration[]> {
         let servers: ServerRegistration[] = [];
-        const nonsensitive = await this.settingsManager.getNonsensitive<ServerRegistrationNonsensitive[]>(this.customRegistriesKey) || [];
-
+        const nonsensitive = await this.settingsManager.getNonsensitive<ServerRegistrationNonsensitive[]>(this.customRegistriesKey);
         for (let reg of nonsensitive) {
             let key = this.getUsernamePwdKey(reg.name);
             let credentials = await this.settingsManager.getSensitive<ServerRegistrationCredentials>(key);

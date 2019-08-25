@@ -15,9 +15,28 @@
  */
 import 'reflect-metadata';
 import { Container } from 'inversify';
-import { coreContainerModule } from '@pivotal-tools/vscode-extension-di';
+import { coreContainerModule, TYPES as DITYPES } from '@pivotal-tools/vscode-extension-di';
 import commandsContainerModule from './commands/di.config';
+import { TYPES } from './types';
+import { LanguageServerManager } from './language/core/language-server-manager';
+import { ExtensionContext } from 'vscode';
+import { LanguageSupport } from './language/core/language-support';
+import { ScdfLanguageSupport } from './language/scdf-language-support';
+import { AppsExplorerProvider } from './explorer/apps-explorer-provider';
+import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
 
 const container = new Container();
 container.load(coreContainerModule, commandsContainerModule);
+
+container.bind<LanguageSupport>(TYPES.LanguageSupport).to(ScdfLanguageSupport);
+container.bind<LanguageServerManager>(TYPES.LanguageServerManager).toDynamicValue(
+    context => {
+        const extensionContext = context.container.get<ExtensionContext>(DITYPES.ExtensionContext);
+        const languageSupports = context.container.getAll<LanguageSupport>(TYPES.LanguageSupport);
+        return new LanguageServerManager(extensionContext, languageSupports);
+    }
+).inSingletonScope();
+container.bind<AppsExplorerProvider>(TYPES.AppsExplorerProvider).to(AppsExplorerProvider);
+container.bind<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider).to(StreamsExplorerProvider);
+
 export default container;

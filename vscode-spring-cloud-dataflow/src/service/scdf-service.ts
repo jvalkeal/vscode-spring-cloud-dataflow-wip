@@ -15,7 +15,7 @@
  */
 import axios from 'axios';
 import { ScdfStreamEntry, ScdfAppEntry, ScdfStreamDeploymentEntry, ScdfStreamRuntimeEntry, ScdfStreamLogs } from './scdf-model';
-import { ServerRegistration } from '../commands/server-registrations';
+import { ServerRegistration } from './server-registration-manager';
 
 export class ScdfService {
 

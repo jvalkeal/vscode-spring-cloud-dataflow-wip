@@ -16,8 +16,8 @@
 import { BaseNode } from "./base-node";
 import { ScdfModel } from "../../service/scdf-model";
 import { StreamNode } from "./stream-node";
-import { ServerRegistration } from "../../commands/server-registrations";
 import { AppTypeNode, AppType } from "./app-type-node";
+import { ServerRegistration } from "../../service/server-registration-manager";
 
 /**
  * Enumeration of a possible child types under server in a dataflow. Mostly following web

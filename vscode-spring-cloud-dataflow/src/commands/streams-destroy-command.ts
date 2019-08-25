@@ -16,13 +16,15 @@
 import { injectable, inject } from 'inversify';
 import { Command } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_STREAMS_DESTROY, LSP_SCDF_DESTROY_STREAM } from '../extension-globals';
-import { extensionGlobals } from '../extension-variables';
 import { DataflowStreamCreateParams } from './stream-commands';
+import { LanguageServerManager } from '../language/core/language-server-manager';
+import { TYPES } from '../types';
 
 @injectable()
 export class StreamsDestroyCommand implements Command {
 
     constructor(
+        @inject(TYPES.LanguageServerManager)private languageServerManager: LanguageServerManager
     ) {}
 
     get id() {
@@ -34,6 +36,6 @@ export class StreamsDestroyCommand implements Command {
             name: args[0],
             definition: args[1]
         };
-        extensionGlobals.languageClient.sendNotification(LSP_SCDF_DESTROY_STREAM, params);
+        this.languageServerManager.getLanguageClient('scdfs').sendNotification(LSP_SCDF_DESTROY_STREAM, params);
     }
 }

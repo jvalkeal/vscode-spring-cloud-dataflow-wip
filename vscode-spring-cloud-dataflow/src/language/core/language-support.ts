@@ -13,17 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ExtensionContext, window } from "vscode";
-import { ServerRegistration, getServers } from "./server-registrations";
+import { LanguageClient } from 'vscode-languageclient';
 
-export async function registerServerChooseInput(context: ExtensionContext): Promise<ServerRegistration | undefined> {
-    const servers = await getServers();
-    const names: string[] = [];
-    servers.forEach(server => {
-        names.push(server.name);
-    });
-    const result = await window.showQuickPick(names, {
-		placeHolder: ''
-    });
-    return servers.find(server => server.name === result);
+export interface LanguageSupport {
+
+    getLanguageIds(): string[];
+    buildLanguageClient(): LanguageClient;
 }

@@ -18,14 +18,13 @@ import { IKeytar, Keytar } from './keytar';
 
 export interface SettingsManager {
 
-    getNonsensitive<T>(key: string): Thenable<T | undefined>;
-    getNonsensitivex<T>(key: string): Thenable<T>;
+    getNonsensitive<T>(key: string): Thenable<T>;
     setNonsensitive<T>(key: string, value: any): Thenable<void>;
     deleteNonsensitive<T>(key: string): Thenable<void>;
-    getSensitive<T>(key: string): Thenable<T | undefined>;
-    // getSensitive<T>(key: string): Thenable<T>;
+    getSensitive<T>(key: string): Thenable<T>;
     setSensitive<T>(key: string, value: any): Thenable<void>;
     deleteSensitive<T>(key: string): Thenable<void>;
+
 }
 
 export class DefaultSettingsManager implements SettingsManager/*, ExtensionContextAware*/ {
@@ -42,10 +41,7 @@ export class DefaultSettingsManager implements SettingsManager/*, ExtensionConte
         }
     }
 
-    public getNonsensitive<T>(key: string): Thenable<T | undefined> {
-        return Promise.resolve(this.context.globalState.get(key));
-    };
-    public getNonsensitivex<T>(key: string): Thenable<T> {
+    public getNonsensitive<T>(key: string): Thenable<T> {
         const value = this.context.globalState.get<T>(key);
         if (value) {
             return Promise.resolve(value);
@@ -61,23 +57,16 @@ export class DefaultSettingsManager implements SettingsManager/*, ExtensionConte
         return this.context.globalState.update(key, undefined);
     };
 
-    public getSensitive<T>(key: string): Thenable<T | undefined> {
+    public getSensitive<T>(key: string): Thenable<T> {
         return new Promise(async (resolve, reject) => {
             const data = await this.keytar.getPassword(this.serviceId, key);
-            const credentials = <T>JSON.parse(data || '');
-            resolve(credentials);
+            if (data) {
+                const credentials = <T>JSON.parse(data);
+                return resolve(credentials);
+            }
+            reject(new Error());
         });
     };
-    // public getSensitive<T>(key: string): Thenable<T> {
-    //     return new Promise(async (resolve, reject) => {
-    //         const data = await this.keytar.getPassword(this.serviceId, key);
-    //         if (data) {
-    //             const credentials = <T>JSON.parse(data);
-    //             return resolve(credentials);
-    //         }
-    //         reject(new Error());
-    //     });
-    // };
 
     public setSensitive<T>(key: string, value: any): Thenable<void> {
         return this.keytar.setPassword(this.serviceId, key, value);

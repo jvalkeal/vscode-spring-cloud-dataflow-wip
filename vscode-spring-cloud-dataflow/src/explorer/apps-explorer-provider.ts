@@ -15,13 +15,20 @@
  */
 import { TreeDataProvider, TreeItem, ProviderResult, EventEmitter } from "vscode";
 import { BaseNode } from "./models/base-node";
-import { getServers, ServerRegistration } from "../commands/server-registrations";
 import { Event } from "vscode-jsonrpc";
 import { ServerNode, ServerMode } from "./models/server-node";
+import { inject, injectable } from "inversify";
+import { TYPES } from "../types";
+import { ServerRegistrationManager } from "../service/server-registration-manager";
 
+@injectable()
 export class AppsExplorerProvider implements TreeDataProvider<BaseNode> {
     private _onDidChangeTreeData: EventEmitter<BaseNode> = new EventEmitter<BaseNode>();
     onDidChangeTreeData: Event<BaseNode> = this._onDidChangeTreeData.event;
+
+    constructor(
+        @inject(TYPES.ServerRegistrationManager)private serverRegistrationManager: ServerRegistrationManager
+    ) {}
 
     getChildren(element?: BaseNode | undefined): ProviderResult<BaseNode[]> {
         if (!element) {
@@ -40,7 +47,7 @@ export class AppsExplorerProvider implements TreeDataProvider<BaseNode> {
 
     private async getServerNodes(): Promise<BaseNode[]> {
         return new Promise(async (resolve, reject) => {
-            const servers = await getServers();
+            const servers = await this.serverRegistrationManager.getServers();
             const ret: BaseNode[] = [];
             servers.forEach(registration => {
                 ret.push(new ServerNode(registration, ServerMode.Apps));

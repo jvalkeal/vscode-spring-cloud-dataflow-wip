@@ -17,8 +17,8 @@ import { BaseNode } from "./base-node";
 import { Uri } from "vscode";
 import { treeUtils } from "../../utils/tree-utils";
 import { ScdfModel } from "../../service/scdf-model";
-import { ServerRegistration } from "../../commands/server-registrations";
 import { RuntimeNode } from "./runtime-node";
+import { ServerRegistration } from "../../service/server-registration-manager";
 
 export class StreamNode extends BaseNode {
 
