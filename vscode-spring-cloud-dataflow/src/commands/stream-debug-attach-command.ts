@@ -33,7 +33,7 @@ export class StreamDebugAttachCommand implements Command {
 
     async execute(...args: any[]) {
         new Promise<ServerRegistration>(async (resolve, reject) => {
-            const registration = await this.serverRegistrationManager.getDefaultServerx();
+            const registration = await this.serverRegistrationManager.getDefaultServer();
             if (registration) {
                 resolve(registration);
             } else {

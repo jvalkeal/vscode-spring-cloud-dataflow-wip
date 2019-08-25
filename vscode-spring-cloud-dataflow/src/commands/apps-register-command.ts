@@ -33,8 +33,7 @@ export class AppsRegisterCommand implements Command {
     }
 
     async execute(...args: any[]) {
-        // type: string, name: string, uri: string, metadataUri: string
-        const defaultServer = await this.serverRegistrationManager.getDefaultServerx();
+        const defaultServer = await this.serverRegistrationManager.getDefaultServer();
         const model = new ScdfModel(defaultServer);
         await model.registerApp(args[0], args[1], args[2], args[3]);
         extensionGlobals.appsExplorerProvider.refresh();

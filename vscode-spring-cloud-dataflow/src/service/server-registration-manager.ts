@@ -122,20 +122,7 @@ export class ServerRegistrationManager {
         await extensionGlobals.context.globalState.update(this.customRegistriesKey2, registration);
     }
 
-    public async getDefaultServer(): Promise<ServerRegistration | undefined | null> {
-        let server: ServerRegistration | undefined | null = null;
-        const defaultServer = extensionGlobals.context.globalState.get<ServerRegistrationNonsensitive>(this.customRegistriesKey2) || null;
-        const servers = await this.getServers();
-        if (defaultServer) {
-            server = servers.find(registration => registration.url.toLowerCase() === defaultServer.url.toLowerCase());
-        }
-        if (!server && servers.length === 1) {
-            server = servers[0];
-        }
-        return server;
-    }
-
-    public async getDefaultServerx(): Promise<ServerRegistration> {
+    public async getDefaultServer(): Promise<ServerRegistration> {
         const nonsensitive = this.settingsManager.getNonsensitive<ServerRegistrationNonsensitive>(this.customRegistriesKey2);
         const servers = this.getServers();
 

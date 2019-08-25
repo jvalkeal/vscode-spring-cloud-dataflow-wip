@@ -46,7 +46,7 @@ export class AppsUnregisterCommand implements Command {
             resolvedVersion = args[0].version;
         }
 
-        const defaultServer = await this.serverRegistrationManager.getDefaultServerx();
+        const defaultServer = await this.serverRegistrationManager.getDefaultServer();
         const model = new ScdfModel(defaultServer);
         await model.unregisterApp(resolvedType, resolvedName, resolvedVersion);
         extensionGlobals.appsExplorerProvider.refresh();

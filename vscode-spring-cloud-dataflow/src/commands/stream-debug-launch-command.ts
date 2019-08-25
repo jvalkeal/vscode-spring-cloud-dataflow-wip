@@ -31,7 +31,7 @@ export class StreamDebugLaunchCommand implements Command {
     }
 
     async execute(...args: any[]) {
-        const defaultServer = await this.serverRegistrationManager.getDefaultServerx();
+        const defaultServer = await this.serverRegistrationManager.getDefaultServer();
         // const x1: Promise<ServerRegistration> = new Promise(async (resolve, reject) => {
         //     const registration = await getDefaultServer();
         //     if (registration) {
