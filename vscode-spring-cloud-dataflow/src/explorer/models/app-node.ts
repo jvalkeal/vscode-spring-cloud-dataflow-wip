@@ -14,42 +14,44 @@
  * limitations under the License.
  */
 import { BaseNode } from "./base-node";
-import { treeUtils } from "../../utils/tree-utils";
 import { AppType } from "./app-type-node";
 import { AppVersionNode } from "./app-version-node";
+import { IconManager, ThemedIconPath } from "../../language/core/icon-manager";
 
 /**
  * Generic node which is any of {@link AppType}.
  */
 export class AppNode extends BaseNode {
 
-    constructor(label: string, private readonly type: AppType, private readonly versions?: string[]) {
-        super(label, 'definedApp');
+    constructor(label: string, iconManager: IconManager, private readonly type: AppType, private readonly versions?: string[]) {
+        super(label, iconManager, 'definedApp');
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {
         let nodes: AppVersionNode[] = [];
         if (this.versions) {
             this.versions.forEach(v => {
-                nodes.push(new AppVersionNode(v, this.type, this.label, v));
+                nodes.push(new AppVersionNode(v, this.getIconManager(), this.type, this.label, v));
             });
         }
         return nodes;
     }
 
-    protected getThemedIconPath(): treeUtils.ThemedIconPath {
+    protected getThemedIconPath(): ThemedIconPath {
         switch (this.type) {
             case AppType.App:
-                return treeUtils.getThemedIconPath('app');
+                console.log('XXX1 app');
+                return this.getIconManager().getThemedIconPath('app');
             case AppType.Source:
-                return treeUtils.getThemedIconPath('source');
+                return this.getIconManager().getThemedIconPath('source');
             case AppType.Processor:
-                return treeUtils.getThemedIconPath('processor');
+                return this.getIconManager().getThemedIconPath('processor');
             case AppType.Sink:
-                return treeUtils.getThemedIconPath('sink');
+                return this.getIconManager().getThemedIconPath('sink');
             case AppType.Task:
-                return treeUtils.getThemedIconPath('task');
+                return this.getIconManager().getThemedIconPath('task');
             default:
+                console.log('XXX1 default');
                 return super.getThemedIconPath();
         }
     }

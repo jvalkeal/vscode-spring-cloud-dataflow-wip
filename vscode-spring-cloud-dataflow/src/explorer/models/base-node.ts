@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
-import { treeUtils } from "../../utils/tree-utils";
+import { IconManager, ThemedIconPath } from "../../language/core/icon-manager";
 
 export abstract class BaseNode {
 
     public readonly label: string;
 
-    protected constructor(label: string, private readonly contextValue?: string) {
+    protected constructor(label: string, private iconManager: IconManager, private readonly contextValue?: string) {
         this.label = label;
     }
 
     public getTreeItem(): TreeItem {
-        let iconPath: treeUtils.ThemedIconPath;
+        let iconPath: ThemedIconPath;
         iconPath = this.getThemedIconPath();
         const collapsibleState = this.getTreeItemCollapsibleState();
         return {
@@ -40,11 +40,15 @@ export abstract class BaseNode {
         return [];
     }
 
-    protected getThemedIconPath(): treeUtils.ThemedIconPath {
-        return treeUtils.getThemedIconPath('cloud_done');
+    protected getThemedIconPath(): ThemedIconPath {
+        return this.getIconManager().getThemedIconPath('cloud_done');
     }
 
     protected getTreeItemCollapsibleState(): TreeItemCollapsibleState {
         return TreeItemCollapsibleState.Collapsed;
+    }
+
+    protected getIconManager(): IconManager {
+        return this.iconManager;
     }
 }

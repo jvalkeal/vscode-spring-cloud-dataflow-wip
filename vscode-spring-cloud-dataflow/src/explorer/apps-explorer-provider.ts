@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TreeDataProvider, TreeItem, ProviderResult, EventEmitter, window } from "vscode";
+import { TreeDataProvider, TreeItem, ProviderResult, EventEmitter, window, ExtensionContext } from "vscode";
 import { BaseNode } from "./models/base-node";
 import { Event } from "vscode-jsonrpc";
 import { ServerNode, ServerMode } from "./models/server-node";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 import { ServerRegistrationManager } from "../service/server-registration-manager";
+import { TYPES as DITYPES } from '@pivotal-tools/vscode-extension-di';
+import { IconManager } from "../language/core/icon-manager";
 
 @injectable()
 export class AppsExplorerProvider implements TreeDataProvider<BaseNode> {
@@ -27,7 +29,9 @@ export class AppsExplorerProvider implements TreeDataProvider<BaseNode> {
     onDidChangeTreeData: Event<BaseNode> = this._onDidChangeTreeData.event;
 
     constructor(
-        @inject(TYPES.ServerRegistrationManager)private serverRegistrationManager: ServerRegistrationManager
+        @inject(DITYPES.ExtensionContext)private context: ExtensionContext,
+        @inject(TYPES.ServerRegistrationManager)private serverRegistrationManager: ServerRegistrationManager,
+        @inject(TYPES.IconManager)private iconManager: IconManager
     ) {
         window.createTreeView('scdfApps', { treeDataProvider: this });
     }
@@ -52,7 +56,7 @@ export class AppsExplorerProvider implements TreeDataProvider<BaseNode> {
             const servers = await this.serverRegistrationManager.getServers();
             const ret: BaseNode[] = [];
             servers.forEach(registration => {
-                ret.push(new ServerNode(registration, ServerMode.Apps));
+                ret.push(new ServerNode(this.iconManager, registration, ServerMode.Apps));
             });
             resolve(ret);
         });

@@ -16,26 +16,26 @@
 import { BaseNode } from "./base-node";
 import { InstanceNode } from "./instance-node";
 import { ScdfStreamRuntimeApplicationInstanceEntry } from "../../service/scdf-model";
-import { treeUtils } from "../../utils/tree-utils";
+import { IconManager, ThemedIconPath } from "../../language/core/icon-manager";
 
 export class RuntimeNode extends BaseNode {
 
-    constructor(label: string, private readonly instances: ScdfStreamRuntimeApplicationInstanceEntry[]) {
-        super(label, 'runningStreamApp');
+    constructor(label: string, iconManager: IconManager, private readonly instances: ScdfStreamRuntimeApplicationInstanceEntry[]) {
+        super(label, iconManager, 'runningStreamApp');
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {
         return this.getInstanceNodes();
     }
 
-    protected getThemedIconPath(): treeUtils.ThemedIconPath {
-        return treeUtils.getThemedIconPath('stream');
+    protected getThemedIconPath(): ThemedIconPath {
+        return this.getIconManager().getThemedIconPath('stream');
     }
 
     private async getInstanceNodes(): Promise<InstanceNode[]> {
         const instanceNodes: InstanceNode[] = [];
         this.instances.forEach(instance => {
-            instanceNodes.push(new InstanceNode(instance.id));
+            instanceNodes.push(new InstanceNode(instance.id, this.getIconManager()));
         });
         return instanceNodes;
     }

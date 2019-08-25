@@ -15,15 +15,15 @@
  */
 import { BaseNode } from "./base-node";
 import { Uri } from "vscode";
-import { treeUtils } from "../../utils/tree-utils";
 import { ScdfModel } from "../../service/scdf-model";
 import { RuntimeNode } from "./runtime-node";
 import { ServerRegistration } from "../../service/server-registration-manager";
+import { IconManager, ThemedIconPath } from "../../language/core/icon-manager";
 
 export class StreamNode extends BaseNode {
 
-    constructor(label: string, private readonly serverId: string, private readonly registration: ServerRegistration) {
-        super(label, 'definedStream');
+    constructor(label: string, iconManager: IconManager, private readonly serverId: string, private readonly registration: ServerRegistration) {
+        super(label, iconManager, 'definedStream');
     }
 
     public getResourceUri(): Uri {
@@ -33,8 +33,8 @@ export class StreamNode extends BaseNode {
         return Uri.parse(`scdfs://${this.serverId}/streams/${this.label}.scdfs`);
     }
 
-    protected getThemedIconPath(): treeUtils.ThemedIconPath {
-        return treeUtils.getThemedIconPath('stream');
+    protected getThemedIconPath(): ThemedIconPath {
+        return this.getIconManager().getThemedIconPath('stream');
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {
@@ -49,7 +49,7 @@ export class StreamNode extends BaseNode {
                 .filter(runtime => runtime.name === this.label)
                 .forEach(runtime => {
                     runtime.applications.forEach(application => {
-                        appNodes.push(new RuntimeNode(application.name, application.instances));
+                        appNodes.push(new RuntimeNode(application.name, this.getIconManager(), application.instances));
                     });
                 })
             );

@@ -24,6 +24,7 @@ import { LanguageSupport } from './language/core/language-support';
 import { ScdfLanguageSupport } from './language/scdf-language-support';
 import { AppsExplorerProvider } from './explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
+import { IconManager } from './language/core/icon-manager';
 
 const container = new Container();
 container.load(coreContainerModule, commandsContainerModule);
@@ -34,6 +35,12 @@ container.bind<LanguageServerManager>(TYPES.LanguageServerManager).toDynamicValu
         const extensionContext = context.container.get<ExtensionContext>(DITYPES.ExtensionContext);
         const languageSupports = context.container.getAll<LanguageSupport>(TYPES.LanguageSupport);
         return new LanguageServerManager(extensionContext, languageSupports);
+    }
+).inSingletonScope();
+container.bind<IconManager>(TYPES.IconManager).toDynamicValue(
+    context => {
+        const extensionContext = context.container.get<ExtensionContext>(DITYPES.ExtensionContext);
+        return new IconManager(extensionContext);
     }
 ).inSingletonScope();
 container.bind<AppsExplorerProvider>(TYPES.AppsExplorerProvider).to(AppsExplorerProvider).inSingletonScope();

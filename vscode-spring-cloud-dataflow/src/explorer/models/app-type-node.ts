@@ -17,6 +17,7 @@ import { BaseNode } from "./base-node";
 import { ScdfModel, ScdfAppEntry } from "../../service/scdf-model";
 import { AppNode } from "./app-node";
 import { ServerRegistration } from "../../service/server-registration-manager";
+import { IconManager } from "../../language/core/icon-manager";
 
 /**
  * Enumeration of a possible app types in a dataflow. These are hardcoded
@@ -35,8 +36,8 @@ export enum AppType {
  */
 export class AppTypeNode extends BaseNode {
 
-    constructor(label: string, private readonly type: AppType, private readonly registration: ServerRegistration) {
-        super(label);
+    constructor(label: string, iconManager: IconManager, private readonly type: AppType, private readonly registration: ServerRegistration) {
+        super(label, iconManager);
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {
@@ -64,7 +65,7 @@ export class AppTypeNode extends BaseNode {
                 grouped.forEach((v, k) => {
                     const versions: string[] = [];
                     v.forEach(app => versions.push(app.version));
-                    appNodes.push(new AppNode(k, type, versions));
+                    appNodes.push(new AppNode(k, this.getIconManager(), type, versions));
                 });
                 return appNodes;
             });

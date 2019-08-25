@@ -15,16 +15,16 @@
  */
 import { TreeItemCollapsibleState } from "vscode";
 import { BaseNode } from "./base-node";
-import { treeUtils } from "../../utils/tree-utils";
+import { IconManager, ThemedIconPath } from "../../language/core/icon-manager";
 
 export class InstanceNode extends BaseNode {
 
-    constructor(label: string) {
-        super(label, 'runningStreamAppInstance');
+    constructor(label: string, iconManager: IconManager) {
+        super(label, iconManager, 'runningStreamAppInstance');
     }
 
-    protected getThemedIconPath(): treeUtils.ThemedIconPath {
-        return treeUtils.getThemedIconPath('stream');
+    protected getThemedIconPath(): ThemedIconPath {
+        return this.getIconManager().getThemedIconPath('stream');
     }
 
     protected getTreeItemCollapsibleState(): TreeItemCollapsibleState {

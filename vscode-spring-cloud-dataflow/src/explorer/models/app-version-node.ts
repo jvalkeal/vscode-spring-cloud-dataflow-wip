@@ -15,20 +15,20 @@
  */
 import { BaseNode } from "./base-node";
 import { TreeItemCollapsibleState } from "vscode";
-import { treeUtils } from "../../utils/tree-utils";
 import { AppType } from "./app-type-node";
+import { IconManager, ThemedIconPath } from "../../language/core/icon-manager";
 
 export class AppVersionNode extends BaseNode {
 
-    constructor(label: string, public readonly type: AppType, public readonly name: string, public readonly version: string) {
-        super(label, 'definedAppVersion');
+    constructor(label: string, iconManager: IconManager, public readonly type: AppType, public readonly name: string, public readonly version: string) {
+        super(label, iconManager, 'definedAppVersion');
     }
 
     protected getTreeItemCollapsibleState(): TreeItemCollapsibleState {
         return TreeItemCollapsibleState.None;
     }
 
-    protected getThemedIconPath(): treeUtils.ThemedIconPath {
-        return treeUtils.getThemedIconPath('tag');
+    protected getThemedIconPath(): ThemedIconPath {
+        return this.getIconManager().getThemedIconPath('tag');
     }
 }

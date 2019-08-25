@@ -31,10 +31,6 @@ export function activate(context: ExtensionContext) {
     container.bind<ExtensionContext>(TYPES.ExtensionContext).toConstantValue(context);
     container.get<ExtensionActivateManager>(TYPES.ExtensionActivateAware).onExtensionActivate(context);
 
-    // stash needed global variables to get used in this extension in its lifecycle.
-    // global state is not nice but makes life easier in an extention.
-    initializeExtensionGlobals(context);
-
     // register explorer views
     registerExplorer(context);
 
@@ -56,10 +52,6 @@ export function deactivate() {
 
 function registerDebug(context: ExtensionContext) {
     context.subscriptions.push(debug.registerDebugConfigurationProvider(LANGUAGE_SCDF_STREAM_PREFIX, new StreamDebugConfigurationProvider()));
-}
-
-function initializeExtensionGlobals(context: ExtensionContext) {
-    extensionGlobals.context = context;
 }
 
 interface DataflowStreamCreateParams {

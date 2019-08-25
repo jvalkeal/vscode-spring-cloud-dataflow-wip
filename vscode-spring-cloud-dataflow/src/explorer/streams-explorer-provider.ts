@@ -20,6 +20,7 @@ import { ScdfModel } from "../service/scdf-model";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 import { ServerRegistrationManager } from "../service/server-registration-manager";
+import { IconManager } from "../language/core/icon-manager";
 
 @injectable()
 export class StreamsExplorerProvider implements TreeDataProvider<BaseNode>, TextDocumentContentProvider {
@@ -29,7 +30,8 @@ export class StreamsExplorerProvider implements TreeDataProvider<BaseNode>, Text
 	// onDidChange?: Event<Uri> | undefined;
 
     constructor(
-        @inject(TYPES.ServerRegistrationManager)private serverRegistrationManager: ServerRegistrationManager
+        @inject(TYPES.ServerRegistrationManager)private serverRegistrationManager: ServerRegistrationManager,
+        @inject(TYPES.IconManager)private iconManager: IconManager
     ) {
 		window.createTreeView('scdfStreams', { treeDataProvider: this });
 	}
@@ -71,7 +73,7 @@ export class StreamsExplorerProvider implements TreeDataProvider<BaseNode>, Text
             const servers = await this.serverRegistrationManager.getServers();
 			const ret: BaseNode[] = [];
 			servers.forEach(registration => {
-				ret.push(new ServerNode(registration, ServerMode.Streams));
+				ret.push(new ServerNode(this.iconManager, registration, ServerMode.Streams));
 			});
 			resolve(ret);
 		});

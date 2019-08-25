@@ -19,7 +19,7 @@ import { TYPES } from '@pivotal-tools/vscode-extension-di';
 import { extensionGlobals } from '../extension-variables';
 import { registerServerInput } from '../commands/register-server';
 import { BaseNode } from '../explorer/models/base-node';
-import { commands, window } from 'vscode';
+import { commands, window, ExtensionContext } from 'vscode';
 import { TYPES as SCDFTYPES } from '../types';
 import { LanguageServerManager } from '../language/core/language-server-manager';
 
@@ -48,6 +48,7 @@ export class ServerRegistrationManager {
     private customRegistriesKey = 'scdfServers';
 
     constructor(
+        @inject(TYPES.ExtensionContext)private context: ExtensionContext,
         @inject(TYPES.SettingsManager) private settingsManager: SettingsManager,
         @inject(SCDFTYPES.LanguageServerManager)private languageServerManager: LanguageServerManager
     ) {}
@@ -65,7 +66,7 @@ export class ServerRegistrationManager {
     public async connectServer(): Promise<void> {
         let servers = await this.getServers();
 
-        const state = await registerServerInput(extensionGlobals.context);
+        const state = await registerServerInput(this.context);
 
         let newRegistry: ServerRegistration = {
             url: state.address,
@@ -101,7 +102,7 @@ export class ServerRegistrationManager {
         console.log('set default server', server);
         // TODO: maybe custom type as we get only label from node
         const registration: ServerRegistrationNonsensitive = {url: server, name: server};
-        await extensionGlobals.context.globalState.update(this.customRegistriesKey2, registration);
+        await this.context.globalState.update(this.customRegistriesKey2, registration);
     }
 
     public async chooseDefaultServer(): Promise<void> {
@@ -119,7 +120,7 @@ export class ServerRegistrationManager {
         if (registration) {
             extensionGlobals.statusBarItem.text = '$(database) ' + registration.name;
         }
-        await extensionGlobals.context.globalState.update(this.customRegistriesKey2, registration);
+        await this.context.globalState.update(this.customRegistriesKey2, registration);
     }
 
     public async getDefaultServer(): Promise<ServerRegistration> {

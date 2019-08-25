@@ -18,5 +18,6 @@ export const TYPES = {
     LanguageServerManager: Symbol('LanguageServerManager'),
     LanguageSupport: Symbol('LanguageSupport'),
     AppsExplorerProvider: Symbol('AppsExplorerProvider'),
-    StreamsExplorerProvider: Symbol('StreamsExplorerProvider')
+    StreamsExplorerProvider: Symbol('StreamsExplorerProvider'),
+    IconManager: Symbol('IconManager')
 };

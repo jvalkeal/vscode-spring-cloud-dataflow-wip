@@ -18,6 +18,7 @@ import { ScdfModel } from "../../service/scdf-model";
 import { StreamNode } from "./stream-node";
 import { AppTypeNode, AppType } from "./app-type-node";
 import { ServerRegistration } from "../../service/server-registration-manager";
+import { IconManager } from "../../language/core/icon-manager";
 
 /**
  * Enumeration of a possible child types under server in a dataflow. Mostly following web
@@ -33,8 +34,8 @@ export enum ServerMode {
  */
 export class ServerNode extends BaseNode {
 
-    constructor(private readonly registration: ServerRegistration, private readonly mode: ServerMode) {
-        super(registration.name, 'serverRegistration');
+    constructor(iconManager: IconManager, private readonly registration: ServerRegistration, private readonly mode: ServerMode) {
+        super(registration.name, iconManager, 'serverRegistration');
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {
@@ -50,17 +51,17 @@ export class ServerNode extends BaseNode {
 
     private async getAppTypeNodes(): Promise<AppTypeNode[]> {
         let nodes: AppTypeNode[] = [];
-        nodes.push(new AppTypeNode('App', AppType.App, this.registration));
-        nodes.push(new AppTypeNode('Source', AppType.Source, this.registration));
-        nodes.push(new AppTypeNode('Processor', AppType.Processor, this.registration));
-        nodes.push(new AppTypeNode('Sink', AppType.Sink, this.registration));
-        nodes.push(new AppTypeNode('Task', AppType.Task, this.registration));
+        nodes.push(new AppTypeNode('App', this.getIconManager(), AppType.App, this.registration));
+        nodes.push(new AppTypeNode('Source', this.getIconManager(), AppType.Source, this.registration));
+        nodes.push(new AppTypeNode('Processor', this.getIconManager(), AppType.Processor, this.registration));
+        nodes.push(new AppTypeNode('Sink', this.getIconManager(), AppType.Sink, this.registration));
+        nodes.push(new AppTypeNode('Task', this.getIconManager(), AppType.Task, this.registration));
         return nodes;
     }
 
     private async getStreamNodes(): Promise<StreamNode[]> {
         const scdfModel = new ScdfModel(this.registration);
         const serverId = this.registration.url.replace(/[^\w]/g, '');
-        return scdfModel.getStreams().then(streams => streams.map(app => new StreamNode(app.name, serverId, this.registration)));
+        return scdfModel.getStreams().then(streams => streams.map(app => new StreamNode(app.name, this.getIconManager(), serverId, this.registration)));
     }
 }
