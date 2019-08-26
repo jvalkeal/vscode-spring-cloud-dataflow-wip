@@ -19,11 +19,11 @@ import { LanguageSupport } from "./language-support";
 
 export class LanguageServerManager {
 
-    private clients: Map<String, LanguageClient> = new Map();
+    private clients: Map<string, LanguageClient> = new Map();
 
     constructor(
         private context: ExtensionContext,
-        private languageSupports: LanguageSupport[] = []
+        languageSupports: LanguageSupport[] = []
     ){
         languageSupports.forEach(ls => {
             const lc = ls.buildLanguageClient();
@@ -41,5 +41,9 @@ export class LanguageServerManager {
             return lc;
         }
         throw new Error();
+    }
+
+    public getLanguageClients():LanguageClient[] {
+        return [...this.clients.values()];
     }
 }

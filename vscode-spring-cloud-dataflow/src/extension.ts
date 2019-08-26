@@ -24,7 +24,7 @@ import { StreamDebugConfigurationProvider } from './debug/stream-debug';
 import { TYPES as SCDFTYPES } from './types';
 import { LanguageServerManager } from './language/core/language-server-manager';
 
-let languageClient: LanguageClient;
+let languageClients: LanguageClient[] = [];
 
 export function activate(context: ExtensionContext) {
     container.bind<ExtensionContext>(TYPES.ExtensionContext).toConstantValue(context);
@@ -36,12 +36,14 @@ export function activate(context: ExtensionContext) {
     const lsm = container.get<LanguageServerManager>(SCDFTYPES.LanguageServerManager);
 
     context.subscriptions.push(debug.registerDebugConfigurationProvider(LANGUAGE_SCDF_STREAM_PREFIX, new StreamDebugConfigurationProvider()));
+    languageClients = lsm.getLanguageClients();
 }
 
 export function deactivate() {
-    if (languageClient) {
-        languageClient.stop();
-    }
+    languageClients.forEach(lc => {
+        lc.stop();
+    });
+    languageClients = [];
 }
 
 interface DataflowStreamCreateParams {
