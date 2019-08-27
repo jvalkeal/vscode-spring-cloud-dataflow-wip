@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 import { ExtensionContext } from 'vscode';
-import { AbstractExtension } from './language/core/abstract-extension';
-import { ScdfExtension } from './scdf-extension';
 
-let extension: AbstractExtension|undefined;
+export abstract class AbstractExtension {
 
-export function activate(context: ExtensionContext) {
-    extension = new ScdfExtension(context);
-    extension.activate();
-}
+    constructor(
+        protected context: ExtensionContext
+    ){}
 
-export function deactivate() {
-    if (extension) {
-        extension.deactivate();
+    public activate(): void {
+        this.onActivate(this.context);
+        this.afterActivate(this.context);
     }
-    extension = undefined;
+
+    public deactivate(): void {
+        this.onDeactivate(this.context);
+    }
+
+    public onActivate(context: ExtensionContext): void {}
+    public afterActivate(context: ExtensionContext): void {}
+    public onDeactivate(context: ExtensionContext): void {}
 }
