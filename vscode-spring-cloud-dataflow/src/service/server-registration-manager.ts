@@ -153,18 +153,20 @@ export class ServerRegistrationManager {
 
     public async getServers(): Promise<ServerRegistration[]> {
         let servers: ServerRegistration[] = [];
-        const nonsensitive = await this.settingsManager.getNonsensitive<ServerRegistrationNonsensitive[]>(this.customRegistriesKey);
-        for (let reg of nonsensitive) {
-            let key = this.getUsernamePwdKey(reg.name);
-            let credentials = await this.settingsManager.getSensitive<ServerRegistrationCredentials>(key);
-            if (credentials) {
-                servers.push({
-                    url: reg.url,
-                    name: reg.name,
-                    credentials
-                });
+        try {
+            const nonsensitive = await this.settingsManager.getNonsensitive<ServerRegistrationNonsensitive[]>(this.customRegistriesKey);
+            for (let reg of nonsensitive) {
+                let key = this.getUsernamePwdKey(reg.name);
+                let credentials = await this.settingsManager.getSensitive<ServerRegistrationCredentials>(key);
+                if (credentials) {
+                    servers.push({
+                        url: reg.url,
+                        name: reg.name,
+                        credentials
+                    });
+                }
             }
-        }
+        } catch (error) {}
         return servers;
     }
 
