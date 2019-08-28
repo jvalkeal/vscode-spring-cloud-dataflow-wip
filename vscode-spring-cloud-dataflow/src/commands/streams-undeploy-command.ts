@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 import { injectable, inject } from 'inversify';
+import { LanguageServerManager } from '@pivotal-tools/vscode-extension-core';
 import { Command } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_STREAMS_UNDEPLOY, LSP_SCDF_UNDEPLOY_STREAM } from '../extension-globals';
 import { DataflowStreamCreateParams } from './stream-commands';
 import { TYPES } from '../types';
-import { LanguageServerManager } from '../language/core/language-server-manager';
 
 @injectable()
 export class StreamsUndeployCommand implements Command {

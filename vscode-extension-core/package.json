@@ -27,7 +27,8 @@
   },
   "dependencies": {
     "inversify": "^5.0.1",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "vscode-languageclient": "^5.2.1"
   },
   "devDependencies": {
     "@types/keytar": "^4.4.0",

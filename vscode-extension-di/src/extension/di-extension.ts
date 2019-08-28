@@ -15,8 +15,10 @@
  */
 import { ExtensionContext } from 'vscode';
 import { Container } from 'inversify';
-import { coreContainerModule, TYPES as DITYPES, ExtensionActivateManager } from '@pivotal-tools/vscode-extension-di';
-import { AbstractExtension } from '../core/abstract-extension';
+import { AbstractExtension } from '@pivotal-tools/vscode-extension-core';
+import { TYPES } from '../core/types';
+import { ExtensionActivateManager } from '../core/extension-activate-manager';
+import coreContainerModule from '../core/di.config';
 
 export class DiExtension extends AbstractExtension {
 
@@ -29,12 +31,12 @@ export class DiExtension extends AbstractExtension {
 
     public onActivate(context: ExtensionContext): void {
         this.container = this.buildContainer();
-        this.container.bind<ExtensionContext>(DITYPES.ExtensionContext).toConstantValue(context);
+        this.container.bind<ExtensionContext>(TYPES.ExtensionContext).toConstantValue(context);
         this.onContainer(this.container);
     }
 
     public afterActivate(context: ExtensionContext): void {
-        this.container.get<ExtensionActivateManager>(DITYPES.ExtensionActivateAware).onExtensionActivate(context);
+        this.container.get<ExtensionActivateManager>(TYPES.ExtensionActivateAware).onExtensionActivate(context);
     }
 
     public onDeactivate(context: ExtensionContext): void {

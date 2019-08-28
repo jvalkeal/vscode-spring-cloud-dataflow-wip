@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { IconManager, ThemedIconPath } from "@pivotal-tools/vscode-extension-core";
 import { BaseNode } from "./base-node";
 import { Uri } from "vscode";
 import { ScdfModel } from "../../service/scdf-model";
 import { RuntimeNode } from "./runtime-node";
 import { ServerRegistration } from "../../service/server-registration-manager";
-import { IconManager, ThemedIconPath } from "../../language/core/icon-manager";
 
 export class StreamNode extends BaseNode {
 

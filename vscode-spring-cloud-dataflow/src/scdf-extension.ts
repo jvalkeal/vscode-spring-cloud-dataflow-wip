@@ -16,17 +16,14 @@
 import 'reflect-metadata';
 import { ExtensionContext } from 'vscode';
 import { Container } from 'inversify';
-import { TYPES as DITYPES, ExtensionActivateManager } from '@pivotal-tools/vscode-extension-di';
-import { DiExtension } from './language/di/di-extension';
+import { LanguageSupport, LanguageServerManager, IconManager, StatusBarManager } from '@pivotal-tools/vscode-extension-core';
+import { TYPES as DITYPES, DiExtension } from '@pivotal-tools/vscode-extension-di';
 import { TYPES } from './types';
 import commandsContainerModule from './commands/di.config';
 import { ScdfLanguageSupport } from './language/scdf-language-support';
-import { LanguageSupport } from './language/core/language-support';
-import { LanguageServerManager } from './language/core/language-server-manager';
-import { IconManager } from './language/core/icon-manager';
 import { AppsExplorerProvider } from './explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
-import { StatusBarManager } from './language/core/status-bar-manager';
+import { COMMAND_SCDF_SERVER_CHOOSE } from './extension-globals';
 
 export class ScdfExtension extends DiExtension {
 
@@ -60,7 +57,11 @@ export class ScdfExtension extends DiExtension {
         ).inSingletonScope();
         container.bind<AppsExplorerProvider>(TYPES.AppsExplorerProvider).to(AppsExplorerProvider).inSingletonScope();
         container.bind<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider).to(StreamsExplorerProvider).inSingletonScope();
-        container.bind<StatusBarManager>(TYPES.StatusBarManager).to(StatusBarManager).inSingletonScope();
+        container.bind<StatusBarManager>(TYPES.StatusBarManager).toDynamicValue(
+            context => {
+                return new StatusBarManager(COMMAND_SCDF_SERVER_CHOOSE);
+            }
+        ).inSingletonScope();
 
         const appsExplorerProvider = container.get<AppsExplorerProvider>(TYPES.AppsExplorerProvider);
         const streamsExplorerProvider = container.get<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider);

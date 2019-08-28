@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
-import { IconManager, ThemedIconPath } from "../../language/core/icon-manager";
+import { IconManager, ThemedIconPath } from "@pivotal-tools/vscode-extension-core";
 
 export abstract class BaseNode {
 

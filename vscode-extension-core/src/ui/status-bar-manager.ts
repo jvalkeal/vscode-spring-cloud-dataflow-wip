@@ -15,7 +15,6 @@
  */
 import { injectable } from "inversify";
 import { StatusBarItem, StatusBarAlignment, window } from "vscode";
-import { COMMAND_SCDF_SERVER_CHOOSE } from "../../extension-globals";
 
 @injectable()
 export class StatusBarManager {
@@ -23,9 +22,10 @@ export class StatusBarManager {
     private statusBarItem: StatusBarItem;
 
     constructor(
+        private command: string
     ){
         this.statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 0);
-        this.statusBarItem.command = COMMAND_SCDF_SERVER_CHOOSE;
+        this.statusBarItem.command = command;
         this.statusBarItem.show();
     }
 

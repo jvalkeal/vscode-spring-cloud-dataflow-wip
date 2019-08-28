@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 import { TreeDataProvider, TreeItem, ProviderResult, EventEmitter, TextDocumentContentProvider, Uri, CancellationToken, Event, window } from "vscode";
+import { IconManager } from "@pivotal-tools/vscode-extension-core";
 import { BaseNode } from "./models/base-node";
 import { ServerNode, ServerMode } from "./models/server-node";
 import { ScdfModel } from "../service/scdf-model";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 import { ServerRegistrationManager } from "../service/server-registration-manager";
-import { IconManager } from "../language/core/icon-manager";
 
 @injectable()
 export class StreamsExplorerProvider implements TreeDataProvider<BaseNode>, TextDocumentContentProvider {

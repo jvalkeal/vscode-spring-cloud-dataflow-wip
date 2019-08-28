@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 import { injectable, inject } from 'inversify';
-import { SettingsManager } from '@pivotal-tools/vscode-extension-core';
+import { SettingsManager, LanguageServerManager, StatusBarManager } from '@pivotal-tools/vscode-extension-core';
 import { TYPES } from '@pivotal-tools/vscode-extension-di';
 import { registerServerInput } from '../commands/register-server';
 import { BaseNode } from '../explorer/models/base-node';
 import { commands, window, ExtensionContext } from 'vscode';
 import { TYPES as SCDFTYPES } from '../types';
-import { LanguageServerManager } from '../language/core/language-server-manager';
-import { StatusBarManager } from '../language/core/status-bar-manager';
 
 export interface ServerRegistrationNonsensitive {
     url: string;

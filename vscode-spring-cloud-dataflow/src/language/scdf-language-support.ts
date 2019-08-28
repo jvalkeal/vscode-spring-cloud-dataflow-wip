@@ -18,7 +18,7 @@ import * as Path from 'path';
 import { ExtensionContext, commands } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, NotificationType } from 'vscode-languageclient';
 import { TYPES } from '@pivotal-tools/vscode-extension-di';
-import { LanguageSupport } from './core/language-support';
+import { LanguageSupport } from '@pivotal-tools/vscode-extension-core';
 import {
     LANGUAGE_SERVER_JAR, LANGUAGE_SCDF_STREAM_PREFIX, LANGUAGE_SCDF_APP_PREFIX, CONFIG_PREFIX, LANGUAGE_SCDF_DESC,
     COMMAND_SCDF_SERVER_NOTIFY,

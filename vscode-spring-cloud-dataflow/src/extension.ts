@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ExtensionContext } from 'vscode';
-import { AbstractExtension } from './language/core/abstract-extension';
+import { AbstractExtension } from '@pivotal-tools/vscode-extension-core';
 import { ScdfExtension } from './scdf-extension';
 
 let extension: AbstractExtension|undefined;

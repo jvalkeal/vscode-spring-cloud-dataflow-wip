@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { IconManager } from "@pivotal-tools/vscode-extension-core";
 import { BaseNode } from "./base-node";
 import { ScdfModel, ScdfAppEntry } from "../../service/scdf-model";
 import { AppNode } from "./app-node";
 import { ServerRegistration } from "../../service/server-registration-manager";
-import { IconManager } from "../../language/core/icon-manager";
 
 /**
  * Enumeration of a possible app types in a dataflow. These are hardcoded

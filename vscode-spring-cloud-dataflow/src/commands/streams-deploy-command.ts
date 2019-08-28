@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import { injectable, inject } from 'inversify';
+import { LanguageServerManager } from '@pivotal-tools/vscode-extension-core';
 import { Command } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_STREAMS_DEPLOY, LSP_SCDF_DEPLOY_STREAM } from '../extension-globals';
 import { DataflowStreamCreateParams } from './stream-commands';
-import { LanguageServerManager } from '../language/core/language-server-manager';
 import { TYPES } from '../types';
 
 @injectable()

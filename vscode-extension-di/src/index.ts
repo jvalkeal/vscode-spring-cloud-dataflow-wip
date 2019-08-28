@@ -17,5 +17,6 @@ export * from './core/command/command';
 export * from './core/command/commands-manager';
 export * from './core/extension-activate-manager';
 export * from './core/types';
+export * from './extension/di-extension';
 import coreContainerModule from './core/di.config';
 export { coreContainerModule };

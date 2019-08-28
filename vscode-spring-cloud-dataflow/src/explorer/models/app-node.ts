@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { IconManager, ThemedIconPath } from "@pivotal-tools/vscode-extension-core";
 import { BaseNode } from "./base-node";
 import { AppType } from "./app-type-node";
 import { AppVersionNode } from "./app-version-node";
-import { IconManager, ThemedIconPath } from "../../language/core/icon-manager";
 
 /**
  * Generic node which is any of {@link AppType}.
