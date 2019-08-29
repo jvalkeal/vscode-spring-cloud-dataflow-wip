@@ -21,17 +21,17 @@ import { TYPES } from '@pivotal-tools/vscode-extension-di';
 import { LanguageSupport } from '@pivotal-tools/vscode-extension-core';
 import {
     LANGUAGE_SERVER_JAR, LANGUAGE_SCDF_STREAM_PREFIX, LANGUAGE_SCDF_APP_PREFIX, CONFIG_PREFIX, LANGUAGE_SCDF_DESC,
-    COMMAND_SCDF_SERVER_NOTIFY,
-    COMMAND_SCDF_EXPLORER_REFRESH
+    COMMAND_SCDF_SERVER_NOTIFY, COMMAND_SCDF_EXPLORER_REFRESH, LSP_SCDF_CREATED_STREAM, LSP_SCDF_DEPLOYED_STREAM,
+    LSP_SCDF_UNDEPLOYED_STREAM, LSP_SCDF_DESTROYED_STREAM
 } from '../extension-globals';
 
 @injectable()
 export class ScdfLanguageSupport implements LanguageSupport {
 
-    private destroyedStreamNotification = new NotificationType<void,void>("scdf/destroyedStream");
-    private createdStreamNotification = new NotificationType<void,void>("scdf/createdStream");
-    private deployedStreamNotification = new NotificationType<void,void>("scdf/deployedStream");
-    private undeployedStreamNotification = new NotificationType<void,void>("scdf/undeployedStream");
+    private destroyedStreamNotification = new NotificationType<void,void>(LSP_SCDF_DESTROYED_STREAM);
+    private createdStreamNotification = new NotificationType<void,void>(LSP_SCDF_CREATED_STREAM);
+    private deployedStreamNotification = new NotificationType<void,void>(LSP_SCDF_DEPLOYED_STREAM);
+    private undeployedStreamNotification = new NotificationType<void,void>(LSP_SCDF_UNDEPLOYED_STREAM);
 
     constructor(
         @inject(TYPES.ExtensionContext)private context: ExtensionContext

@@ -42,3 +42,7 @@ export const LSP_SCDF_CREATE_STREAM: string = CONFIG_PREFIX + '/createStream';
 export const LSP_SCDF_DEPLOY_STREAM: string = CONFIG_PREFIX + '/deployStream';
 export const LSP_SCDF_UNDEPLOY_STREAM: string = CONFIG_PREFIX + '/undeployStream';
 export const LSP_SCDF_DESTROY_STREAM: string = CONFIG_PREFIX + '/destroyStream';
+export const LSP_SCDF_CREATED_STREAM: string = CONFIG_PREFIX + '/createdStream';
+export const LSP_SCDF_DEPLOYED_STREAM: string = CONFIG_PREFIX + '/deployedStream';
+export const LSP_SCDF_UNDEPLOYED_STREAM: string = CONFIG_PREFIX + '/undeployedStream';
+export const LSP_SCDF_DESTROYED_STREAM: string = CONFIG_PREFIX + '/destroyedStream';

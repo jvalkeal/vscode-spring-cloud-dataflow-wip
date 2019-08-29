@@ -16,7 +16,9 @@
 import 'reflect-metadata';
 import { ExtensionContext } from 'vscode';
 import { Container } from 'inversify';
-import { LanguageSupport, LanguageServerManager, IconManager, StatusBarManager } from '@pivotal-tools/vscode-extension-core';
+import {
+    LanguageSupport, LanguageServerManager, IconManager, StatusBarManager
+} from '@pivotal-tools/vscode-extension-core';
 import { TYPES as DITYPES, DiExtension } from '@pivotal-tools/vscode-extension-di';
 import { TYPES } from './types';
 import commandsContainerModule from './commands/di.config';
@@ -58,15 +60,12 @@ export class ScdfExtension extends DiExtension {
         container.bind<AppsExplorerProvider>(TYPES.AppsExplorerProvider).to(AppsExplorerProvider).inSingletonScope();
         container.bind<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider).to(StreamsExplorerProvider).inSingletonScope();
         container.bind<StatusBarManager>(TYPES.StatusBarManager).toDynamicValue(
-            context => {
-                return new StatusBarManager(COMMAND_SCDF_SERVER_CHOOSE);
-            }
+            () => new StatusBarManager(COMMAND_SCDF_SERVER_CHOOSE)
         ).inSingletonScope();
 
-        const appsExplorerProvider = container.get<AppsExplorerProvider>(TYPES.AppsExplorerProvider);
-        const streamsExplorerProvider = container.get<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider);
-        const lsm = container.get<LanguageServerManager>(TYPES.LanguageServerManager);
-
+        // to fire put build flow
+        container.get<AppsExplorerProvider>(TYPES.AppsExplorerProvider);
+        container.get<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider);
+        container.get<LanguageServerManager>(TYPES.LanguageServerManager);
     }
-
 }
