@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const TYPES = {
-    ExtensionActivateAware: Symbol('ExtensionActivateAware'),
-    ExtensionContextAware: Symbol('ExtensionContextAware'),
-    ExtensionContext: Symbol('ExtensionContext'),
-    Command: Symbol('Command'),
-    CommandManager: Symbol('CommandManager'),
-    SettingsManager: Symbol('SettingsManager'),
-    NotificationManager: Symbol('NotificationManager')
-};
+import { window } from 'vscode';
+
+/**
+ * Simplifies to show notifications in a central way.
+ */
+export class NotificationManager {
+
+    constructor(){}
+
+    public showMessage(text: string): void {
+        window.showInformationMessage(text);
+    }
+}

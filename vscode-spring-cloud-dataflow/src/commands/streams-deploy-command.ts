@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import { injectable, inject } from 'inversify';
-import { LanguageServerManager } from '@pivotal-tools/vscode-extension-core';
-import { Command } from '@pivotal-tools/vscode-extension-di';
+import { LanguageServerManager, NotificationManager } from '@pivotal-tools/vscode-extension-core';
+import { Command, TYPES as DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_STREAMS_DEPLOY, LSP_SCDF_DEPLOY_STREAM } from '../extension-globals';
 import { DataflowStreamCreateParams } from './stream-commands';
 import { TYPES } from '../types';
@@ -24,7 +24,8 @@ import { TYPES } from '../types';
 export class StreamsDeployCommand implements Command {
 
     constructor(
-        @inject(TYPES.LanguageServerManager)private languageServerManager: LanguageServerManager
+        @inject(TYPES.LanguageServerManager)private languageServerManager: LanguageServerManager,
+        @inject(DITYPES.NotificationManager) private notificationManager: NotificationManager
     ) {}
 
     get id() {
@@ -37,5 +38,6 @@ export class StreamsDeployCommand implements Command {
             definition: args[1]
         };
         this.languageServerManager.getLanguageClient('scdfs').sendNotification(LSP_SCDF_DEPLOY_STREAM, params);
+        this.notificationManager.showMessage('Stream deploy sent');
     }
 }

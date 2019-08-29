@@ -18,7 +18,7 @@ import * as Path from 'path';
 import { ExtensionContext, commands } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, NotificationType } from 'vscode-languageclient';
 import { TYPES } from '@pivotal-tools/vscode-extension-di';
-import { LanguageSupport } from '@pivotal-tools/vscode-extension-core';
+import { LanguageSupport, NotificationManager } from '@pivotal-tools/vscode-extension-core';
 import {
     LANGUAGE_SERVER_JAR, LANGUAGE_SCDF_STREAM_PREFIX, LANGUAGE_SCDF_APP_PREFIX, CONFIG_PREFIX, LANGUAGE_SCDF_DESC,
     COMMAND_SCDF_SERVER_NOTIFY, COMMAND_SCDF_EXPLORER_REFRESH, LSP_SCDF_CREATED_STREAM, LSP_SCDF_DEPLOYED_STREAM,
@@ -34,7 +34,8 @@ export class ScdfLanguageSupport implements LanguageSupport {
     private undeployedStreamNotification = new NotificationType<void,void>(LSP_SCDF_UNDEPLOYED_STREAM);
 
     constructor(
-        @inject(TYPES.ExtensionContext)private context: ExtensionContext
+        @inject(TYPES.ExtensionContext)private context: ExtensionContext,
+        @inject(TYPES.NotificationManager) private notificationManager: NotificationManager
     ) {}
 
     public getLanguageIds(): string[] {
@@ -54,6 +55,7 @@ export class ScdfLanguageSupport implements LanguageSupport {
                 commands.executeCommand(COMMAND_SCDF_EXPLORER_REFRESH);
             });
             languageClient.onNotification(this.deployedStreamNotification, () => {
+                this.notificationManager.showMessage('Stream deployed');
                 commands.executeCommand(COMMAND_SCDF_EXPLORER_REFRESH);
             });
             languageClient.onNotification(this.undeployedStreamNotification, () => {

@@ -22,3 +22,4 @@ export * from './language/language-server-manager';
 export * from './language/language-support';
 export * from './ui/icon-manager';
 export * from './ui/status-bar-manager';
+export * from './ui/notification-manager';

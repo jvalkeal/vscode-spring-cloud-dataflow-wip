@@ -16,7 +16,7 @@
 import { ExtensionContext } from 'vscode';
 import { ContainerModule, decorate, injectable, inject } from 'inversify';
 import {
-    ExtensionActivateAware, ExtensionContextAware, SettingsManager, DefaultSettingsManager
+    ExtensionActivateAware, ExtensionContextAware, SettingsManager, DefaultSettingsManager, NotificationManager
 } from '@pivotal-tools/vscode-extension-core';
 import { TYPES } from './types';
 import { ExtensionActivateManager } from './extension-activate-manager';
@@ -25,13 +25,12 @@ import { CommandsManager } from './command/commands-manager';
 const coreContainerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     bind<ExtensionActivateAware>(TYPES.ExtensionActivateAware).to(ExtensionActivateManager);
     bind<ExtensionContextAware>(TYPES.ExtensionContextAware).to(CommandsManager);
-
+    bind<NotificationManager>(TYPES.NotificationManager).toDynamicValue(() => new NotificationManager()).inSingletonScope();
     bind<SettingsManager>(TYPES.SettingsManager).toDynamicValue(
         context => {
-            const xxx = context.container.get<ExtensionContext>(TYPES.ExtensionContext);
-            return new DefaultSettingsManager(xxx);
+            const extensionContext = context.container.get<ExtensionContext>(TYPES.ExtensionContext);
+            return new DefaultSettingsManager(extensionContext);
         }
     );
-
 });
 export default coreContainerModule;
