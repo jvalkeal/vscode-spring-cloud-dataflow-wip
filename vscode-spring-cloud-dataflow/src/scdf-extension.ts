@@ -17,7 +17,7 @@ import 'reflect-metadata';
 import { ExtensionContext } from 'vscode';
 import { Container } from 'inversify';
 import {
-    LanguageSupport, LanguageServerManager, IconManager, StatusBarManager
+    LanguageSupport, LanguageServerManager, IconManager, StatusBarManager, NotificationManager
 } from '@pivotal-tools/vscode-extension-core';
 import { TYPES as DITYPES, DiExtension } from '@pivotal-tools/vscode-extension-di';
 import { TYPES } from './types';
@@ -67,5 +67,6 @@ export class ScdfExtension extends DiExtension {
         container.get<AppsExplorerProvider>(TYPES.AppsExplorerProvider);
         container.get<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider);
         container.get<LanguageServerManager>(TYPES.LanguageServerManager);
+        container.get<NotificationManager>(DITYPES.NotificationManager).setLocationKey('scdf.notification.location');
     }
 }

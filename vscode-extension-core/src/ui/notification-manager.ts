@@ -13,16 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { window } from 'vscode';
+import { window, workspace } from 'vscode';
 
 /**
  * Simplifies to show notifications in a central way.
  */
 export class NotificationManager {
 
-    constructor(){}
+    private locationKey: string|undefined;
+
+    constructor(
+    ){
+    }
+
+    public setLocationKey(locationKey: string) {
+        this.locationKey = locationKey;
+    }
 
     public showMessage(text: string): void {
-        window.showInformationMessage(text);
+        let showInNotifications = true;
+        if (this.locationKey) {
+            const location = workspace.getConfiguration().get<string>(this.locationKey);
+            if (location === 'statusbar') {
+                showInNotifications = false;
+            }
+        }
+        if (showInNotifications) {
+            window.showInformationMessage(text);
+        } else {
+            window.setStatusBarMessage(text, 5000);
+        }
     }
 }

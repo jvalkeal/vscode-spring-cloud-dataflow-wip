@@ -93,6 +93,23 @@
 				"category": "SCDF"
 			}
 		],
+		"configuration": [
+			{
+				"title": "SCDF Notification Settings",
+				"properties": {
+					"scdf.notification.location": {
+						"type": "string",
+						"enum": [
+							"statusbar",
+							"notifications"
+						],
+						"default": "notifications",
+						"description": "Where notifications are shown",
+						"scope": "window"
+					}
+				}
+			}
+		],
 		"menus": {
 			"commandPalette": [
 				{
