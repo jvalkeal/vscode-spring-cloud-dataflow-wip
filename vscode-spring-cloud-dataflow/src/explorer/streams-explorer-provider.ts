@@ -39,7 +39,7 @@ export class StreamsExplorerProvider implements TreeDataProvider<BaseNode>, Text
 		@inject(DITYPES.ExtensionContext)private extensionContext: ExtensionContext
     ) {
 		window.createTreeView('scdfStreams', { treeDataProvider: this });
-		extensionContext.subscriptions.push(workspace.registerTextDocumentContentProvider('scdfs', this));
+		this.extensionContext.subscriptions.push(workspace.registerTextDocumentContentProvider('scdfs', this));
 	}
 
 	getChildren(element?: BaseNode | undefined): ProviderResult<BaseNode[]> {
