@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './core/security/keytar';
-export * from './core/security/settings-manager';
+export * from './security/keytar';
+export * from './security/settings-manager';
 export * from './core/extension-context-aware';
 export * from './core/extension-activate-aware';
 export * from './extension/abstract-extension';
