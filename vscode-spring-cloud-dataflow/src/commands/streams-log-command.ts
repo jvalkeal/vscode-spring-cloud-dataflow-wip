@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { injectable } from 'inversify';
-import { Command } from '@pivotal-tools/vscode-extension-di';
+import { injectable, inject } from 'inversify';
+import { OutputManager }  from '@pivotal-tools/vscode-extension-core';
+import { Command, TYPES as DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_STREAMS_LOG } from '../extension-globals';
 import { ServerRegistration } from '../service/server-registration-manager';
 import { ScdfModel } from '../service/scdf-model';
-import { window } from 'vscode';
 
 @injectable()
 export class StreamsLogCommand implements Command {
 
     constructor(
+        @inject(DITYPES.OutputManager)private outputManager: OutputManager
     ) {}
 
     get id() {
@@ -33,12 +34,9 @@ export class StreamsLogCommand implements Command {
     async execute(...args: any[]) {
         const server: ServerRegistration = args[0].registration;
         const model = new ScdfModel(server);
-        const data = await model.streamLogs(args[0].label);
+        const data = await model.streamLogs(args[0].streamName);
         Object.keys(data.logs).map(key => {
-            const output = window.createOutputChannel('SCDF ' + key);
-            output.clear();
-            output.append(data.logs[key]);
-            output.show();
+            this.outputManager.setText('SCDF ' + key, data.logs[key]);
         });
     }
 }

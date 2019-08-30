@@ -24,7 +24,7 @@ export class StreamNode extends BaseNode {
 
     constructor(
         label: string,
-        private readonly streamName: string,
+        public readonly streamName: string,
         iconManager: IconManager,
         private readonly serverId: string,
         private readonly registration: ServerRegistration

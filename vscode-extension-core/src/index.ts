@@ -23,3 +23,4 @@ export * from './language/language-support';
 export * from './ui/icon-manager';
 export * from './ui/status-bar-manager';
 export * from './ui/notification-manager';
+export * from './ui/output-manager';

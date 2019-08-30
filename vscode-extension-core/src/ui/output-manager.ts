@@ -13,13 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const TYPES = {
-    ExtensionActivateAware: Symbol('ExtensionActivateAware'),
-    ExtensionContextAware: Symbol('ExtensionContextAware'),
-    ExtensionContext: Symbol('ExtensionContext'),
-    Command: Symbol('Command'),
-    CommandManager: Symbol('CommandManager'),
-    SettingsManager: Symbol('SettingsManager'),
-    NotificationManager: Symbol('NotificationManager'),
-    OutputManager: Symbol('OutputManager')
-};
+import { window, OutputChannel } from 'vscode';
+
+export class OutputManager {
+
+    private outputs = new Map<string, OutputChannel>();
+
+    constructor(
+    ) {}
+
+    public getOutput(key: string): OutputChannel {
+        let output = this.outputs.get(key);
+        if (!output) {
+            output = window.createOutputChannel(key);
+            this.outputs.set(key, output);
+        }
+        return output;
+    }
+
+    public setText(key: string, text: string): void {
+        const output = this.getOutput(key);
+        output.clear();
+        output.append(text);
+        output.show();
+    }
+}
