@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Uri } from "vscode";
-import { ScdfService } from "./scdf-service";
-import { ServerRegistration } from "./server-registration-manager";
+import { Uri } from 'vscode';
+import { ScdfService } from './scdf-service';
+import { ServerRegistration } from './server-registration-manager';
 
 export interface BaseEntry {
     _links: {self: Uri};

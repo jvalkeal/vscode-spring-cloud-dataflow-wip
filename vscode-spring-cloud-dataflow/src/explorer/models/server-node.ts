@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { IconManager } from "@pivotal-tools/vscode-extension-core";
-import { BaseNode } from "./base-node";
-import { ScdfModel } from "../../service/scdf-model";
-import { StreamNode } from "./stream-node";
-import { AppTypeNode, AppType } from "./app-type-node";
-import { ServerRegistration } from "../../service/server-registration-manager";
+import { IconManager } from '@pivotal-tools/vscode-extension-core';
+import { BaseNode } from './base-node';
+import { ScdfModel } from '../../service/scdf-model';
+import { StreamNode } from './stream-node';
+import { AppTypeNode, AppType } from './app-type-node';
+import { ServerRegistration } from '../../service/server-registration-manager';
 
 /**
  * Enumeration of a possible child types under server in a dataflow. Mostly following web
@@ -34,7 +34,11 @@ export enum ServerMode {
  */
 export class ServerNode extends BaseNode {
 
-    constructor(iconManager: IconManager, private readonly registration: ServerRegistration, private readonly mode: ServerMode) {
+    constructor(
+        iconManager: IconManager,
+        private readonly registration: ServerRegistration,
+        private readonly mode: ServerMode
+    ) {
         super(registration.name, iconManager, 'serverRegistration');
     }
 
@@ -62,6 +66,8 @@ export class ServerNode extends BaseNode {
     private async getStreamNodes(): Promise<StreamNode[]> {
         const scdfModel = new ScdfModel(this.registration);
         const serverId = this.registration.url.replace(/[^\w]/g, '');
-        return scdfModel.getStreams().then(streams => streams.map(app => new StreamNode(app.name, this.getIconManager(), serverId, this.registration)));
+        return scdfModel.getStreams().then(streams =>
+            streams.map(app =>
+                new StreamNode(`${app.name} (${app.status})`, app.name, this.getIconManager(), serverId, this.registration)));
     }
 }

@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TreeItem, TreeItemCollapsibleState } from "vscode";
-import { IconManager, ThemedIconPath } from "@pivotal-tools/vscode-extension-core";
+import { TreeItem, TreeItemCollapsibleState } from 'vscode';
+import { IconManager, ThemedIconPath } from '@pivotal-tools/vscode-extension-core';
 
 export abstract class BaseNode {
 
-    public readonly label: string;
-
-    protected constructor(label: string, private iconManager: IconManager, private readonly contextValue?: string) {
-        this.label = label;
+    protected constructor(
+        public readonly label: string,
+        private iconManager: IconManager,
+        private readonly contextValue?: string
+    ) {
     }
 
     public getTreeItem(): TreeItem {

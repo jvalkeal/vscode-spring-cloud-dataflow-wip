@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { IconManager, ThemedIconPath } from "@pivotal-tools/vscode-extension-core";
-import { BaseNode } from "./base-node";
-import { Uri } from "vscode";
-import { ScdfModel } from "../../service/scdf-model";
-import { RuntimeNode } from "./runtime-node";
-import { ServerRegistration } from "../../service/server-registration-manager";
+import { Uri } from 'vscode';
+import { IconManager, ThemedIconPath } from '@pivotal-tools/vscode-extension-core';
+import { BaseNode } from './base-node';
+import { ScdfModel } from '../../service/scdf-model';
+import { RuntimeNode } from './runtime-node';
+import { ServerRegistration } from '../../service/server-registration-manager';
 
 export class StreamNode extends BaseNode {
 
-    constructor(label: string, iconManager: IconManager, private readonly serverId: string, private readonly registration: ServerRegistration) {
+    constructor(
+        label: string,
+        private readonly streamName: string,
+        iconManager: IconManager,
+        private readonly serverId: string,
+        private readonly registration: ServerRegistration
+    ) {
         super(label, iconManager, 'definedStream');
     }
 
@@ -30,7 +36,7 @@ export class StreamNode extends BaseNode {
         // so that provideTextDocumentContent in StreamsExplorerProvider can
         // use correct server to request stream dsl by using serverId as
         // authority from a path
-        return Uri.parse(`scdfs://${this.serverId}/streams/${this.label}.scdfs`);
+        return Uri.parse(`scdfs://${this.serverId}/streams/${this.streamName}.scdfs`);
     }
 
     protected getThemedIconPath(): ThemedIconPath {
@@ -44,9 +50,9 @@ export class StreamNode extends BaseNode {
     private async getAppNodes(): Promise<RuntimeNode[]> {
         const appNodes: RuntimeNode[] = [];
         const scdfModel = new ScdfModel(this.registration);
-        await scdfModel.getStreamRuntime(this.label)
+        await scdfModel.getStreamRuntime(this.streamName)
             .then(runtimes => runtimes
-                .filter(runtime => runtime.name === this.label)
+                .filter(runtime => runtime.name === this.streamName)
                 .forEach(runtime => {
                     runtime.applications.forEach(application => {
                         appNodes.push(new RuntimeNode(application.name, this.getIconManager(), application.instances));
