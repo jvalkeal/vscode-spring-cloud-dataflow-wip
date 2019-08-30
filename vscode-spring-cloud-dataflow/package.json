@@ -83,6 +83,11 @@
 				"category": "SCDF"
 			},
 			{
+				"command": "vscode-spring-cloud-dataflow.streams.log.closeall",
+				"title": "Close All Stream Logs",
+				"category": "SCDF"
+			},
+			{
 				"command": "vscode-spring-cloud-dataflow.streams.deploy",
 				"title": "Deploy Stream",
 				"category": "SCDF"

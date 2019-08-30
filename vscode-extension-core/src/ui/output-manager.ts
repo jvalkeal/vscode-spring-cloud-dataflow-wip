@@ -37,4 +37,9 @@ export class OutputManager {
         output.append(text);
         output.show();
     }
+
+    public disposeAll(): void {
+        [...this.outputs.values()].forEach(channel => channel.dispose());
+        this.outputs.clear();
+    }
 }

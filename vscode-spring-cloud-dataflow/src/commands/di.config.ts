@@ -33,6 +33,7 @@ import { StreamsShowCommand } from './streams-show-command';
 import { ExplorerRefreshCommand } from './explorer-refresh-command';
 import { StreamDebugLaunchCommand } from './stream-debug-launch-command';
 import { StreamDebugAttachCommand } from './stream-debug-attach-command';
+import { StreamsLogCloseallCommand } from './streams-log-closeall-command';
 
 const commandsContainerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     bind<ServerRegistrationManager>(TYPES.ServerRegistrationManager).to(ServerRegistrationManager).inSingletonScope();
@@ -50,6 +51,7 @@ const commandsContainerModule = new ContainerModule((bind, unbind, isBound, rebi
     bind<Command>(DITYPES.Command).to(AppsRegisterCommand);
     bind<Command>(DITYPES.Command).to(AppsUnregisterCommand);
     bind<Command>(DITYPES.Command).to(StreamsLogCommand);
+    bind<Command>(DITYPES.Command).to(StreamsLogCloseallCommand);
     bind<Command>(DITYPES.Command).to(StreamsShowCommand);
     bind<Command>(DITYPES.Command).to(ExplorerRefreshCommand);
 });
