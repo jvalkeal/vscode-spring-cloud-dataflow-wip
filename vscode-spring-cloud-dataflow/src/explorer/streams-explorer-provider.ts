@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TreeDataProvider, TreeItem, ProviderResult, EventEmitter, TextDocumentContentProvider, Uri, CancellationToken, Event, window } from "vscode";
-import { IconManager } from "@pivotal-tools/vscode-extension-core";
-import { BaseNode } from "./models/base-node";
-import { ServerNode, ServerMode } from "./models/server-node";
-import { ScdfModel } from "../service/scdf-model";
-import { inject, injectable } from "inversify";
-import { TYPES } from "../types";
-import { ServerRegistrationManager } from "../service/server-registration-manager";
+import {
+	TreeDataProvider, TreeItem, ProviderResult, EventEmitter, TextDocumentContentProvider, Uri, CancellationToken,
+	Event, window, ExtensionContext, workspace
+} from 'vscode';
+import { inject, injectable } from 'inversify';
+import { IconManager } from '@pivotal-tools/vscode-extension-core';
+import { TYPES as DITYPES} from '@pivotal-tools/vscode-extension-di';
+import { BaseNode } from './models/base-node';
+import { ServerNode, ServerMode } from './models/server-node';
+import { ScdfModel } from '../service/scdf-model';
+import { TYPES } from '../types';
+import { ServerRegistrationManager } from '../service/server-registration-manager';
 
 @injectable()
 export class StreamsExplorerProvider implements TreeDataProvider<BaseNode>, TextDocumentContentProvider {
@@ -31,9 +35,11 @@ export class StreamsExplorerProvider implements TreeDataProvider<BaseNode>, Text
 
     constructor(
         @inject(TYPES.ServerRegistrationManager)private serverRegistrationManager: ServerRegistrationManager,
-        @inject(TYPES.IconManager)private iconManager: IconManager
+		@inject(TYPES.IconManager)private iconManager: IconManager,
+		@inject(DITYPES.ExtensionContext)private extensionContext: ExtensionContext
     ) {
 		window.createTreeView('scdfStreams', { treeDataProvider: this });
+		extensionContext.subscriptions.push(workspace.registerTextDocumentContentProvider('scdfs', this));
 	}
 
 	getChildren(element?: BaseNode | undefined): ProviderResult<BaseNode[]> {
