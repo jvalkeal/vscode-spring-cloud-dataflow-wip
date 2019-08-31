@@ -21,6 +21,7 @@
 		"onView:scdfStreams",
 		"onView:scdfTasks",
 		"onLanguage:scdfs",
+		"onLanguage:scdft",
 		"onLanguage:scdfa",
 		"onCommand:vscode-spring-cloud-dataflow.explorer.refresh",
 		"onCommand:vscode-spring-cloud-dataflow.server.register",
@@ -156,6 +157,11 @@
 					"command": "vscode-spring-cloud-dataflow.explorer.refresh",
 					"when": "view == scdfStreams",
 					"group": "navigation"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.explorer.refresh",
+					"when": "view == scdfTasks",
+					"group": "navigation"
 				}
 			],
 			"view/item/context": [
@@ -196,6 +202,15 @@
 				]
 			},
 			{
+				"id": "scdft",
+				"aliases": [
+					"Spring Cloud Data Flow Task Language"
+				],
+				"extensions": [
+					".scdft"
+				]
+			},
+			{
 				"id": "scdfa",
 				"aliases": [
 					"Spring Cloud Data Flow App Import Language"
@@ -223,6 +238,10 @@
 				{
 					"id": "scdfStreams",
 					"name": "Streams"
+				},
+				{
+					"id": "scdfTasks",
+					"name": "Tasks"
 				}
 			]
 		},

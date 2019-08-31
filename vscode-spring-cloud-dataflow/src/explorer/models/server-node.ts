@@ -19,6 +19,7 @@ import { ScdfModel } from '../../service/scdf-model';
 import { StreamNode } from './stream-node';
 import { AppTypeNode, AppType } from './app-type-node';
 import { ServerRegistration } from '../../service/server-registration-manager';
+import { TaskNode } from './task-node';
 
 /**
  * Enumeration of a possible child types under server in a dataflow. Mostly following web
@@ -26,7 +27,8 @@ import { ServerRegistration } from '../../service/server-registration-manager';
  */
 export enum ServerMode {
     Apps = 'apps',
-    Streams = 'streams'
+    Streams = 'streams',
+    Tasks = 'tasks'
 }
 
 /**
@@ -48,6 +50,8 @@ export class ServerNode extends BaseNode {
                 return this.getAppTypeNodes();
             case ServerMode.Streams:
                 return this.getStreamNodes();
+            case ServerMode.Tasks:
+                return this.getTaskNodes();
             default:
                 return super.getChildren(element);
         }
@@ -69,5 +73,13 @@ export class ServerNode extends BaseNode {
         return scdfModel.getStreams().then(streams =>
             streams.map(app =>
                 new StreamNode(`${app.name} (${app.status})`, app.name, this.getIconManager(), serverId, this.registration)));
+    }
+
+    private async getTaskNodes(): Promise<TaskNode[]> {
+        const scdfModel = new ScdfModel(this.registration);
+        const serverId = this.registration.url.replace(/[^\w]/g, '');
+        return scdfModel.getTasks().then(tasks =>
+            tasks.map(app =>
+                new TaskNode(`${app.name} (${app.status})`, app.name, this.getIconManager(), serverId, this.registration)));
     }
 }

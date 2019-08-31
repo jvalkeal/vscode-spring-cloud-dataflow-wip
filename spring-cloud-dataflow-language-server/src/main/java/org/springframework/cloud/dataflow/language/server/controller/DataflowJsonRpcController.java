@@ -133,6 +133,38 @@ public class DataflowJsonRpcController {
 		}).then(lspClient.notification().method("scdf/destroyedStream").exchange());
 	}
 
+	@JsonRpcRequestMapping(method = "createTask")
+	@JsonRpcNotification
+	public Mono<Void> createTask(@JsonRpcRequestParams DataflowStreamCreateParams params, JsonRpcSession session,
+			LspClient lspClient) {
+		return Mono.fromRunnable(() -> {
+			log.debug("Client sending task create request, params {}", params);
+			DataFlowOperations operations = getDataFlowOperations(session);
+			if (operations != null) {
+				log.debug("Creating task {}", params);
+				operations.taskOperations().create(params.getName(), params.getDefinition());
+			} else {
+				log.info("Unable to create task");
+			}
+		}).then(lspClient.notification().method("scdf/createdTask").exchange());
+	}
+
+	@JsonRpcRequestMapping(method = "destroyTask")
+	@JsonRpcNotification
+	public Mono<Void> destroyTask(@JsonRpcRequestParams DataflowStreamCreateParams params, JsonRpcSession session,
+			LspClient lspClient) {
+		return Mono.fromRunnable(() -> {
+			log.debug("Client sending task destroy request, params {}", params);
+			DataFlowOperations operations = getDataFlowOperations(session);
+			if (operations != null) {
+				log.debug("Destroying task {}", params);
+				operations.taskOperations().destroy(params.getName());
+			} else {
+				log.info("Unable to destroy task");
+			}
+		}).then(lspClient.notification().method("scdf/destroyedTask").exchange());
+	}
+
 	protected DataFlowOperations getDataFlowOperations(JsonRpcSession session) {
 		org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams params = session
 				.getAttribute(DataflowLanguages.CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE);

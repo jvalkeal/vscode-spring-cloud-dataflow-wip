@@ -26,6 +26,7 @@ import { ScdfLanguageSupport } from './language/scdf-language-support';
 import { AppsExplorerProvider } from './explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
 import { COMMAND_SCDF_SERVER_CHOOSE } from './extension-globals';
+import { TasksExplorerProvider } from './explorer/tasks-explorer-provider';
 
 export class ScdfExtension extends DiExtension {
 
@@ -59,6 +60,7 @@ export class ScdfExtension extends DiExtension {
         ).inSingletonScope();
         container.bind<AppsExplorerProvider>(TYPES.AppsExplorerProvider).to(AppsExplorerProvider).inSingletonScope();
         container.bind<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider).to(StreamsExplorerProvider).inSingletonScope();
+        container.bind<TasksExplorerProvider>(TYPES.TasksExplorerProvider).to(TasksExplorerProvider).inSingletonScope();
         container.bind<StatusBarManager>(TYPES.StatusBarManager).toDynamicValue(
             () => new StatusBarManager(COMMAND_SCDF_SERVER_CHOOSE)
         ).inSingletonScope();
@@ -66,6 +68,7 @@ export class ScdfExtension extends DiExtension {
         // to fire put build flow
         container.get<AppsExplorerProvider>(TYPES.AppsExplorerProvider);
         container.get<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider);
+        container.get<TasksExplorerProvider>(TYPES.TasksExplorerProvider);
         container.get<LanguageServerManager>(TYPES.LanguageServerManager);
         container.get<NotificationManager>(DITYPES.NotificationManager).setLocationKey('scdf.notification.location');
     }

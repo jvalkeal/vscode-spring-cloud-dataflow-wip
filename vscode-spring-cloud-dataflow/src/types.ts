@@ -19,6 +19,7 @@ export const TYPES = {
     LanguageSupport: Symbol('LanguageSupport'),
     AppsExplorerProvider: Symbol('AppsExplorerProvider'),
     StreamsExplorerProvider: Symbol('StreamsExplorerProvider'),
+    TasksExplorerProvider: Symbol('TasksExplorerProvider'),
     IconManager: Symbol('IconManager'),
     StatusBarManager: Symbol('StatusBarManager')
 };

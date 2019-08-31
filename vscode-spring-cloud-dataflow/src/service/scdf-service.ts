@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import axios from 'axios';
-import { ScdfStreamEntry, ScdfAppEntry, ScdfStreamDeploymentEntry, ScdfStreamRuntimeEntry, ScdfStreamLogs } from './scdf-model';
+import { ScdfStreamEntry, ScdfAppEntry, ScdfStreamDeploymentEntry, ScdfStreamRuntimeEntry, ScdfStreamLogs, ScdfTaskEntry } from './scdf-model';
 import { ServerRegistration } from './server-registration-manager';
 
 export class ScdfService {
@@ -65,6 +65,22 @@ export class ScdfService {
             }
             catch (error) {
                 resolve(([] as ScdfStreamEntry[]));
+            }
+        });
+    }
+
+    public getTasks(registration: ServerRegistration): Thenable<ScdfTaskEntry[]> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const response = await axios.get(registration.url + '/tasks/definitions?page=0&size=1000', {
+                    auth: registration.credentials
+                });
+                const data = (response.data._embedded &&
+                    response.data._embedded.taskDefinitionResourceList) || [];
+                resolve((data as ScdfTaskEntry[]));
+            }
+            catch (error) {
+                resolve(([] as ScdfTaskEntry[]));
             }
         });
     }

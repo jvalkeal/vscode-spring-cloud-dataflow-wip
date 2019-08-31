@@ -36,6 +36,15 @@ export interface ScdfStreamEntry extends BaseEntry {
     statusDescription: string;
 }
 
+export interface ScdfTaskEntry extends BaseEntry {
+    name: string;
+    dslText: string;
+    description: string;
+    composed: boolean;
+    lastTaskExecution: string;
+    status: string;
+}
+
 interface DeploymentProperties {
     [key: string]: string;
 }
@@ -91,6 +100,10 @@ export class ScdfModel {
 
     public getStreams(): Thenable<ScdfStreamEntry[]> {
         return this.scdfService.getStreams(this.registration);
+    }
+
+    public getTasks(): Thenable<ScdfTaskEntry[]> {
+        return this.scdfService.getTasks(this.registration);
     }
 
     public getStreamDsl(streamName: string): Thenable<string> {

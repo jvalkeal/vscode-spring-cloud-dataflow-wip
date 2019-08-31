@@ -14,29 +14,28 @@
  * limitations under the License.
  */
 import { injectable, inject } from 'inversify';
+import { LanguageServerManager } from '@pivotal-tools/vscode-extension-core';
 import { Command } from '@pivotal-tools/vscode-extension-di';
-import { COMMAND_SCDF_EXPLORER_REFRESH } from '../extension-globals';
+import { COMMAND_SCDF_TASKS_DESTROY, LSP_SCDF_DESTROY_TASK } from '../extension-globals';
+import { DataflowStreamCreateParams } from './stream-commands';
 import { TYPES } from '../types';
-import { AppsExplorerProvider } from '../explorer/apps-explorer-provider';
-import { StreamsExplorerProvider } from '../explorer/streams-explorer-provider';
-import { TasksExplorerProvider } from '../explorer/tasks-explorer-provider';
 
 @injectable()
-export class ExplorerRefreshCommand implements Command {
+export class TasksDestroyCommand implements Command {
 
     constructor(
-        @inject(TYPES.AppsExplorerProvider) private appsExplorerProvider: AppsExplorerProvider,
-        @inject(TYPES.StreamsExplorerProvider) private streamsExplorerProvider: StreamsExplorerProvider,
-        @inject(TYPES.TasksExplorerProvider) private tasksExplorerProvider: TasksExplorerProvider
+        @inject(TYPES.LanguageServerManager)private languageServerManager: LanguageServerManager
     ) {}
 
     get id() {
-        return COMMAND_SCDF_EXPLORER_REFRESH;
+        return COMMAND_SCDF_TASKS_DESTROY;
     }
 
     execute(...args: any[]) {
-        this.appsExplorerProvider.refresh();
-        this.streamsExplorerProvider.refresh();
-        this.tasksExplorerProvider.refresh();
+        const params: DataflowStreamCreateParams = {
+            name: args[0],
+            definition: args[1]
+        };
+        this.languageServerManager.getLanguageClient('scdft').sendNotification(LSP_SCDF_DESTROY_TASK, params);
     }
 }
