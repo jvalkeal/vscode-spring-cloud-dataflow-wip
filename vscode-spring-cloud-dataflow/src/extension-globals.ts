@@ -38,6 +38,7 @@ export const COMMAND_SCDF_STREAMS_UNDEPLOY: string = 'vscode-spring-cloud-datafl
 export const COMMAND_SCDF_STREAMS_DESTROY: string = 'vscode-spring-cloud-dataflow.streams.destroy';
 export const COMMAND_SCDF_STREAM_DEBUG_ATTACH: string = 'vscode-spring-cloud-dataflow.streams.debugattach';
 export const COMMAND_SCDF_STREAM_DEBUG_LAUNCH: string = 'vscode-spring-cloud-dataflow.streams.debuglaunch';
+export const COMMAND_SCDF_TASKS_LOG: string = 'vscode-spring-cloud-dataflow.tasks.log';
 export const COMMAND_SCDF_TASKS_CREATE: string = 'vscode-spring-cloud-dataflow.tasks.create';
 export const COMMAND_SCDF_TASKS_LAUNCH: string = 'vscode-spring-cloud-dataflow.tasks.launch';
 export const COMMAND_SCDF_TASKS_DESTROY: string = 'vscode-spring-cloud-dataflow.tasks.destroy';

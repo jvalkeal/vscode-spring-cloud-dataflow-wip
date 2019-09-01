@@ -53,7 +53,11 @@ export class TaskNode extends BaseNode {
         await scdfModel.getTaskExecutions(this.taskName)
             .then(executions => executions
                 .forEach(execution => {
-                    executionNodes.push(new ExecutionNode(`${execution.executionId} (${execution.taskExecutionStatus})`, this.getIconManager()));
+                    executionNodes.push(new ExecutionNode(
+                        `${execution.executionId} (${execution.taskExecutionStatus})`,
+                        this.getIconManager(),
+                        execution.externalExecutionId,
+                        this.registration));
                 })
             );
         return executionNodes;

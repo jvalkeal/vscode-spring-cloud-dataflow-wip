@@ -97,6 +97,11 @@
 				"command": "vscode-spring-cloud-dataflow.streams.app.debugattach",
 				"title": "Debug Attach Application",
 				"category": "SCDF"
+			},
+			{
+				"command": "vscode-spring-cloud-dataflow.tasks.log",
+				"title": "Show Task Log",
+				"category": "SCDF"
 			}
 		],
 		"configuration": [
@@ -140,6 +145,10 @@
 				},
 				{
 					"command": "vscode-spring-cloud-dataflow.streams.deploy",
+					"when": "never"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.tasks.log",
 					"when": "never"
 				}
 			],
@@ -188,6 +197,10 @@
 				{
 					"command": "vscode-spring-cloud-dataflow.streams.app.debugattach",
 					"when": "viewItem == runningStreamAppInstance"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.tasks.log",
+					"when": "viewItem == executedTaskInstance"
 				}
 			]
 		},

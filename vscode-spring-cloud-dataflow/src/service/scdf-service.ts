@@ -171,4 +171,19 @@ export class ScdfService {
             }
         });
     }
+
+    public taskLogs(registration: ServerRegistration, externalExecutionId: string): Thenable<string> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let url = registration.url + '/tasks/logs/' + externalExecutionId;
+                const response = await axios.get(url, {
+                    auth: registration.credentials
+                });
+                resolve(response.data as string);
+            }
+            catch (error) {
+                resolve();
+            }
+        });
+    }
 }

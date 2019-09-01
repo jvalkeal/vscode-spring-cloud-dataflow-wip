@@ -151,4 +151,8 @@ export class ScdfModel {
     public streamLogs(streamName: string, appName?: string): Thenable<ScdfStreamLogs> {
         return this.scdfService.streamLogs(this.registration, streamName, appName);
     }
+
+    public taskLogs(externalExecutionId: string): Thenable<string> {
+        return this.scdfService.taskLogs(this.registration, externalExecutionId);
+    }
 }

@@ -37,6 +37,7 @@ import { StreamsLogCloseallCommand } from './streams-log-closeall-command';
 import { TasksCreateCommand } from './tasks-create-command';
 import { TasksDestroyCommand } from './tasks-destroy-command';
 import { TasksLaunchCommand } from './tasks-launch-command';
+import { TasksLogCommand } from './tasks-log-command';
 
 const commandsContainerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     bind<ServerRegistrationManager>(TYPES.ServerRegistrationManager).to(ServerRegistrationManager).inSingletonScope();
@@ -51,6 +52,7 @@ const commandsContainerModule = new ContainerModule((bind, unbind, isBound, rebi
     bind<Command>(DITYPES.Command).to(ServerNotifyCommand);
     bind<Command>(DITYPES.Command).to(ServerDefaultCommand);
     bind<Command>(DITYPES.Command).to(ServerChooseCommand);
+    bind<Command>(DITYPES.Command).to(TasksLogCommand);
     bind<Command>(DITYPES.Command).to(TasksCreateCommand);
     bind<Command>(DITYPES.Command).to(TasksLaunchCommand);
     bind<Command>(DITYPES.Command).to(TasksDestroyCommand);

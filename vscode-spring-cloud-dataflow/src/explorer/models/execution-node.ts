@@ -16,12 +16,15 @@
 import { IconManager, ThemedIconPath } from "@pivotal-tools/vscode-extension-core";
 import { BaseNode } from "./base-node";
 import { TreeItemCollapsibleState } from "vscode";
+import { ServerRegistration } from "../../service/server-registration-manager";
 
 export class ExecutionNode extends BaseNode {
 
     constructor(
         label: string,
-        iconManager: IconManager
+        iconManager: IconManager,
+        public readonly externalExecutionId: string,
+        private readonly registration: ServerRegistration
     ) {
         super(label, iconManager, 'executedTaskInstance');
     }
