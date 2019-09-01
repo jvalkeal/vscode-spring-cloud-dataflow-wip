@@ -37,13 +37,16 @@ public class DataflowTaskLanguageLenserTests {
 				"t1=timestamp");
 		List<CodeLens> lenses = lenser.lense(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
-		assertThat(lenses).hasSize(2);
+		assertThat(lenses).hasSize(3);
 		assertThat(lenses.get(0).getCommand().getCommand()).isEqualTo("vscode-spring-cloud-dataflow.tasks.create");
 		assertThat(lenses.get(0).getCommand().getArguments().get(0)).isEqualTo("t1");
 		assertThat(lenses.get(0).getCommand().getArguments().get(1)).isEqualTo("timestamp");
 		assertThat(lenses.get(1).getCommand().getCommand()).isEqualTo("vscode-spring-cloud-dataflow.tasks.destroy");
 		assertThat(lenses.get(1).getCommand().getArguments().get(0)).isEqualTo("t1");
 		assertThat(lenses.get(1).getCommand().getArguments().get(1)).isEqualTo("timestamp");
+		assertThat(lenses.get(2).getCommand().getCommand()).isEqualTo("vscode-spring-cloud-dataflow.tasks.launch");
+		assertThat(lenses.get(2).getCommand().getArguments().get(0)).isEqualTo("t1");
+		assertThat(lenses.get(2).getCommand().getArguments().get(1)).isEqualTo("timestamp");
 	}
 
 }

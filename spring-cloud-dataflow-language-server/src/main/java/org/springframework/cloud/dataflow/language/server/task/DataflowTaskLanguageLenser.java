@@ -35,7 +35,9 @@ public class DataflowTaskLanguageLenser extends AbstractDataflowTaskLanguageServ
 						codeLens(item, DataflowLanguages.COMMAND_TASK_CREATE,
 							DataflowLanguages.COMMAND_TASK_CREATE_TITLE),
 						codeLens(item, DataflowLanguages.COMMAND_TASK_DESTROY,
-							DataflowLanguages.COMMAND_TASK_DESTROY_TITLE)
+							DataflowLanguages.COMMAND_TASK_DESTROY_TITLE),
+						codeLens(item, DataflowLanguages.COMMAND_TASK_LAUNCH,
+							DataflowLanguages.COMMAND_TASK_LAUNCH_TITLE)
 				);
 			});
 		});

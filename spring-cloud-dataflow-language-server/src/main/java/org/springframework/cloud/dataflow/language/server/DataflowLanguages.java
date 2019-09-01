@@ -55,6 +55,8 @@ public class DataflowLanguages {
 	public final static String COMMAND_STREAM_DEBUG_LAUNCH_TITLE = "Debug Launch Stream";
 	public final static String COMMAND_TASK_CREATE = "vscode-spring-cloud-dataflow.tasks.create";
 	public final static String COMMAND_TASK_CREATE_TITLE = "Create Task";
+	public final static String COMMAND_TASK_LAUNCH = "vscode-spring-cloud-dataflow.tasks.launch";
+	public final static String COMMAND_TASK_LAUNCH_TITLE = "Launch Task";
 	public final static String COMMAND_TASK_DESTROY = "vscode-spring-cloud-dataflow.tasks.destroy";
 	public final static String COMMAND_TASK_DESTROY_TITLE = "Destroy Task";
 	public final static String COMMAND_APP_REGISTER = "vscode-spring-cloud-dataflow.apps.register";

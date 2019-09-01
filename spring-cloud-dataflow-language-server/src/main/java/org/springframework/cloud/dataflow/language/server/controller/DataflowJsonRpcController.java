@@ -25,6 +25,7 @@ import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
 import org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams;
 import org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams.Environment;
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamCreateParams;
+import org.springframework.cloud.dataflow.language.server.task.DataflowTaskLaunchParams;
 import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
 import org.springframework.cloud.dataflow.rest.client.DataFlowTemplate;
 import org.springframework.cloud.dataflow.rest.util.HttpClientConfigurer;
@@ -147,6 +148,22 @@ public class DataflowJsonRpcController {
 				log.info("Unable to create task");
 			}
 		}).then(lspClient.notification().method("scdf/createdTask").exchange());
+	}
+
+	@JsonRpcRequestMapping(method = "launchTask")
+	@JsonRpcNotification
+	public Mono<Void> launchTask(@JsonRpcRequestParams DataflowTaskLaunchParams params, JsonRpcSession session,
+			LspClient lspClient) {
+		return Mono.fromRunnable(() -> {
+			log.debug("Client sending task launch request, params {}", params);
+			DataFlowOperations operations = getDataFlowOperations(session);
+			if (operations != null) {
+				log.debug("Creating task {}", params);
+				operations.taskOperations().launch(params.getName(), params.getProperties(), params.getArguments(), null);
+			} else {
+				log.info("Unable to launch task");
+			}
+		}).then(lspClient.notification().method("scdf/launchedTask").exchange());
 	}
 
 	@JsonRpcRequestMapping(method = "destroyTask")

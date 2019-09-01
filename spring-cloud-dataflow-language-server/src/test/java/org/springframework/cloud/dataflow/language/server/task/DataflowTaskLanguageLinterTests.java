@@ -54,4 +54,12 @@ public class DataflowTaskLanguageLinterTests {
 				.collect(Collectors.toList());
 		assertThat(problems).hasSize(1);
 	}
+
+	@Test
+	public void testValidWithOption() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_TASK, 0, "t1=timestamp --format=yyyy-MM-DD");
+		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
+				.collect(Collectors.toList());
+		assertThat(problems).hasSize(0);
+	}
 }

@@ -22,7 +22,7 @@ import { LanguageSupport, NotificationManager } from '@pivotal-tools/vscode-exte
 import {
     LANGUAGE_SERVER_JAR, LANGUAGE_SCDF_STREAM_PREFIX, LANGUAGE_SCDF_APP_PREFIX, CONFIG_PREFIX, LANGUAGE_SCDF_DESC,
     COMMAND_SCDF_SERVER_NOTIFY, COMMAND_SCDF_EXPLORER_REFRESH, LSP_SCDF_CREATED_STREAM, LSP_SCDF_DEPLOYED_STREAM,
-    LSP_SCDF_UNDEPLOYED_STREAM, LSP_SCDF_DESTROYED_STREAM, LANGUAGE_SCDF_TASK_PREFIX, LSP_SCDF_DESTROYED_TASK, LSP_SCDF_CREATED_TASK
+    LSP_SCDF_UNDEPLOYED_STREAM, LSP_SCDF_DESTROYED_STREAM, LANGUAGE_SCDF_TASK_PREFIX, LSP_SCDF_DESTROYED_TASK, LSP_SCDF_CREATED_TASK, LSP_SCDF_LAUNCHED_TASK
 } from '../extension-globals';
 
 @injectable()
@@ -33,6 +33,7 @@ export class ScdfLanguageSupport implements LanguageSupport {
     private deployedStreamNotification = new NotificationType<void,void>(LSP_SCDF_DEPLOYED_STREAM);
     private undeployedStreamNotification = new NotificationType<void,void>(LSP_SCDF_UNDEPLOYED_STREAM);
     private destroyedTaskNotification = new NotificationType<void,void>(LSP_SCDF_DESTROYED_TASK);
+    private launchedTaskNotification = new NotificationType<void,void>(LSP_SCDF_LAUNCHED_TASK);
     private createdTaskNotification = new NotificationType<void,void>(LSP_SCDF_CREATED_TASK);
 
     constructor(
@@ -70,6 +71,10 @@ export class ScdfLanguageSupport implements LanguageSupport {
             });
             languageClient.onNotification(this.createdTaskNotification, () => {
                 this.notificationManager.showMessage('Task created');
+                commands.executeCommand(COMMAND_SCDF_EXPLORER_REFRESH);
+            });
+            languageClient.onNotification(this.launchedTaskNotification, () => {
+                this.notificationManager.showMessage('Task launched');
                 commands.executeCommand(COMMAND_SCDF_EXPLORER_REFRESH);
             });
             commands.executeCommand(COMMAND_SCDF_SERVER_NOTIFY);
