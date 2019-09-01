@@ -17,8 +17,8 @@ import { Uri } from 'vscode';
 import { IconManager, ThemedIconPath } from '@pivotal-tools/vscode-extension-core';
 import { BaseNode } from './base-node';
 import { ScdfModel } from '../../service/scdf-model';
-import { RuntimeNode } from './runtime-node';
 import { ServerRegistration } from '../../service/server-registration-manager';
+import { ExecutionNode } from './execution-node';
 
 export class TaskNode extends BaseNode {
 
@@ -44,21 +44,18 @@ export class TaskNode extends BaseNode {
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {
-        return this.getAppNodes();
+        return this.getExecutionNodes();
     }
 
-    private async getAppNodes(): Promise<RuntimeNode[]> {
-        const appNodes: RuntimeNode[] = [];
+    private async getExecutionNodes(): Promise<ExecutionNode[]> {
+        const executionNodes: ExecutionNode[] = [];
         const scdfModel = new ScdfModel(this.registration);
-        // await scdfModel.getStreamRuntime(this.taskName)
-        //     .then(runtimes => runtimes
-        //         .filter(runtime => runtime.name === this.taskName)
-        //         .forEach(runtime => {
-        //             runtime.applications.forEach(application => {
-        //                 appNodes.push(new RuntimeNode(application.name, this.getIconManager(), application.instances));
-        //             });
-        //         })
-        //     );
-        return appNodes;
+        await scdfModel.getTaskExecutions(this.taskName)
+            .then(executions => executions
+                .forEach(execution => {
+                    executionNodes.push(new ExecutionNode(`${execution.executionId} (${execution.taskExecutionStatus})`, this.getIconManager()));
+                })
+            );
+        return executionNodes;
     }
 }

@@ -45,6 +45,21 @@ export interface ScdfTaskEntry extends BaseEntry {
     status: string;
 }
 
+export interface ScdfTaskExecutionEntry extends BaseEntry {
+    arguments: string[];
+    endTime: string;
+    errorMessage: string;
+    executionId: number;
+    exitCode: number;
+    exitMessage: string;
+    externalExecutionId: string;
+    jobExecutionIds: number[];
+    parentExecutionId: number;
+    startTime: string;
+    taskExecutionStatus: string;
+    taskName: string;
+}
+
 interface DeploymentProperties {
     [key: string]: string;
 }
@@ -102,10 +117,6 @@ export class ScdfModel {
         return this.scdfService.getStreams(this.registration);
     }
 
-    public getTasks(): Thenable<ScdfTaskEntry[]> {
-        return this.scdfService.getTasks(this.registration);
-    }
-
     public getStreamDsl(streamName: string): Thenable<string> {
         return new Promise((resolve, reject) => {
             resolve(this.scdfService.getStreamDsl(this.registration, streamName)
@@ -119,6 +130,14 @@ export class ScdfModel {
 
     public getStreamRuntime(streamName: string): Thenable<ScdfStreamRuntimeEntry[]> {
         return this.scdfService.getStreamRuntime(this.registration, streamName);
+    }
+
+    public getTasks(): Thenable<ScdfTaskEntry[]> {
+        return this.scdfService.getTasks(this.registration);
+    }
+
+    public getTaskExecutions(streamName: string): Thenable<ScdfTaskExecutionEntry[]> {
+        return this.scdfService.getTaskExecutions(this.registration, streamName);
     }
 
     public registerApp(type: string, name: string, uri: string, metadataUri: string): Thenable<void> {
