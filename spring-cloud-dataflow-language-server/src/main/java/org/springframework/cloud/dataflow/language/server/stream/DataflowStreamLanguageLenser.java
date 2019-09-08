@@ -15,6 +15,12 @@
  */
 package org.springframework.cloud.dataflow.language.server.stream;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.cloud.dataflow.core.dsl.StreamNode;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
 import org.springframework.dsl.domain.CodeLens;
@@ -31,22 +37,44 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 			return Flux.fromIterable(parseStreams(context.getDocument()))
 				.filter(item -> item.getStreamNode() != null)
 				.flatMap(item -> {
-					return Flux.just(
-						codeLens(item, DataflowLanguages.COMMAND_STREAM_CREATE,
-							DataflowLanguages.COMMAND_STREAM_CREATE_TITLE),
-						codeLens(item, DataflowLanguages.COMMAND_STREAM_DESTROY,
-							DataflowLanguages.COMMAND_STREAM_DESTROY_TITLE),
-						codeLens(item, DataflowLanguages.COMMAND_STREAM_DEPLOY,
-							DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE),
-						codeLens(item, DataflowLanguages.COMMAND_STREAM_UNDEPLOY,
-							DataflowLanguages.COMMAND_STREAM_UNDEPLOY_TITLE),
-						codeLens(item, DataflowLanguages.COMMAND_STREAM_DEBUG_ATTACH,
-							DataflowLanguages.COMMAND_STREAM_DEBUG_ATTACH_TITLE),
-						codeLens(item, DataflowLanguages.COMMAND_STREAM_DEBUG_LAUNCH,
-							DataflowLanguages.COMMAND_STREAM_DEBUG_LAUNCH_TITLE)
-				);
+					return Flux.fromIterable(codeLensWithProperties(item))
+						.concatWithValues(codeLensWithStream(item).toArray(new CodeLens[0]));
 			});
 		});
+	}
+
+	private List<CodeLens> codeLensWithProperties(StreamParseItem item) {
+		return item.getMetadataParseItemRegions().stream()
+			.map(region -> {
+				return CodeLens.codeLens()
+					.range(region.getRange())
+					.command()
+						.command(DataflowLanguages.COMMAND_STREAM_DEPLOY)
+						.title(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE)
+						.argument(item.getStreamNode().getName())
+						.argument(getDefinition(item.getStreamNode()))
+						.argument(getDeploymentProperties(region))
+						.and()
+					.build();
+			})
+			.collect(Collectors.toList());
+	}
+
+	private List<CodeLens> codeLensWithStream(StreamParseItem item) {
+		return Arrays.asList(
+			codeLens(item, DataflowLanguages.COMMAND_STREAM_CREATE,
+				DataflowLanguages.COMMAND_STREAM_CREATE_TITLE),
+			codeLens(item, DataflowLanguages.COMMAND_STREAM_DESTROY,
+				DataflowLanguages.COMMAND_STREAM_DESTROY_TITLE),
+			codeLens(item, DataflowLanguages.COMMAND_STREAM_DEPLOY,
+				DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE),
+			codeLens(item, DataflowLanguages.COMMAND_STREAM_UNDEPLOY,
+				DataflowLanguages.COMMAND_STREAM_UNDEPLOY_TITLE),
+			codeLens(item, DataflowLanguages.COMMAND_STREAM_DEBUG_ATTACH,
+				DataflowLanguages.COMMAND_STREAM_DEBUG_ATTACH_TITLE),
+			codeLens(item, DataflowLanguages.COMMAND_STREAM_DEBUG_LAUNCH,
+				DataflowLanguages.COMMAND_STREAM_DEBUG_LAUNCH_TITLE)
+		);
 	}
 
 	private CodeLens codeLens(StreamParseItem item, String command, String title) {
@@ -63,5 +91,16 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 
 	private String getDefinition(StreamNode streamNode) {
 		return streamNode.getStreamText().substring(streamNode.getStartPos());
+	}
+
+	private Map<String, String> getDeploymentProperties(MetadataParseItemRegion region) {
+		HashMap<String, String> properties = new HashMap<String, String>();
+		region.getItems().stream().forEach(item -> {
+			String[] split = item.getMetadataContent().split("=", 2);
+			if (split.length == 2) {
+				properties.put(split[0].trim(), split[1].trim());
+			}
+		});
+		return properties;
 	}
 }

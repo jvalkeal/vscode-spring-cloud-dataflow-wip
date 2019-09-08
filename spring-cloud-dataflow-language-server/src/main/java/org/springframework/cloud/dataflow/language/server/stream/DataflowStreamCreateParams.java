@@ -47,4 +47,9 @@ public class DataflowStreamCreateParams {
 	public void setProperties(Map<String, String> properties) {
 		this.properties = properties;
 	}
+
+	@Override
+	public String toString() {
+		return "DataflowStreamCreateParams [name=" + name + ", definition" + definition + ", properties=" + properties + "]";
+	}
 }

@@ -78,4 +78,15 @@ public class DataflowStreamLanguageLinterTests {
 				.collect(Collectors.toList());
 		assertThat(problems).hasSize(0);
 	}
+
+	@Test
+	public void testStreamWithDeployProperies() {
+		String data =
+			"#foo1=bar1\n" +
+			"ticktock=time|log";
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, data);
+		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
+				.collect(Collectors.toList());
+		assertThat(problems).hasSize(0);
+	}
 }

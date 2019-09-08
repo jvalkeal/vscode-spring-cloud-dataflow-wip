@@ -35,7 +35,8 @@ export class StreamsDeployCommand implements Command {
     execute(...args: any[]) {
         const params: DataflowStreamCreateParams = {
             name: args[0],
-            definition: args[1]
+            definition: args[1],
+            properties: args[2] || {}
         };
         this.languageServerManager.getLanguageClient('scdfs').sendNotification(LSP_SCDF_DEPLOY_STREAM, params);
         this.notificationManager.showMessage('Stream deploy sent');

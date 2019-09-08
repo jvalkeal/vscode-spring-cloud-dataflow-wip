@@ -91,7 +91,7 @@ public class DataflowJsonRpcController {
 	public Mono<Void> deployStream(@JsonRpcRequestParams DataflowStreamCreateParams params, JsonRpcSession session,
 			LspClient lspClient) {
 		return Mono.fromRunnable(() -> {
-			log.debug("Client sending stream create request, params {}", params);
+			log.debug("Client sending stream deploy request, params {}", params);
 			DataFlowOperations operations = getDataFlowOperations(session);
 			if (operations != null) {
 				log.debug("Deploying stream {}", params);

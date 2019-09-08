@@ -16,6 +16,7 @@
 package org.springframework.cloud.dataflow.language.server.stream;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.cloud.dataflow.core.dsl.ParseException;
@@ -33,43 +34,91 @@ import org.springframework.util.StringUtils;
 
 public abstract class AbstractDataflowStreamLanguageService extends AbstractDslService {
 
-    public AbstractDataflowStreamLanguageService() {
-        super(DataflowLanguages.LANGUAGE_STREAM);
-    }
+	public AbstractDataflowStreamLanguageService() {
+		super(DataflowLanguages.LANGUAGE_STREAM);
+	}
 
-    protected List<StreamParseItem> parseStreams(Document document) {
-        List<StreamParseItem> items = new ArrayList<>();
+	protected List<StreamParseItem> parseStreams(Document document) {
+		List<StreamParseItem> items = new ArrayList<>();
+
+		Range metadataRange = null;
+		List<MetadataParseItem> metadataParseItems = null;
+		List<MetadataParseItemRegion> metadataParseItemRegions = null;
+
 		for (int line = 0; line < document.lineCount(); line++) {
-            StreamParseItem streamParseItem = new StreamParseItem();
-            Range lineRange = document.getLineRange(line);
-            streamParseItem.setRange(lineRange);
+			Range lineRange = document.getLineRange(line);
 			String content = document.content(lineRange);
+
+			if (metadataParseItemRegions == null) {
+				metadataParseItemRegions = new ArrayList<>();
+			}
+			if (metadataRange == null) {
+				metadataRange = Range.from(line, 0, line, content.length());
+			}
+
 			if (!StringUtils.hasText(content)) {
+				MetadataParseItemRegion region = new MetadataParseItemRegion();
+				region.setRange(metadataRange);
+				region.setItems(metadataParseItems);
+				metadataParseItemRegions.add(region);
+				metadataParseItems = null;
+				metadataRange = null;
 				continue;
 			}
+			if (content.startsWith("#")) {
+				if (StringUtils.hasText(content.substring(1))) {
+					if (metadataParseItems == null) {
+						metadataParseItems = new ArrayList<>();
+					}
+					MetadataParseItem metadataParseItem = new MetadataParseItem(
+							Range.from(line, 1, line, content.length()), content.substring(1).trim());
+					metadataParseItems.add(metadataParseItem);
+				} else {
+					MetadataParseItemRegion region = new MetadataParseItemRegion();
+					region.setRange(metadataRange);
+					region.setItems(metadataParseItems);
+					metadataParseItemRegions.add(region);
+					metadataParseItems = null;
+					metadataRange = null;
+				}
+				continue;
+			}
+
+			StreamParseItem streamParseItem = new StreamParseItem();
+			streamParseItem.setRange(lineRange);
+			if (metadataParseItems != null && !metadataParseItems.isEmpty()) {
+				MetadataParseItemRegion region = new MetadataParseItemRegion();
+				region.setRange(metadataRange);
+				region.setItems(metadataParseItems);
+				metadataParseItemRegions.add(region);
+			}
+			streamParseItem.setMetadataParseItemRegions(metadataParseItemRegions);
+			metadataParseItems = null;
+			metadataParseItemRegions = null;
+			metadataRange = null;
 			StreamParser parser = new StreamParser(content);
 			try {
-                StreamNode node = parser.parse();
-                streamParseItem.setStreamNode(node);
+				StreamNode node = parser.parse();
+				streamParseItem.setStreamNode(node);
 			} catch (ParseException e) {
 				String message = e.getMessage();
-                int position = e.getPosition();
+				int position = e.getPosition();
 				Range range = Range.from(0, position, 0, position);
-                DefaultReconcileProblem problem = new DefaultReconcileProblem(new ErrorProblemType(""), message, range);
-                streamParseItem.setReconcileProblem(problem);
-            }
-            items.add(streamParseItem);
+				DefaultReconcileProblem problem = new DefaultReconcileProblem(new ErrorProblemType(""), message, range);
+				streamParseItem.setReconcileProblem(problem);
+			}
+			items.add(streamParseItem);
 		}
-        return items;
-    }
+		return items;
+	}
 
-    protected static class ErrorProblemType implements ProblemType {
+	protected static class ErrorProblemType implements ProblemType {
 
-        private final String code;
+		private final String code;
 
-        ErrorProblemType(String code) {
-            this.code = code;
-        }
+		ErrorProblemType(String code) {
+			this.code = code;
+		}
 
 		@Override
 		public ProblemSeverity getSeverity() {
@@ -78,38 +127,88 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 
 		@Override
 		public String getCode() {
-            return code;
+			return code;
 		}
-    }
+	}
 
-    protected static class StreamParseItem {
+	protected static class MetadataParseItemRegion {
 
-        private StreamNode streamNode;
-        private Range range;
-        private ReconcileProblem reconcileProblem;
+		private Range range;
+		private List<MetadataParseItem> items = Collections.emptyList();
 
-        public StreamNode getStreamNode() {
-            return streamNode;
-        }
+		public Range getRange() {
+			return range;
+		}
 
-        public void setStreamNode(StreamNode streamNode) {
-            this.streamNode = streamNode;
-        }
+		public void setRange(Range range) {
+			this.range = range;
+		}
 
-        public Range getRange() {
-            return range;
-        }
+		public List<MetadataParseItem> getItems() {
+			return items;
+		}
 
-        public void setRange(Range range) {
-            this.range = range;
-        }
+		public void setItems(List<MetadataParseItem> items) {
+			this.items = items;
+		}
+	}
 
-        public ReconcileProblem getReconcileProblem() {
-            return reconcileProblem;
-        }
+	protected static class MetadataParseItem {
 
-        public void setReconcileProblem(ReconcileProblem reconcileProblem) {
-            this.reconcileProblem = reconcileProblem;
-        }
-    }
+		private Range metadataRange;
+		private String metadataContent;
+
+		MetadataParseItem(Range metadataRange, String metadataContent) {
+			this.metadataRange = metadataRange;
+			this.metadataContent = metadataContent;
+		}
+
+		public Range getMetadataRange() {
+			return metadataRange;
+		}
+
+		public String getMetadataContent() {
+			return metadataContent;
+		}
+	}
+
+	protected static class StreamParseItem {
+
+		private StreamNode streamNode;
+		private Range range;
+		private ReconcileProblem reconcileProblem;
+		private List<MetadataParseItemRegion> metadataParseItemRegions = Collections.emptyList();
+
+		public StreamNode getStreamNode() {
+			return streamNode;
+		}
+
+		public void setStreamNode(StreamNode streamNode) {
+			this.streamNode = streamNode;
+		}
+
+		public Range getRange() {
+			return range;
+		}
+
+		public void setRange(Range range) {
+			this.range = range;
+		}
+
+		public ReconcileProblem getReconcileProblem() {
+			return reconcileProblem;
+		}
+
+		public void setReconcileProblem(ReconcileProblem reconcileProblem) {
+			this.reconcileProblem = reconcileProblem;
+		}
+
+		public List<MetadataParseItemRegion> getMetadataParseItemRegions() {
+			return metadataParseItemRegions;
+		}
+
+		public void setMetadataParseItemRegions(List<MetadataParseItemRegion> metadataParseItemRegions) {
+			this.metadataParseItemRegions = metadataParseItemRegions;
+		}
+	}
 }
