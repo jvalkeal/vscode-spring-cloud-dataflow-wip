@@ -17,10 +17,18 @@ import { IconManager, ThemedIconPath } from "@pivotal-tools/vscode-extension-cor
 import { BaseNode } from "./base-node";
 import { InstanceNode } from "./instance-node";
 import { ScdfStreamRuntimeApplicationInstanceEntry } from "../../service/scdf-model";
+import { ServerRegistration } from "../../service/server-registration-manager";
 
 export class RuntimeNode extends BaseNode {
 
-    constructor(label: string, iconManager: IconManager, private readonly instances: ScdfStreamRuntimeApplicationInstanceEntry[]) {
+    constructor(
+        label: string,
+        public readonly streamName: string,
+        public readonly appName: string,
+        iconManager: IconManager,
+        private readonly instances: ScdfStreamRuntimeApplicationInstanceEntry[],
+        public readonly registration: ServerRegistration
+    ) {
         super(label, iconManager, 'runningStreamApp');
     }
 
@@ -35,7 +43,12 @@ export class RuntimeNode extends BaseNode {
     private async getInstanceNodes(): Promise<InstanceNode[]> {
         const instanceNodes: InstanceNode[] = [];
         this.instances.forEach(instance => {
-            instanceNodes.push(new InstanceNode(instance.id, this.getIconManager()));
+            instanceNodes.push(new InstanceNode(
+                instance.id,
+                this.streamName,
+                this.appName,
+                this.getIconManager(),
+                this.registration));
         });
         return instanceNodes;
     }

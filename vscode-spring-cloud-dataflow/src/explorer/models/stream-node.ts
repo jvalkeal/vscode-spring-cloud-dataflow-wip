@@ -55,7 +55,13 @@ export class StreamNode extends BaseNode {
                 .filter(runtime => runtime.name === this.streamName)
                 .forEach(runtime => {
                     runtime.applications.forEach(application => {
-                        appNodes.push(new RuntimeNode(application.name, this.getIconManager(), application.instances));
+                        appNodes.push(new RuntimeNode(
+                            application.name,
+                            this.streamName,
+                            application.id,
+                            this.getIconManager(),
+                            application.instances,
+                            this.registration));
                     });
                 })
             );

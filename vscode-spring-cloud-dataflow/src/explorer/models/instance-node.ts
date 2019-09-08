@@ -16,10 +16,17 @@
 import { IconManager, ThemedIconPath } from "@pivotal-tools/vscode-extension-core";
 import { TreeItemCollapsibleState } from "vscode";
 import { BaseNode } from "./base-node";
+import { ServerRegistration } from "../../service/server-registration-manager";
 
 export class InstanceNode extends BaseNode {
 
-    constructor(label: string, iconManager: IconManager) {
+    constructor(
+        label: string,
+        public readonly streamName: string,
+        public readonly appName: string,
+        iconManager: IconManager,
+        public readonly registration: ServerRegistration
+    ) {
         super(label, iconManager, 'runningStreamAppInstance');
     }
 
