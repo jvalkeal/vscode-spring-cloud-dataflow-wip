@@ -29,6 +29,7 @@ import org.springframework.cloud.dataflow.language.server.task.DataflowTaskLaunc
 import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
 import org.springframework.cloud.dataflow.rest.client.DataFlowTemplate;
 import org.springframework.cloud.dataflow.rest.util.HttpClientConfigurer;
+import org.springframework.dsl.domain.TextDocumentIdentifier;
 import org.springframework.dsl.jsonrpc.annotation.JsonRpcNotification;
 import org.springframework.dsl.jsonrpc.annotation.JsonRpcRequestMapping;
 import org.springframework.dsl.jsonrpc.annotation.JsonRpcRequestParams;
@@ -180,6 +181,22 @@ public class DataflowJsonRpcController {
 				log.info("Unable to destroy task");
 			}
 		}).then(lspClient.notification().method("scdf/destroyedTask").exchange());
+	}
+
+	@JsonRpcRequestMapping(method = "registerAll")
+	@JsonRpcNotification
+	public Mono<Void> registerAll(@JsonRpcRequestParams TextDocumentIdentifier params, JsonRpcSession session,
+			LspClient lspClient) {
+		return Mono.fromRunnable(() -> {
+			log.debug("Client sending register all, params {}", params);
+			DataFlowOperations operations = getDataFlowOperations(session);
+			if (operations != null) {
+				log.debug("Registering all {}", params != null ? params.getUri() : null);
+				// operations.appRegistryOperations().re
+			} else {
+				log.info("Unable to register all apps");
+			}
+		}).then(lspClient.notification().method("scdf/registeredAll").exchange());
 	}
 
 	protected DataFlowOperations getDataFlowOperations(JsonRpcSession session) {

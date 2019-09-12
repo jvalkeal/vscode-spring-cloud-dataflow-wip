@@ -69,6 +69,11 @@
 				"category": "SCDF"
 			},
 			{
+				"command": "vscode-spring-cloud-dataflow.apps.registerall",
+				"title": "Register All",
+				"category": "SCDF"
+			},
+			{
 				"command": "vscode-spring-cloud-dataflow.apps.unregister",
 				"title": "Unregister App",
 				"category": "SCDF"
@@ -159,6 +164,12 @@
 				{
 					"command": "vscode-spring-cloud-dataflow.tasks.log",
 					"when": "never"
+				}
+			],
+			"editor/title": [
+				{
+					"when": "resourceLangId == scdfa",
+					"command": "vscode-spring-cloud-dataflow.apps.registerall"
 				}
 			],
 			"view/title": [
