@@ -124,6 +124,12 @@ jobs:
       name: Hosted Ubuntu 1604
       demands: npm
     steps:
+      - task: Gradle@2
+        displayName: 'Build Language Server'
+        inputs:
+          gradleWrapperFile: 'spring-cloud-dataflow-language-server/gradlew'
+          workingDirectory: 'spring-cloud-dataflow-language-server'
+          tasks: 'build install'
       - task: NodeTool@0
         displayName: 'Use Node 8.x'
         inputs:
@@ -186,3 +192,14 @@ jobs:
           command: custom
           verbose: false
           customCommand: 'test'
+      - task: Npm@1
+        displayName: 'Create vsce package'
+        inputs:
+          workingDir: vscode-spring-cloud-dataflow
+          command: custom
+          verbose: false
+          customCommand: 'run build'
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish vsce package'
+        inputs:
+          pathtoPublish: 'vscode-spring-cloud-dataflow/vscode-spring-cloud-dataflow-0.0.1.vsix'
