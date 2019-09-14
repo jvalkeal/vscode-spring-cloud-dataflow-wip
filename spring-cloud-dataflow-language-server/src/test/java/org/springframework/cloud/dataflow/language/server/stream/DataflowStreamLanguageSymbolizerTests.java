@@ -44,7 +44,7 @@ public class DataflowStreamLanguageSymbolizerTests {
                 .collect(Collectors.toList());
         List<DocumentSymbol> documentSymbols = symbolizeInfo.documentSymbols().toStream().collect(Collectors.toList());
 
-        assertThat(symbolInformations).hasSize(1);
+        assertThat(symbolInformations).hasSize(5);
         assertThat(documentSymbols).hasSize(1);
         assertThat(documentSymbols.get(0).getName()).isEqualTo("stream1");
         assertThat(documentSymbols.get(0).getDetail()).isNull();

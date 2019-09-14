@@ -92,7 +92,7 @@ public class DataflowStreamLanguageSymbolizer extends AbstractDataflowStreamLang
 			}
 		}
 
-		DocumentSymbolTableVisitor visitor = new DocumentSymbolTableVisitor();
+		DocumentSymbolTableVisitor visitor = new DocumentSymbolTableVisitor(context.getDocument().uri());
 		table.visitSymbolTable(visitor);
 		return visitor.getSymbolizeInfo();
 	}
