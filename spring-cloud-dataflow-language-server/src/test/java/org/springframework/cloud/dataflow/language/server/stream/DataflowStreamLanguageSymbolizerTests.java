@@ -48,7 +48,7 @@ public class DataflowStreamLanguageSymbolizerTests {
         assertThat(documentSymbols).hasSize(1);
         assertThat(documentSymbols.get(0).getName()).isEqualTo("stream1");
         assertThat(documentSymbols.get(0).getDetail()).isNull();
-        assertThat(documentSymbols.get(0).getKind()).isEqualTo(SymbolKind.String);
+        assertThat(documentSymbols.get(0).getKind()).isEqualTo(SymbolKind.Class);
         assertThat(documentSymbols.get(0).getRange()).isEqualTo(Range.from(0, 10, 0, 57));
         assertThat(documentSymbols.get(0).getSelectionRange()).isEqualTo(Range.from(0, 10, 0, 57));
         assertThat(documentSymbols.get(0).getChildren()).isNotNull();
@@ -56,7 +56,7 @@ public class DataflowStreamLanguageSymbolizerTests {
 
         assertThat(documentSymbols.get(0).getChildren().get(0)).isNotNull();
         assertThat(documentSymbols.get(0).getChildren().get(0).getName()).isEqualTo("time");
-        assertThat(documentSymbols.get(0).getChildren().get(0).getKind()).isEqualTo(SymbolKind.String);
+        assertThat(documentSymbols.get(0).getChildren().get(0).getKind()).isEqualTo(SymbolKind.Method);
         assertThat(documentSymbols.get(0).getChildren().get(0).getRange()).isEqualTo(Range.from(0, 10, 0, 57));
         assertThat(documentSymbols.get(0).getChildren().get(0).getSelectionRange()).isEqualTo(Range.from(0, 10, 0, 57));
         assertThat(documentSymbols.get(0).getChildren().get(0).getChildren()).isNotNull();
@@ -65,12 +65,54 @@ public class DataflowStreamLanguageSymbolizerTests {
 
         assertThat(documentSymbols.get(0).getChildren().get(1)).isNotNull();
         assertThat(documentSymbols.get(0).getChildren().get(1).getName()).isEqualTo("log");
-        assertThat(documentSymbols.get(0).getChildren().get(1).getKind()).isEqualTo(SymbolKind.String);
+        assertThat(documentSymbols.get(0).getChildren().get(1).getKind()).isEqualTo(SymbolKind.Method);
         assertThat(documentSymbols.get(0).getChildren().get(1).getRange()).isEqualTo(Range.from(0, 10, 0, 57));
         assertThat(documentSymbols.get(0).getChildren().get(1).getSelectionRange()).isEqualTo(Range.from(0, 10, 0, 57));
         assertThat(documentSymbols.get(0).getChildren().get(1).getChildren()).isNotNull();
         assertThat(documentSymbols.get(0).getChildren().get(1).getChildren()).hasSize(1);
         assertThat(documentSymbols.get(0).getChildren().get(1).getChildren().get(0).getName()).isEqualTo("name");
+    }
+
+    @Test
+    public void testQuery() {
+        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "stream1 = time --initial-delay=1000 | log --name=mylogger");
+
+        SymbolizeInfo symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build(), "<");
+        List<SymbolInformation> symbolInformations = symbolizeInfo.symbolInformations().toStream()
+                .collect(Collectors.toList());
+        assertThat(symbolInformations).hasSize(1);
+
+        symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build(), "<time");
+        symbolInformations = symbolizeInfo.symbolInformations().toStream().collect(Collectors.toList());
+        assertThat(symbolInformations).hasSize(1);
+
+        symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build(), "<xx");
+        symbolInformations = symbolizeInfo.symbolInformations().toStream().collect(Collectors.toList());
+        assertThat(symbolInformations).hasSize(0);
+
+        symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build(), ">");
+        symbolInformations = symbolizeInfo.symbolInformations().toStream().collect(Collectors.toList());
+        assertThat(symbolInformations).hasSize(1);
+
+        symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build(), ">log");
+        symbolInformations = symbolizeInfo.symbolInformations().toStream().collect(Collectors.toList());
+        assertThat(symbolInformations).hasSize(1);
+
+        symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build(), ">xx");
+        symbolInformations = symbolizeInfo.symbolInformations().toStream().collect(Collectors.toList());
+        assertThat(symbolInformations).hasSize(0);
+
+        symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build(), "@");
+        symbolInformations = symbolizeInfo.symbolInformations().toStream().collect(Collectors.toList());
+        assertThat(symbolInformations).hasSize(1);
+
+        symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build(), "@stream");
+        symbolInformations = symbolizeInfo.symbolInformations().toStream().collect(Collectors.toList());
+        assertThat(symbolInformations).hasSize(1);
+
+        symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build(), "@xx");
+        symbolInformations = symbolizeInfo.symbolInformations().toStream().collect(Collectors.toList());
+        assertThat(symbolInformations).hasSize(0);
     }
 
     @Test
