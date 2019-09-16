@@ -79,7 +79,7 @@ public class DataflowJsonRpcController {
 			DataFlowOperations operations = getDataFlowOperations(session);
 			if (operations != null) {
 				log.debug("Creating stream {}", params);
-				operations.streamOperations().createStream(params.getName(), params.getDefinition(), false);
+				operations.streamOperations().createStream(params.getName(), params.getDefinition(), "", false);
 			} else {
 				log.info("Unable to create stream");
 			}
@@ -143,7 +143,7 @@ public class DataflowJsonRpcController {
 			DataFlowOperations operations = getDataFlowOperations(session);
 			if (operations != null) {
 				log.debug("Creating task {}", params);
-				operations.taskOperations().create(params.getName(), params.getDefinition());
+				operations.taskOperations().create(params.getName(), params.getDefinition(), "");
 			} else {
 				log.info("Unable to create task");
 			}

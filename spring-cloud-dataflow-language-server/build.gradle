@@ -1,14 +1,13 @@
 buildscript {
 	ext {
 		springDslVersion = '0.0.1.BUILD-SNAPSHOT'
-		springCloudDataflowVersion = '2.2.0.BUILD-SNAPSHOT'
-		springCloudDeployerVersion = '2.0.3.RELEASE'
-		springHateoasVersion = '0.25.1.RELEASE'
+		springCloudDataflowVersion = '2.3.0.BUILD-SNAPSHOT'
+		springCloudDeployerVersion = '2.1.0.BUILD-SNAPSHOT'
 	}
 }
 
 plugins {
-	id 'org.springframework.boot' version '2.2.0.M3'
+	id 'org.springframework.boot' version '2.2.0.M6'
 	id 'java'
 }
 
@@ -33,8 +32,6 @@ dependencyManagement {
 	}
 	dependencies {
 		dependency "org.springframework.cloud:spring-cloud-deployer-resource-maven:$springCloudDeployerVersion"
-		// downgrade as hateoas 1.x from boot has breaking changes what dataflow client expects
-		dependency "org.springframework.hateoas:spring-hateoas:$springHateoasVersion"
 	}
 }
 
