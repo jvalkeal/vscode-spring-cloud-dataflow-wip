@@ -1,7 +1,3 @@
-logging:
-  level:
-    org.springframework.dsl: debug
-    org.springframework.cloud.dataflow.language.server: debug
 spring:
   main:
     banner-mode: "off"

@@ -87,12 +87,12 @@ export class ScdfLanguageSupport implements LanguageSupport {
         const jarPath = Path.resolve(Path.resolve(this.context.extensionPath), 'out', LANGUAGE_SERVER_JAR);
         const serverOptions: ServerOptions = {
             run: {
-                command: "java",
-                args: ["-jar", jarPath]
+                command: 'java',
+                args: ['-jar', jarPath]
             },
             debug: {
-                command: "java",
-                args: ["-jar", jarPath]
+                command: 'java',
+                args: ['-jar', jarPath, '--spring.profiles.active=dev']
             }
         };
         return serverOptions;
