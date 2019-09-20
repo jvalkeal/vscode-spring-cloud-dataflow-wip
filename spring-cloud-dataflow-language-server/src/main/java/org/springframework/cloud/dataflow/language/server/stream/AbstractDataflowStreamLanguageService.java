@@ -47,7 +47,7 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 
 		for (int line = 0; line < document.lineCount(); line++) {
 			Range lineRange = document.getLineRange(line);
-			String content = document.content(lineRange);
+			String content = document.content(lineRange).toString();
 
 			if (metadataParseItemRegions == null) {
 				metadataParseItemRegions = new ArrayList<>();

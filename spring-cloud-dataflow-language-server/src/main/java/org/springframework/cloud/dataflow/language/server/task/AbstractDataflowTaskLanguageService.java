@@ -45,7 +45,7 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 			TaskParseItem taskParseItem = new TaskParseItem();
 			Range lineRange = document.getLineRange(line);
 			taskParseItem.setRange(lineRange);
-			String content = document.content(lineRange);
+			String content = document.content(lineRange).toString();
 			if (!StringUtils.hasText(content)) {
 				continue;
 			}

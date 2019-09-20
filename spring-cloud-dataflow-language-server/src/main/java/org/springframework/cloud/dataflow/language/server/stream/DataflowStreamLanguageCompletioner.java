@@ -42,7 +42,7 @@ public class DataflowStreamLanguageCompletioner extends AbstractDataflowStreamLa
 	public Flux<CompletionItem> complete(DslContext context, Position position) {
 		return Flux.defer(() -> {
 			Range prefixRange = Range.from(position.getLine(), 0, position.getLine(), position.getCharacter());
-			String prefix = context.getDocument().content(prefixRange);
+			String prefix = context.getDocument().content(prefixRange).toString();
 			DataFlowOperations dataFlowOperations = getDataFlowOperations(context);
 			if (dataFlowOperations == null) {
 				return Flux.empty();

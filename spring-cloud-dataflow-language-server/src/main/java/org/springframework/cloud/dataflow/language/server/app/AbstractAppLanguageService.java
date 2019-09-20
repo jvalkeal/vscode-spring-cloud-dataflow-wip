@@ -48,7 +48,7 @@ public abstract class AbstractAppLanguageService extends AbstractDslService {
 		Map<String, AppEntry> apps = new HashMap<>();
 		for (int line = 0; line < document.lineCount(); line++) {
             Range lineRange = document.getLineRange(line);
-			String content = document.content(lineRange);
+			String content = document.content(lineRange).toString();
 			String[] split1 = content.split("=");
 			if (split1.length == 2) {
 				String[] split2 = split1[0].split("\\.");
