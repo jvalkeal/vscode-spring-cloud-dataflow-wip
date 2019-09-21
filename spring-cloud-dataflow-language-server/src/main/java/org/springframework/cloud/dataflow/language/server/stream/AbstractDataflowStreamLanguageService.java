@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+
 import org.springframework.cloud.dataflow.core.dsl.ParseException;
 import org.springframework.cloud.dataflow.core.dsl.StreamNode;
 import org.springframework.cloud.dataflow.core.dsl.StreamParser;
@@ -32,10 +35,35 @@ import org.springframework.dsl.service.reconcile.ProblemType;
 import org.springframework.dsl.service.reconcile.ReconcileProblem;
 import org.springframework.util.StringUtils;
 
+import reactor.cache.CacheMono;
+import reactor.cache.CacheMono.MonoCacheBuilderCacheMiss;
+import reactor.cache.CacheMono.MonoCacheBuilderCacheWriter;
+import reactor.core.publisher.Mono;
+import reactor.core.publisher.Signal;
+
 public abstract class AbstractDataflowStreamLanguageService extends AbstractDslService {
+
+	private LoadingCache<Document, List<StreamParseItem>> cache;
 
 	public AbstractDataflowStreamLanguageService() {
 		super(DataflowLanguages.LANGUAGE_STREAM);
+		cache = Caffeine.newBuilder().build(key -> parseStreams(key));
+	}
+
+	protected Mono<List<StreamParseItem>> xxx(Document document) {
+		return CacheMono
+			.lookup(key -> {
+				List<StreamParseItem> items = cache.get(key);
+				return Mono.justOrEmpty(items).map(Signal::next);
+				} , document)
+			.onCacheMissResume(Mono.just(parseStreams(document)))
+			.andWriteWith((key, signal) -> {
+				return Mono.fromRunnable(() -> {
+					cache.put(key, signal.get());
+				});
+			})
+			;
+		// return Mono.empty();
 	}
 
 	protected List<StreamParseItem> parseStreams(Document document) {

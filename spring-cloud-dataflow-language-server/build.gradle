@@ -42,6 +42,8 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-dataflow-core'
 	implementation 'org.springframework.cloud:spring-cloud-dataflow-rest-client'
 	implementation 'org.springframework.cloud:spring-cloud-deployer-resource-maven'
+	implementation 'io.projectreactor.addons:reactor-extra'
+	implementation 'com.github.ben-manes.caffeine:caffeine'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 		exclude group: 'junit', module: 'junit'

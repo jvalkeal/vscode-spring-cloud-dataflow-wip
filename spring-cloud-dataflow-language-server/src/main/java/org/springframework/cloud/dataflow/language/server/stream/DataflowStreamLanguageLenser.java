@@ -28,11 +28,20 @@ import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.Lenser;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguageService implements Lenser {
 
 	@Override
 	public Flux<CodeLens> lense(DslContext context) {
+
+		// return xxx(context.getDocument())
+		// 	.flatMapIterable(l -> l)
+		// 	.flatMap(item -> {
+		// 		return Flux.fromIterable(codeLensWithProperties(item))
+		// 			.concatWithValues(codeLensWithStream(item).toArray(new CodeLens[0]));
+		// 	});
+
 		return Flux.defer(() -> {
 			return Flux.fromIterable(parseStreams(context.getDocument()))
 				.filter(item -> item.getStreamNode() != null)
