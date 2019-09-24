@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.cloud.dataflow.core.dsl.StreamNode;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
+import org.springframework.dsl.document.DocumentText;
 import org.springframework.dsl.domain.CodeLens;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.Lenser;
@@ -33,34 +34,29 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 
 	@Override
 	public Flux<CodeLens> lense(DslContext context) {
-		return Flux.defer(() -> {
-			return Flux.fromIterable(parseStreams(context.getDocument()))
-				.filter(item -> item.getStreamNode() != null)
-				.flatMap(item -> {
-					return Flux.fromIterable(codeLensWithProperties(item))
-						.concatWithValues(codeLensWithStream(item).toArray(new CodeLens[0]));
-			});
-		});
+		return parse(context.getDocument())
+			.flatMap(item -> Flux.fromIterable(codeLensWithProperties(item))
+				.concatWithValues(codeLensWithStream(item).toArray(new CodeLens[0])));
 	}
 
-	private List<CodeLens> codeLensWithProperties(StreamParseItem item) {
-		return item.getMetadataParseItemRegions().stream()
-			.map(region -> {
+	private List<CodeLens> codeLensWithProperties(StreamItem item) {
+		return item.getDeployments().stream()
+			.map(deployment -> {
 				return CodeLens.codeLens()
-					.range(region.getRange())
+					.range(deployment.getRange())
 					.command()
 						.command(DataflowLanguages.COMMAND_STREAM_DEPLOY)
 						.title(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE)
-						.argument(item.getStreamNode().getName())
-						.argument(getDefinition(item.getStreamNode()))
-						.argument(getDeploymentProperties(region))
+						.argument(item.getDefinitionItem().getStreamNode().getName())
+						.argument(getDefinition(item.getDefinitionItem().getStreamNode()))
+						.argument(getDeploymentProperties(deployment.getItems()))
 						.and()
 					.build();
 			})
 			.collect(Collectors.toList());
 	}
 
-	private List<CodeLens> codeLensWithStream(StreamParseItem item) {
+	private List<CodeLens> codeLensWithStream(StreamItem item) {
 		return Arrays.asList(
 			codeLens(item, DataflowLanguages.COMMAND_STREAM_CREATE,
 				DataflowLanguages.COMMAND_STREAM_CREATE_TITLE),
@@ -77,14 +73,14 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 		);
 	}
 
-	private CodeLens codeLens(StreamParseItem item, String command, String title) {
+	private CodeLens codeLens(StreamItem item, String command, String title) {
 		return CodeLens.codeLens()
-			.range(item.getRange())
+			.range(item.getDefinitionItem().getRange())
 			.command()
 				.command(command)
 				.title(title)
-				.argument(item.getStreamNode().getName())
-				.argument(getDefinition(item.getStreamNode()))
+				.argument(item.getDefinitionItem().getStreamNode().getName())
+				.argument(getDefinition(item.getDefinitionItem().getStreamNode()))
 				.and()
 			.build();
 	}
@@ -93,14 +89,27 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 		return streamNode.getStreamText().substring(streamNode.getStartPos());
 	}
 
-	private Map<String, String> getDeploymentProperties(MetadataParseItemRegion region) {
+	private Map<String, String> getDeploymentProperties(List<DeploymentItem> items) {
 		HashMap<String, String> properties = new HashMap<String, String>();
-		region.getItems().stream().forEach(item -> {
-			String[] split = item.getMetadataContent().split("=", 2);
+		items.stream().forEach(item -> {
+			DocumentText[] split = item.getText().splitFirst('=');
 			if (split.length == 2) {
-				properties.put(split[0].trim(), split[1].trim());
+				int firstAlphaNumeric = firstLetterOrDigit(split[0]);
+				if (firstAlphaNumeric > -1) {
+					properties.put(split[0].subSequence(firstAlphaNumeric, split[0].length()).toString().trim(),
+						split[1].toString().trim());
+				}
 			}
 		});
 		return properties;
+	}
+
+	private static int firstLetterOrDigit(DocumentText text) {
+		for (int i = 0; i < text.length(); i++) {
+			if (Character.isLetterOrDigit(text.charAt(i))) {
+				return i;
+			}
+		}
+		return -1;
 	}
 }

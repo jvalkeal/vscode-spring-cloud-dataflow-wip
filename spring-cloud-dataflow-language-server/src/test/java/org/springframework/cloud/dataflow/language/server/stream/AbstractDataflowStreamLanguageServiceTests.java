@@ -21,9 +21,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
-import org.springframework.cloud.dataflow.language.server.stream.AbstractDataflowStreamLanguageService.StreamParseItem;
+import org.springframework.cloud.dataflow.language.server.stream.AbstractDataflowStreamLanguageService.StreamItem;
 import org.springframework.dsl.document.Document;
 import org.springframework.dsl.document.TextDocument;
+import org.springframework.dsl.domain.Range;
 
 public class AbstractDataflowStreamLanguageServiceTests {
 
@@ -32,84 +33,79 @@ public class AbstractDataflowStreamLanguageServiceTests {
 	@Test
 	public void testEmpty() {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "");
-		List<StreamParseItem> result = service.parseStreams(document);
+		List<StreamItem> result = service.parse(document).collectList().block();
 		assertThat(result).isEmpty();
 	}
 
 	@Test
 	public void testNamedStream() {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "ticktock=time|log");
-		List<StreamParseItem> result = service.parseStreams(document);
+		List<StreamItem> result = service.parse(document).collectList().block();
 		assertThat(result).hasSize(1);
+		assertThat(result.get(0)).isNotNull();
+		assertThat(result.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 17));
+		assertThat(result.get(0).getDefinitionItem()).isNotNull();
+		assertThat(result.get(0).getDefinitionItem().getRange()).isEqualTo(Range.from(0, 0, 0, 17));
+		assertThat(result.get(0).getDefinitionItem().getReconcileProblem()).isNull();
+		assertThat(result.get(0).getDefinitionItem().getStreamNode()).isNotNull();
+		assertThat(result.get(0).getDefinitionItem().getStreamNode().getName()).isEqualTo("ticktock");
+		assertThat(result.get(0).getDeployments()).isEmpty();
 	}
 
 	@Test
-	public void testStreamWithEmptyDeployComments() {
+	public void testMultipleNamedStream() {
 		String data =
-			"#\n" +
-			"#\n" +
-			"ticktock=time|log";
+			"ticktock1=time|log\n" +
+			"ticktock2=time|log";
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, data);
-		List<StreamParseItem> result = service.parseStreams(document);
-		assertThat(result).hasSize(1);
+		List<StreamItem> result = service.parse(document).collectList().block();
+		assertThat(result).hasSize(2);
 	}
 
 	@Test
-	public void testStreamWithOneDeployComments1() {
+	public void testMultipleNamedStreamWithEmptyAndCommentLines() {
+		String data =
+			"\n" +
+			"ticktock1=time|log\n" +
+			"\n" +
+			"ticktock2=time|log\n" +
+			"#";
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, data);
+		List<StreamItem> result = service.parse(document).collectList().block();
+		assertThat(result).hasSize(2);
+	}
+
+	@Test
+	public void testOneDeployment() {
 		String data =
 			"#foo=bar\n" +
-			"ticktock=time|log";
+			"ticktock1=time|log";
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, data);
-		List<StreamParseItem> result = service.parseStreams(document);
+		List<StreamItem> result = service.parse(document).collectList().block();
 		assertThat(result).hasSize(1);
-		assertThat(result.get(0).getMetadataParseItemRegions()).hasSize(1);
-		assertThat(result.get(0).getMetadataParseItemRegions().get(0).getItems()).hasSize(1);
-		assertThat(result.get(0).getMetadataParseItemRegions().get(0).getItems().get(0).getMetadataContent()).isEqualTo("foo=bar");
+		assertThat(result.get(0).getDeployments()).hasSize(1);
 	}
 
 	@Test
-	public void testStreamWithOneDeployComments2() {
+	public void testMultiDeployment() {
 		String data =
 			"#foo1=bar1\n" +
-			"#foo2=bar2\n" +
-			"ticktock=time|log";
-		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, data);
-		List<StreamParseItem> result = service.parseStreams(document);
-		assertThat(result).hasSize(1);
-		assertThat(result.get(0).getMetadataParseItemRegions()).hasSize(1);
-		assertThat(result.get(0).getMetadataParseItemRegions().get(0).getItems()).hasSize(2);
-	}
-
-	@Test
-	public void testStreamWithOneDeployComments3() {
-		String data =
-			"#foo1=bar1\n" +
-			"#foo2=bar2\n" +
 			"#\n" +
-			"#foo3=bar3\n" +
-			"ticktock=time|log";
-		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, data);
-		List<StreamParseItem> result = service.parseStreams(document);
-		assertThat(result).hasSize(1);
-		assertThat(result.get(0).getMetadataParseItemRegions()).hasSize(2);
-		assertThat(result.get(0).getMetadataParseItemRegions().get(0).getItems()).hasSize(2);
-		assertThat(result.get(0).getMetadataParseItemRegions().get(1).getItems()).hasSize(1);
-	}
-
-	@Test
-	public void testStreamWithOneDeployComments4() {
-		String data =
 			"#foo1=bar1\n" +
 			"#foo2=bar2\n" +
 			"\n" +
+			"#foo1=bar1\n" +
+			"# foo2=bar2\n" +
 			"#foo3=bar3\n" +
-			"ticktock=time|log";
+			"\n" +
+			"ticktock1=time|log";
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, data);
-		List<StreamParseItem> result = service.parseStreams(document);
+		List<StreamItem> result = service.parse(document).collectList().block();
 		assertThat(result).hasSize(1);
-		assertThat(result.get(0).getMetadataParseItemRegions()).hasSize(2);
-		assertThat(result.get(0).getMetadataParseItemRegions().get(0).getItems()).hasSize(2);
-		assertThat(result.get(0).getMetadataParseItemRegions().get(1).getItems()).hasSize(1);
+		assertThat(result.get(0).getDeployments()).hasSize(3);
+		assertThat(result.get(0).getDeployments().get(0).getItems()).hasSize(1);
+		assertThat(result.get(0).getDeployments().get(1).getItems()).hasSize(2);
+		assertThat(result.get(0).getDeployments().get(2).getItems()).hasSize(3);
 	}
 
 	private static class TestDataflowStreamLanguageService extends AbstractDataflowStreamLanguageService {

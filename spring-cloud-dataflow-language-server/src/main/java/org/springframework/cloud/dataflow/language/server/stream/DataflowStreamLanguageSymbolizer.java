@@ -15,18 +15,28 @@
  */
 package org.springframework.cloud.dataflow.language.server.stream;
 
+import java.util.List;
+import java.util.function.Function;
+
 import org.springframework.cloud.dataflow.core.dsl.AppNode;
 import org.springframework.cloud.dataflow.core.dsl.ArgumentNode;
 import org.springframework.cloud.dataflow.core.dsl.StreamNode;
+import org.springframework.dsl.domain.DocumentSymbol;
 import org.springframework.dsl.domain.Range;
+import org.springframework.dsl.domain.SymbolInformation;
 import org.springframework.dsl.domain.SymbolKind;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.symbol.SymbolizeInfo;
 import org.springframework.dsl.service.symbol.Symbolizer;
+import org.springframework.dsl.symboltable.Symbol;
+import org.springframework.dsl.symboltable.SymbolTable;
 import org.springframework.dsl.symboltable.model.ClassSymbol;
 import org.springframework.dsl.symboltable.support.DefaultSymbolTable;
 import org.springframework.dsl.symboltable.support.DocumentSymbolTableVisitor;
 import org.springframework.util.StringUtils;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * {@link Symbolizer} for a a {@code stream language}.
@@ -75,10 +85,23 @@ public class DataflowStreamLanguageSymbolizer extends AbstractDataflowStreamLang
 	}
 
 	private SymbolizeInfo symbolizeInternal(DslContext context, String query) {
-		DefaultSymbolTable table = new DefaultSymbolTable();
+		Mono<SymbolizeInfo> symbolizeInfo = parse(context.getDocument())
+			.collectList()
+			.map(items -> buildTable(items))
+			.map(table -> {
+				DocumentSymbolTableVisitor visitor = new DocumentSymbolTableVisitor(context.getDocument().uri());
+				visitor.setSymbolQuery(new SymbolQuery(query));
+				table.visitSymbolTable(visitor);
+				return visitor;
+			})
+			.map(visitor -> visitor.getSymbolizeInfo());
+		return new SymbolizeInfoWrapper(symbolizeInfo);
+	}
 
-		for (StreamParseItem item : parseStreams(context.getDocument())) {
-			StreamNode streamNode = item.getStreamNode();
+	private static SymbolTable buildTable(List<StreamItem> items) {
+		DefaultSymbolTable table = new DefaultSymbolTable();
+		for (StreamItem item : items) {
+			StreamNode streamNode = item.getDefinitionItem().getStreamNode();
 			if (streamNode == null) {
 				continue;
 			}
@@ -107,14 +130,22 @@ public class DataflowStreamLanguageSymbolizer extends AbstractDataflowStreamLang
 					StreamAppOptionSymbol argumentClass = new StreamAppOptionSymbol(argumentNode.getName());
 					argumentClass.setRange(Range.from(line, startPos, line, endPos));
 					appClass.define(argumentClass);
-
 				}
 			}
 		}
+		return table;
+	}
 
-		DocumentSymbolTableVisitor visitor = new DocumentSymbolTableVisitor(context.getDocument().uri());
+	private static class SymbolQuery implements Function<Symbol, Boolean> {
 
-		visitor.setSymbolQuery((symbol) -> {
+		private final String query;
+
+		SymbolQuery(String query) {
+			this.query = query;
+		}
+
+		@Override
+		public Boolean apply(Symbol symbol) {
 			if (!StringUtils.hasText(query)) {
 				return true;
 			}
@@ -148,10 +179,26 @@ public class DataflowStreamLanguageSymbolizer extends AbstractDataflowStreamLang
 				}
 			}
 			return false;
-		});
+		}
+	}
 
-		table.visitSymbolTable(visitor);
-		return visitor.getSymbolizeInfo();
+	private static class SymbolizeInfoWrapper implements SymbolizeInfo {
+
+		private final Mono<SymbolizeInfo> symbolizeInfo;
+
+		SymbolizeInfoWrapper(Mono<SymbolizeInfo> symbolizeInfo) {
+			this.symbolizeInfo = symbolizeInfo.cache();
+		}
+
+		@Override
+		public Flux<DocumentSymbol> documentSymbols() {
+			return symbolizeInfo.map(si -> si.documentSymbols()).flatMapMany(i -> i);
+		}
+
+		@Override
+		public Flux<SymbolInformation> symbolInformations() {
+			return symbolizeInfo.map(si -> si.symbolInformations()).flatMapMany(i -> i);
+		}
 	}
 
 	public static class StreamSymbol extends ClassSymbol {

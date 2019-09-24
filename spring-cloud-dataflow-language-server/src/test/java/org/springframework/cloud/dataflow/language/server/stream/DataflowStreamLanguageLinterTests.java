@@ -49,16 +49,16 @@ public class DataflowStreamLanguageLinterTests {
 
 	@Test
 	public void testDoublePipeErrorBetweenApps() {
-		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, ":aaa > fff||bbb");
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "stream = :aaa > fff||bbb");
 		List<ReconcileProblem> problems = linter.lint(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
 		assertThat(problems).hasSize(1);
 		ReconcileProblem problem = problems.get(0);
 		assertThat(problem.getMessage()).contains("do not use || between source/processor/sink apps in a stream");
 		assertThat(problem.getRange().getStart().getLine()).isEqualTo(0);
-		assertThat(problem.getRange().getStart().getCharacter()).isEqualTo(10);
+		assertThat(problem.getRange().getStart().getCharacter()).isEqualTo(19);
 		assertThat(problem.getRange().getEnd().getLine()).isEqualTo(0);
-		assertThat(problem.getRange().getEnd().getCharacter()).isEqualTo(10);
+		assertThat(problem.getRange().getEnd().getCharacter()).isEqualTo(19);
 	}
 
 	@Test
