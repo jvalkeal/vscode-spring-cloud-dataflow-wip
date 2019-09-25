@@ -70,7 +70,11 @@ public class DataflowStreamLanguageCompletioner extends AbstractDataflowStreamLa
 				.getAttribute(DataflowLanguages.CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE);
 		List<Environment> environments = params.getEnvironments();
 		if (environments.size() > 0) {
-			return buildDataFlowTemplate(environments.get(0));
+			try {
+				return buildDataFlowTemplate(environments.get(0));
+			} catch (Exception e) {
+				return null;
+			}
 		}
 		return null;
 	}
