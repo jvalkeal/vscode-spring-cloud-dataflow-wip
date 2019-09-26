@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const TYPES = {
+export const DITYPES = {
     ExtensionActivateAware: Symbol('ExtensionActivateAware'),
     ExtensionContextAware: Symbol('ExtensionContextAware'),
     ExtensionContext: Symbol('ExtensionContext'),

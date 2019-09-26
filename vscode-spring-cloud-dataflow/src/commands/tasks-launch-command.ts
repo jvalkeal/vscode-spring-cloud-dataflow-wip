@@ -15,7 +15,7 @@
  */
 import { injectable, inject } from 'inversify';
 import { LanguageServerManager, NotificationManager } from '@pivotal-tools/vscode-extension-core';
-import { Command, TYPES as DITYPES } from '@pivotal-tools/vscode-extension-di';
+import { Command, DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { TYPES } from '../types';
 import { COMMAND_SCDF_TASKS_LAUNCH, LSP_SCDF_LAUNCH_TASK } from '../extension-globals';
 import { TaskLaunchParams } from '../language/scdf-language-interfaces';

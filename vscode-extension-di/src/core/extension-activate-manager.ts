@@ -16,13 +16,13 @@
 import { ExtensionContext } from 'vscode';
 import { multiInject, injectable } from 'inversify';
 import { ExtensionActivateAware, ExtensionContextAware } from '@pivotal-tools/vscode-extension-core';
-import { TYPES } from './types';
+import { DITYPES } from './ditypes';
 
 @injectable()
 export class ExtensionActivateManager implements ExtensionActivateAware {
 
     constructor(
-        @multiInject(TYPES.ExtensionContextAware) private awares: ExtensionContextAware[]
+        @multiInject(DITYPES.ExtensionContextAware) private awares: ExtensionContextAware[]
     ) {}
 
     onExtensionActivate(context: ExtensionContext) {

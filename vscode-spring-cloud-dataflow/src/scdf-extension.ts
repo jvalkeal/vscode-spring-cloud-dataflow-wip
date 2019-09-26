@@ -19,7 +19,7 @@ import { Container } from 'inversify';
 import {
     LanguageSupport, LanguageServerManager, IconManager, StatusBarManager, NotificationManager
 } from '@pivotal-tools/vscode-extension-core';
-import { TYPES as DITYPES, DiExtension } from '@pivotal-tools/vscode-extension-di';
+import { DITYPES, DiExtension } from '@pivotal-tools/vscode-extension-di';
 import { TYPES } from './types';
 import commandsContainerModule from './commands/di.config';
 import { ScdfLanguageSupport } from './language/scdf-language-support';

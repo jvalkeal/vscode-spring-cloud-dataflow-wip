@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ContainerModule } from 'inversify';
-import { Command, TYPES as DITYPES } from '@pivotal-tools/vscode-extension-di';
+import { Command, DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { TYPES } from '../types';
 import { StreamsCreateCommand } from './streams-create-command';
 import { StreamsDeployCommand } from './streams-deploy-command';

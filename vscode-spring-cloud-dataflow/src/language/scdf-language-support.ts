@@ -17,7 +17,7 @@ import { inject, injectable } from 'inversify';
 import * as Path from 'path';
 import { ExtensionContext, commands } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, NotificationType } from 'vscode-languageclient';
-import { TYPES } from '@pivotal-tools/vscode-extension-di';
+import { DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { LanguageSupport, NotificationManager } from '@pivotal-tools/vscode-extension-core';
 import {
     LANGUAGE_SERVER_JAR, LANGUAGE_SCDF_STREAM_PREFIX, LANGUAGE_SCDF_APP_PREFIX, CONFIG_PREFIX, LANGUAGE_SCDF_DESC,
@@ -37,8 +37,8 @@ export class ScdfLanguageSupport implements LanguageSupport {
     private createdTaskNotification = new NotificationType<void,void>(LSP_SCDF_CREATED_TASK);
 
     constructor(
-        @inject(TYPES.ExtensionContext)private context: ExtensionContext,
-        @inject(TYPES.NotificationManager) private notificationManager: NotificationManager
+        @inject(DITYPES.ExtensionContext)private context: ExtensionContext,
+        @inject(DITYPES.NotificationManager) private notificationManager: NotificationManager
     ) {}
 
     public getLanguageIds(): string[] {

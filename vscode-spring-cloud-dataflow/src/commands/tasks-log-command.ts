@@ -15,7 +15,7 @@
  */
 import { injectable, inject } from 'inversify';
 import { OutputManager }  from '@pivotal-tools/vscode-extension-core';
-import { Command, TYPES as DITYPES } from '@pivotal-tools/vscode-extension-di';
+import { Command, DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_TASKS_LOG } from '../extension-globals';
 import { ServerRegistration } from '../service/server-registration-manager';
 import { ScdfModel } from '../service/scdf-model';

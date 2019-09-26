@@ -15,7 +15,7 @@
  */
 import { injectable, inject } from 'inversify';
 import { LanguageServerManager, NotificationManager } from '@pivotal-tools/vscode-extension-core';
-import { Command, TYPES as DITYPES } from '@pivotal-tools/vscode-extension-di';
+import { Command, DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_STREAMS_DEPLOY, LSP_SCDF_DEPLOY_STREAM } from '../extension-globals';
 import { DataflowStreamCreateParams } from './stream-commands';
 import { TYPES } from '../types';

@@ -15,7 +15,7 @@
  */
 import { injectable, inject } from 'inversify';
 import { SettingsManager, LanguageServerManager, StatusBarManager } from '@pivotal-tools/vscode-extension-core';
-import { TYPES } from '@pivotal-tools/vscode-extension-di';
+import { DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { registerServerInput } from '../commands/register-server';
 import { BaseNode } from '../explorer/models/base-node';
 import { commands, window, ExtensionContext } from 'vscode';
@@ -46,8 +46,8 @@ export class ServerRegistrationManager {
     private customRegistriesKey = 'scdfServers';
 
     constructor(
-        @inject(TYPES.ExtensionContext)private context: ExtensionContext,
-        @inject(TYPES.SettingsManager) private settingsManager: SettingsManager,
+        @inject(DITYPES.ExtensionContext)private context: ExtensionContext,
+        @inject(DITYPES.SettingsManager) private settingsManager: SettingsManager,
         @inject(SCDFTYPES.LanguageServerManager)private languageServerManager: LanguageServerManager,
         @inject(SCDFTYPES.StatusBarManager)private statusBarManager: StatusBarManager
     ) {}

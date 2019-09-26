@@ -15,13 +15,13 @@
  */
 import { TreeDataProvider, TreeItem, ProviderResult, EventEmitter, window, ExtensionContext } from "vscode";
 import { IconManager } from "@pivotal-tools/vscode-extension-core";
+import { DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { BaseNode } from "./models/base-node";
 import { Event } from "vscode-jsonrpc";
 import { ServerNode, ServerMode } from "./models/server-node";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 import { ServerRegistrationManager } from "../service/server-registration-manager";
-import { TYPES as DITYPES } from '@pivotal-tools/vscode-extension-di';
 
 @injectable()
 export class AppsExplorerProvider implements TreeDataProvider<BaseNode> {

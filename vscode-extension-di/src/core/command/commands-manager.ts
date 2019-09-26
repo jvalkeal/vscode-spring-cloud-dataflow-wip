@@ -17,13 +17,13 @@ import { ExtensionContext, commands } from 'vscode';
 import { multiInject, injectable } from 'inversify';
 import { ExtensionContextAware } from '@pivotal-tools/vscode-extension-core';
 import { Command } from './command';
-import { TYPES } from '../types';
+import { DITYPES } from '../ditypes';
 
 @injectable()
 export class CommandsManager implements ExtensionContextAware {
 
     constructor(
-        @multiInject(TYPES.Command) private commands: Command[]
+        @multiInject(DITYPES.Command) private commands: Command[]
     ) {}
 
     onExtensionContext(context: ExtensionContext) {

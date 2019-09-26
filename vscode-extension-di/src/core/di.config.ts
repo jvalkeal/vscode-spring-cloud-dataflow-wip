@@ -19,18 +19,18 @@ import {
     ExtensionActivateAware, ExtensionContextAware, SettingsManager, DefaultSettingsManager, NotificationManager,
     OutputManager
 } from '@pivotal-tools/vscode-extension-core';
-import { TYPES } from './types';
+import { DITYPES } from './ditypes';
 import { ExtensionActivateManager } from './extension-activate-manager';
 import { CommandsManager } from './command/commands-manager';
 
 const coreContainerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
-    bind<ExtensionActivateAware>(TYPES.ExtensionActivateAware).to(ExtensionActivateManager);
-    bind<ExtensionContextAware>(TYPES.ExtensionContextAware).to(CommandsManager);
-    bind<OutputManager>(TYPES.OutputManager).toDynamicValue(() => new OutputManager()).inSingletonScope();
-    bind<NotificationManager>(TYPES.NotificationManager).toDynamicValue(() => new NotificationManager()).inSingletonScope();
-    bind<SettingsManager>(TYPES.SettingsManager).toDynamicValue(
+    bind<ExtensionActivateAware>(DITYPES.ExtensionActivateAware).to(ExtensionActivateManager);
+    bind<ExtensionContextAware>(DITYPES.ExtensionContextAware).to(CommandsManager);
+    bind<OutputManager>(DITYPES.OutputManager).toDynamicValue(() => new OutputManager()).inSingletonScope();
+    bind<NotificationManager>(DITYPES.NotificationManager).toDynamicValue(() => new NotificationManager()).inSingletonScope();
+    bind<SettingsManager>(DITYPES.SettingsManager).toDynamicValue(
         context => {
-            const extensionContext = context.container.get<ExtensionContext>(TYPES.ExtensionContext);
+            const extensionContext = context.container.get<ExtensionContext>(DITYPES.ExtensionContext);
             return new DefaultSettingsManager(extensionContext);
         }
     );

@@ -18,7 +18,7 @@ import {
 } from 'vscode';
 import { injectable, inject } from 'inversify';
 import { IconManager } from '@pivotal-tools/vscode-extension-core';
-import { TYPES as DITYPES} from '@pivotal-tools/vscode-extension-di';
+import { DITYPES} from '@pivotal-tools/vscode-extension-di';
 import { BaseNode } from './models/base-node';
 import { ServerRegistrationManager } from '../service/server-registration-manager';
 import { TYPES } from '../types';

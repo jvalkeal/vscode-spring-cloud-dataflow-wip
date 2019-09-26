@@ -19,7 +19,7 @@ import {
 } from 'vscode';
 import { inject, injectable } from 'inversify';
 import { IconManager } from '@pivotal-tools/vscode-extension-core';
-import { TYPES as DITYPES} from '@pivotal-tools/vscode-extension-di';
+import { DITYPES} from '@pivotal-tools/vscode-extension-di';
 import { BaseNode } from './models/base-node';
 import { ServerNode, ServerMode } from './models/server-node';
 import { ScdfModel } from '../service/scdf-model';
