@@ -15,19 +15,61 @@
  */
 import { StatusBarItem, StatusBarAlignment, window } from "vscode";
 
-export class StatusBarManager {
+export interface StatusBarManagerItem {
 
-    private statusBarItem: StatusBarItem;
+    setStatusBarItem(item: StatusBarItem);
+    getStatusBarAlignment(): StatusBarAlignment;
+    getPriority(): number;
+    getCommand(): string | undefined;
+    getText(): string | undefined;
+    setText(text: string): void;
+}
 
-    constructor(
-        private command: string
-    ){
-        this.statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 0);
-        this.statusBarItem.command = command;
-        this.statusBarItem.show();
+export abstract class AbstractStatusBarManagerItem implements StatusBarManagerItem {
+
+    protected statusBarItem: StatusBarItem | undefined;
+
+    public setStatusBarItem(item: StatusBarItem) {
+        this.statusBarItem = item;
     }
 
-    public setText(text: string):void {
-        this.statusBarItem.text = text;
+    public getStatusBarAlignment(): StatusBarAlignment {
+        return StatusBarAlignment.Left;
+    }
+
+    public getPriority(): number {
+        return 0;
+    }
+
+    public getCommand(): string | undefined {
+        return undefined;
+    }
+
+    public getText(): string | undefined {
+        return undefined;
+    }
+
+    public setText(text: string): void {
+        if (this.statusBarItem) {
+            this.statusBarItem.text = text;
+        }
+    }
+}
+
+export class StatusBarManager {
+
+    constructor(
+        private items: StatusBarManagerItem[]
+    ){
+        this.items.forEach(item => {
+            const sbi = window.createStatusBarItem(item.getStatusBarAlignment(), item.getPriority());
+            item.setStatusBarItem(sbi);
+            sbi.command = item.getCommand();
+            const text = item.getText();
+            if (text) {
+                sbi.text = text;
+            }
+            sbi.show();
+        });
     }
 }

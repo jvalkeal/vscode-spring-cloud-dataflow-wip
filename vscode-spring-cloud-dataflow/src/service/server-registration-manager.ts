@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 import { injectable, inject } from 'inversify';
-import { SettingsManager, LanguageServerManager, StatusBarManager } from '@pivotal-tools/vscode-extension-core';
+import { SettingsManager, LanguageServerManager, ExtensionActivateAware } from '@pivotal-tools/vscode-extension-core';
 import { DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { registerServerInput } from '../commands/register-server';
 import { BaseNode } from '../explorer/models/base-node';
 import { commands, window, ExtensionContext } from 'vscode';
-import { TYPES as SCDFTYPES } from '../types';
+import { TYPES } from '../types';
+import { ServerRegistrationStatusBarManagerItem } from '../statusbar/server-registration-status-bar-manager-item';
 
 export interface ServerRegistrationNonsensitive {
     url: string;
@@ -40,17 +41,24 @@ export interface DataflowEnvironmentParams {
 }
 
 @injectable()
-export class ServerRegistrationManager {
+export class ServerRegistrationManager implements ExtensionActivateAware {
 
     private customRegistriesKey2 = 'scdfDefaultServer';
     private customRegistriesKey = 'scdfServers';
 
     constructor(
-        @inject(DITYPES.ExtensionContext)private context: ExtensionContext,
+        @inject(DITYPES.ExtensionContext) private context: ExtensionContext,
         @inject(DITYPES.SettingsManager) private settingsManager: SettingsManager,
-        @inject(SCDFTYPES.LanguageServerManager)private languageServerManager: LanguageServerManager,
-        @inject(SCDFTYPES.StatusBarManager)private statusBarManager: StatusBarManager
+        @inject(TYPES.LanguageServerManager) private languageServerManager: LanguageServerManager,
+        @inject(TYPES.ServerRegistrationStatusBarManagerItem) private serverRegistrationStatusBarManagerItem: ServerRegistrationStatusBarManagerItem
     ) {}
+
+    public async onExtensionActivate(context: ExtensionContext): Promise<void> {
+        const registration = await this.getDefaultServer();
+        if (registration) {
+            this.serverRegistrationStatusBarManagerItem.setRegistrationName(registration.name);
+        }
+    }
 
     public async notifyServers(): Promise<void> {
         const registrations: ServerRegistration[] = [];
@@ -117,7 +125,8 @@ export class ServerRegistrationManager {
 
         console.log('new default registration', registration);
         if (registration) {
-            this.statusBarManager.setText('$(database) ' + registration.name);
+            this.serverRegistrationStatusBarManagerItem.setRegistrationName(registration.name);
+            // this.statusBarManager.setText('$(database) ' + registration.name);
         }
         await this.context.globalState.update(this.customRegistriesKey2, registration);
     }

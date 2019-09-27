@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 import { ExtensionContext } from 'vscode';
-import { ContainerModule, decorate, injectable, inject } from 'inversify';
+import { ContainerModule, decorate, injectable } from 'inversify';
 import {
     ExtensionActivateAware, ExtensionContextAware, SettingsManager, DefaultSettingsManager, NotificationManager,
-    OutputManager
+    OutputManager, StatusBarManager, StatusBarManagerItem, AbstractStatusBarManagerItem
 } from '@pivotal-tools/vscode-extension-core';
 import { DITYPES } from './ditypes';
 import { ExtensionActivateManager } from './extension-activate-manager';
 import { CommandsManager } from './command/commands-manager';
 
-const coreContainerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
+const coreContainerModule = new ContainerModule((bind) => {
     bind<ExtensionActivateAware>(DITYPES.ExtensionActivateAware).to(ExtensionActivateManager);
     bind<ExtensionContextAware>(DITYPES.ExtensionContextAware).to(CommandsManager);
     bind<OutputManager>(DITYPES.OutputManager).toDynamicValue(() => new OutputManager()).inSingletonScope();
@@ -34,5 +34,13 @@ const coreContainerModule = new ContainerModule((bind, unbind, isBound, rebind) 
             return new DefaultSettingsManager(extensionContext);
         }
     );
+    // sucks that you need to decorate base class for status bar items
+    decorate(injectable(), AbstractStatusBarManagerItem);
+    bind<StatusBarManager>(DITYPES.StatusBarManager).toDynamicValue(
+        context => {
+            const items = context.container.getAll<StatusBarManagerItem>(DITYPES.StatusBarManagerItem);
+            return new StatusBarManager(items);
+        }
+    ).inSingletonScope();
 });
 export default coreContainerModule;

@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const DITYPES = {
-    ExtensionActivateAware: Symbol('ExtensionActivateAware'),
-    ExtensionContextAware: Symbol('ExtensionContextAware'),
-    ExtensionContext: Symbol('ExtensionContext'),
-    Command: Symbol('Command'),
-    CommandManager: Symbol('CommandManager'),
-    SettingsManager: Symbol('SettingsManager'),
-    NotificationManager: Symbol('NotificationManager'),
-    OutputManager: Symbol('OutputManager'),
-    StatusBarManager: Symbol('StatusBarManager'),
-    StatusBarManagerItem: Symbol('StatusBarManagerItem')
-};
+import { AbstractStatusBarManagerItem } from '@pivotal-tools/vscode-extension-core';
+import { injectable } from 'inversify';
+import { COMMAND_SCDF_SERVER_CHOOSE } from '../extension-globals';
+
+@injectable()
+export class ServerRegistrationStatusBarManagerItem extends AbstractStatusBarManagerItem {
+
+    private static readonly prefix: string = '$(database) ';
+
+    public setRegistrationName(name: string):void {
+        this.setText(ServerRegistrationStatusBarManagerItem.prefix + name);
+    }
+
+    public getCommand(): string {
+        return COMMAND_SCDF_SERVER_CHOOSE;
+    }
+}

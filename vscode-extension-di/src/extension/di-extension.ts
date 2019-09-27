@@ -36,7 +36,9 @@ export class DiExtension extends AbstractExtension {
     }
 
     public afterActivate(context: ExtensionContext): void {
-        this.container.get<ExtensionActivateManager>(DITYPES.ExtensionActivateAware).onExtensionActivate(context);
+        this.container.getAll<ExtensionActivateManager>(DITYPES.ExtensionActivateAware).forEach(aware => {
+            aware.onExtensionActivate(context);
+        });
     }
 
     public onDeactivate(context: ExtensionContext): void {
@@ -50,5 +52,4 @@ export class DiExtension extends AbstractExtension {
     public buildContainer(): Container {
         return new Container();
     }
-
 }

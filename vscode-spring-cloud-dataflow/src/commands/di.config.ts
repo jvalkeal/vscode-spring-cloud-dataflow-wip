@@ -40,7 +40,7 @@ import { TasksLaunchCommand } from './tasks-launch-command';
 import { TasksLogCommand } from './tasks-log-command';
 import { StreamsAppLogCommand } from './streams-app-log-command';
 
-const commandsContainerModule = new ContainerModule((bind, unbind, isBound, rebind) => {
+const commandsContainerModule = new ContainerModule((bind) => {
     bind<ServerRegistrationManager>(TYPES.ServerRegistrationManager).to(ServerRegistrationManager).inSingletonScope();
     bind<Command>(DITYPES.Command).to(StreamsCreateCommand);
     bind<Command>(DITYPES.Command).to(StreamsDeployCommand);
