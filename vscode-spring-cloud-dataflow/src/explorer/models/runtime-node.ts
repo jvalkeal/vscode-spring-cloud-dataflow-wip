@@ -29,7 +29,7 @@ export class RuntimeNode extends BaseNode {
         private readonly instances: ScdfStreamRuntimeApplicationInstanceEntry[],
         public readonly registration: ServerRegistration
     ) {
-        super(label, iconManager, 'runningStreamApp');
+        super(label, undefined, iconManager, 'runningStreamApp');
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {

@@ -37,7 +37,7 @@ export enum AppType {
 export class AppTypeNode extends BaseNode {
 
     constructor(label: string, iconManager: IconManager, private readonly type: AppType, private readonly registration: ServerRegistration) {
-        super(label, iconManager);
+        super(label, undefined, iconManager);
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {

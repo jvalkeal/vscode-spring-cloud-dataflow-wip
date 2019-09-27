@@ -29,7 +29,7 @@ export class TaskNode extends BaseNode {
         private readonly serverId: string,
         private readonly registration: ServerRegistration
     ) {
-        super(label, iconManager, 'definedTask');
+        super(label, undefined, iconManager, 'definedTask');
     }
 
     public getResourceUri(): Uri {

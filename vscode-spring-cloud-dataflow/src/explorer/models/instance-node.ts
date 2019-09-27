@@ -27,7 +27,7 @@ export class InstanceNode extends BaseNode {
         iconManager: IconManager,
         public readonly registration: ServerRegistration
     ) {
-        super(label, iconManager, 'runningStreamAppInstance');
+        super(label, undefined, iconManager, 'runningStreamAppInstance');
     }
 
     protected getThemedIconPath(): ThemedIconPath {

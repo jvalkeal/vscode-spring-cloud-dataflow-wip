@@ -24,12 +24,13 @@ export class StreamNode extends BaseNode {
 
     constructor(
         label: string,
+        public readonly description: string | undefined,
         public readonly streamName: string,
         iconManager: IconManager,
         private readonly serverId: string,
         private readonly registration: ServerRegistration
     ) {
-        super(label, iconManager, 'definedStream');
+        super(label, description, iconManager, 'definedStream');
     }
 
     public getResourceUri(): Uri {

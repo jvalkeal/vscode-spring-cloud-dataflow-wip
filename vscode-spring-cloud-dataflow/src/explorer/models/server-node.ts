@@ -41,7 +41,7 @@ export class ServerNode extends BaseNode {
         private readonly registration: ServerRegistration,
         private readonly mode: ServerMode
     ) {
-        super(registration.name, iconManager, 'serverRegistration');
+        super(registration.name, undefined, iconManager, 'serverRegistration');
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {
@@ -72,7 +72,7 @@ export class ServerNode extends BaseNode {
         const serverId = this.registration.url.replace(/[^\w]/g, '');
         return scdfModel.getStreams().then(streams =>
             streams.map(app =>
-                new StreamNode(`${app.name} (${app.status})`, app.name, this.getIconManager(), serverId, this.registration)));
+                new StreamNode(app.name, app.status, app.name, this.getIconManager(), serverId, this.registration)));
     }
 
     private async getTaskNodes(): Promise<TaskNode[]> {

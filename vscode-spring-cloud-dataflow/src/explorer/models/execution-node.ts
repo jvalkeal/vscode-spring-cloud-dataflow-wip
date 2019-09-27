@@ -26,7 +26,7 @@ export class ExecutionNode extends BaseNode {
         public readonly externalExecutionId: string,
         private readonly registration: ServerRegistration
     ) {
-        super(label, iconManager, 'executedTaskInstance');
+        super(label, undefined, iconManager, 'executedTaskInstance');
     }
 
     protected getThemedIconPath(): ThemedIconPath {

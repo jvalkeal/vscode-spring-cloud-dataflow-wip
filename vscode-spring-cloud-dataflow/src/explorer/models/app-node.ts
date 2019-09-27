@@ -24,7 +24,7 @@ import { AppVersionNode } from "./app-version-node";
 export class AppNode extends BaseNode {
 
     constructor(label: string, iconManager: IconManager, private readonly type: AppType, private readonly versions?: string[]) {
-        super(label, iconManager, 'definedApp');
+        super(label, undefined, iconManager, 'definedApp');
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {

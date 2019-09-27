@@ -20,6 +20,7 @@ export abstract class BaseNode {
 
     protected constructor(
         public readonly label: string,
+        public readonly description: string | undefined,
         private iconManager: IconManager,
         private readonly contextValue?: string
     ) {
@@ -31,6 +32,7 @@ export abstract class BaseNode {
         const collapsibleState = this.getTreeItemCollapsibleState();
         return {
             label: this.label,
+            description: this.description,
             iconPath: iconPath,
             collapsibleState: collapsibleState,
             contextValue: this.contextValue
