@@ -80,6 +80,6 @@ export class ServerNode extends BaseNode {
         const serverId = this.registration.url.replace(/[^\w]/g, '');
         return scdfModel.getTasks().then(tasks =>
             tasks.map(app =>
-                new TaskNode(`${app.name} (${app.status})`, app.name, this.getIconManager(), serverId, this.registration)));
+                new TaskNode(app.name, app.status, app.name, this.getIconManager(), serverId, this.registration)));
     }
 }

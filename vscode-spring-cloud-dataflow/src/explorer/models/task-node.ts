@@ -24,12 +24,13 @@ export class TaskNode extends BaseNode {
 
     constructor(
         label: string,
+        public readonly description: string | undefined,
         public readonly taskName: string,
         iconManager: IconManager,
         private readonly serverId: string,
         private readonly registration: ServerRegistration
     ) {
-        super(label, undefined, iconManager, 'definedTask');
+        super(label, description, iconManager, 'definedTask');
     }
 
     public getResourceUri(): Uri {
