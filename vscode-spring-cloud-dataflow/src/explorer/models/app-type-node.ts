@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { IconManager } from "@pivotal-tools/vscode-extension-core";
+import { IconManager, ThemedIconPath } from "@pivotal-tools/vscode-extension-core";
 import { BaseNode } from "./base-node";
 import { ScdfModel, ScdfAppEntry } from "../../service/scdf-model";
 import { AppNode } from "./app-node";
@@ -36,12 +36,34 @@ export enum AppType {
  */
 export class AppTypeNode extends BaseNode {
 
-    constructor(label: string, iconManager: IconManager, private readonly type: AppType, private readonly registration: ServerRegistration) {
+    constructor(
+        label: string,
+        iconManager: IconManager,
+        private readonly type: AppType,
+        private readonly registration: ServerRegistration
+    ) {
         super(label, undefined, iconManager);
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {
         return this.getAppNodes(this.type);
+    }
+
+    protected getThemedIconPath(): ThemedIconPath {
+        switch (this.type) {
+            case AppType.App:
+                return this.getIconManager().getThemedIconPath('app');
+            case AppType.Source:
+                return this.getIconManager().getThemedIconPath('source');
+            case AppType.Processor:
+                return this.getIconManager().getThemedIconPath('processor');
+            case AppType.Sink:
+                return this.getIconManager().getThemedIconPath('sink');
+            case AppType.Task:
+                return this.getIconManager().getThemedIconPath('task');
+            default:
+                return super.getThemedIconPath();
+        }
     }
 
     private async getAppNodes(type: AppType): Promise<AppNode[]> {

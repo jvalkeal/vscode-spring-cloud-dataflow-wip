@@ -23,7 +23,12 @@ import { AppVersionNode } from "./app-version-node";
  */
 export class AppNode extends BaseNode {
 
-    constructor(label: string, iconManager: IconManager, private readonly type: AppType, private readonly versions?: string[]) {
+    constructor(
+        label: string,
+        iconManager: IconManager,
+        private readonly type: AppType,
+        private readonly versions?: string[]
+    ) {
         super(label, undefined, iconManager, 'definedApp');
     }
 
@@ -38,19 +43,6 @@ export class AppNode extends BaseNode {
     }
 
     protected getThemedIconPath(): ThemedIconPath {
-        switch (this.type) {
-            case AppType.App:
-                return this.getIconManager().getThemedIconPath('app');
-            case AppType.Source:
-                return this.getIconManager().getThemedIconPath('source');
-            case AppType.Processor:
-                return this.getIconManager().getThemedIconPath('processor');
-            case AppType.Sink:
-                return this.getIconManager().getThemedIconPath('sink');
-            case AppType.Task:
-                return this.getIconManager().getThemedIconPath('task');
-            default:
-                return super.getThemedIconPath();
-        }
+        return this.getIconManager().getThemedIconPath('appinstance');
     }
 }
