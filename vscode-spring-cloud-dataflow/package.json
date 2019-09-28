@@ -32,7 +32,7 @@
 		"onCommand:vscode-spring-cloud-dataflow.app.unregister",
 		"onCommand:vscode-spring-cloud-dataflow.streams.deploy"
 	],
-	"main": "./out/extension.js",
+	"main": "./dist/extension",
 	"contributes": {
 		"commands": [
 			{
@@ -335,7 +335,8 @@
 		]
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run compile",
+		"vscode:prepublish": "webpack --mode production",
+		"webpack": "webpack --mode development",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile",
@@ -352,10 +353,13 @@
 		"glob": "^7.1.4",
 		"maven-repository-manager": "^1.0.0",
 		"mocha": "^6.2.0",
+		"ts-loader": "^6.1.0",
 		"tslint": "^5.12.1",
 		"typescript": "^3.3.1",
 		"vsce": "^1.62.0",
-		"vscode-test": "^1.2.0"
+		"vscode-test": "^1.2.0",
+		"webpack": "^4.40.2",
+		"webpack-cli": "^3.3.8"
 	},
 	"dependencies": {
 		"@pivotal-tools/vscode-extension-core": "file:../vscode-extension-core/pivotal-tools-vscode-extension-core-0.0.1.tgz",
