@@ -22,7 +22,7 @@ export class ServerRegistrationStatusBarManagerItem extends AbstractStatusBarMan
 
     private static readonly prefix: string = '$(database) ';
 
-    public setRegistrationName(name: string):void {
+    public setRegistrationName(name: string): void {
         this.setText(ServerRegistrationStatusBarManagerItem.prefix + name);
     }
 

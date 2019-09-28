@@ -23,14 +23,14 @@ import { TYPES } from '../types';
 export class ServerChooseCommand implements Command {
 
     constructor(
-        @inject(TYPES.ServerRegistrationManager)private serverRegistrationManager: ServerRegistrationManager
+        @inject(TYPES.ServerRegistrationManager) private serverRegistrationManager: ServerRegistrationManager
     ) {}
 
     get id() {
         return COMMAND_SCDF_SERVER_CHOOSE;
     }
 
-    async execute(...args: any[]) {
+    async execute() {
         await this.serverRegistrationManager.chooseDefaultServer();
     }
 }

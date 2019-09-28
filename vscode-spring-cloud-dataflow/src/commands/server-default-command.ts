@@ -24,15 +24,14 @@ import { BaseNode } from '../explorer/models/base-node';
 export class ServerDefaultCommand implements Command {
 
     constructor(
-        @inject(TYPES.ServerRegistrationManager)private serverRegistrationManager: ServerRegistrationManager
+        @inject(TYPES.ServerRegistrationManager) private serverRegistrationManager: ServerRegistrationManager
     ) {}
 
     get id() {
         return COMMAND_SCDF_SERVER_DEFAULT;
     }
 
-    async execute(...args: any[]) {
-        const node: BaseNode = args[0];
-        await this.serverRegistrationManager.setDefaultServer(node);
+    async execute(args: BaseNode) {
+        await this.serverRegistrationManager.setDefaultServer(args);
     }
 }

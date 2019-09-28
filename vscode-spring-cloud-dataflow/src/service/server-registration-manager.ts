@@ -54,6 +54,7 @@ export class ServerRegistrationManager implements ExtensionActivateAware {
     ) {}
 
     public async onExtensionActivate(context: ExtensionContext): Promise<void> {
+        // if we have a default server, let statusbar know about it
         const registration = await this.getDefaultServer();
         if (registration) {
             this.serverRegistrationStatusBarManagerItem.setRegistrationName(registration.name);
@@ -106,9 +107,9 @@ export class ServerRegistrationManager implements ExtensionActivateAware {
 
     public async setDefaultServer(node: BaseNode): Promise<void> {
         const server = node.label.toLowerCase();
-        console.log('set default server', server);
         // TODO: maybe custom type as we get only label from node
         const registration: ServerRegistrationNonsensitive = {url: server, name: server};
+        this.serverRegistrationStatusBarManagerItem.setRegistrationName(registration.name);
         await this.context.globalState.update(this.customRegistriesKey2, registration);
     }
 
@@ -126,7 +127,6 @@ export class ServerRegistrationManager implements ExtensionActivateAware {
         console.log('new default registration', registration);
         if (registration) {
             this.serverRegistrationStatusBarManagerItem.setRegistrationName(registration.name);
-            // this.statusBarManager.setText('$(database) ' + registration.name);
         }
         await this.context.globalState.update(this.customRegistriesKey2, registration);
     }
