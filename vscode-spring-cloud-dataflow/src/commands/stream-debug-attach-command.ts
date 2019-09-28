@@ -16,37 +16,25 @@
 import { injectable, inject } from 'inversify';
 import { Command } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_STREAM_DEBUG_ATTACH } from '../extension-globals';
-import { ServerRegistrationManager, ServerRegistration } from '../service/server-registration-manager';
+import { ServerRegistrationManager } from '../service/server-registration-manager';
 import { TYPES } from '../types';
-import { ScdfModel } from '../service/scdf-model';
+import { InstanceNode } from '../explorer/models/instance-node';
+import { StreamDebugManager } from '../debug/stream-debug-manager';
 
 @injectable()
 export class StreamDebugAttachCommand implements Command {
 
     constructor(
-        @inject(TYPES.ServerRegistrationManager)private serverRegistrationManager: ServerRegistrationManager
+        @inject(TYPES.ServerRegistrationManager) private serverRegistrationManager: ServerRegistrationManager,
+        @inject(TYPES.StreamDebugManager) private streamDebugManager: StreamDebugManager
     ) {}
 
     get id() {
         return COMMAND_SCDF_STREAM_DEBUG_ATTACH;
     }
 
-    async execute(...args: any[]) {
-        new Promise<ServerRegistration>(async (resolve, reject) => {
-            const registration = await this.serverRegistrationManager.getDefaultServer();
-            if (registration) {
-                resolve(registration);
-            } else {
-                reject();
-            }
-        })
-        .then(value => {
-            const model = new ScdfModel(value);
-            return model.getStreamDeployment(args[0]);
-        })
-        .then(entry => {
-            console.log('xxx', entry);
-        })
-        ;
+    async execute(args: InstanceNode) {
+        const debugConfiguration = await this.streamDebugManager.streamAppInstanceDebugConfiguration(args);
+        this.streamDebugManager.launchDebug([debugConfiguration]);
     }
 }

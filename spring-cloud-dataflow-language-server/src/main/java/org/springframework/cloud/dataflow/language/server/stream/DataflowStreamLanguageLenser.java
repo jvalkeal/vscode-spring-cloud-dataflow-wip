@@ -65,11 +65,7 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 			codeLens(item, DataflowLanguages.COMMAND_STREAM_DEPLOY,
 				DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE),
 			codeLens(item, DataflowLanguages.COMMAND_STREAM_UNDEPLOY,
-				DataflowLanguages.COMMAND_STREAM_UNDEPLOY_TITLE),
-			codeLens(item, DataflowLanguages.COMMAND_STREAM_DEBUG_ATTACH,
-				DataflowLanguages.COMMAND_STREAM_DEBUG_ATTACH_TITLE),
-			codeLens(item, DataflowLanguages.COMMAND_STREAM_DEBUG_LAUNCH,
-				DataflowLanguages.COMMAND_STREAM_DEBUG_LAUNCH_TITLE)
+				DataflowLanguages.COMMAND_STREAM_UNDEPLOY_TITLE)
 		);
 	}
 

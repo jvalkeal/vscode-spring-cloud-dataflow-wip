@@ -64,11 +64,16 @@ interface DeploymentProperties {
     [key: string]: string;
 }
 
+interface DeploymentApps {
+    [key: string]: DeploymentProperties;
+}
+
 export interface ScdfStreamDeploymentEntry extends BaseEntry {
     streamName: string;
     dslText: string;
+    description: string;
     status: string;
-    deploymentProperties: DeploymentProperties;
+    deploymentProperties: DeploymentApps;
 }
 
 export interface ScdfNode {

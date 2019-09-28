@@ -21,5 +21,6 @@ export const TYPES = {
     StreamsExplorerProvider: Symbol('StreamsExplorerProvider'),
     TasksExplorerProvider: Symbol('TasksExplorerProvider'),
     IconManager: Symbol('IconManager'),
-    ServerRegistrationStatusBarManagerItem: Symbol('ServerRegistrationStatusBarManagerItem')
+    ServerRegistrationStatusBarManagerItem: Symbol('ServerRegistrationStatusBarManagerItem'),
+    StreamDebugManager: Symbol('StreamDebugManager')
 };

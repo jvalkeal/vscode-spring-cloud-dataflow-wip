@@ -29,6 +29,7 @@ import { StreamsExplorerProvider } from './explorer/streams-explorer-provider';
 import { TasksExplorerProvider } from './explorer/tasks-explorer-provider';
 import { ServerRegistrationStatusBarManagerItem } from './statusbar/server-registration-status-bar-manager-item';
 import { ServerRegistrationManager } from './service/server-registration-manager';
+import { StreamDebugManager } from './debug/stream-debug-manager';
 
 export class ScdfExtension extends DiExtension {
 
@@ -71,6 +72,8 @@ export class ScdfExtension extends DiExtension {
 
         const serverRegistrationManager = container.get<ServerRegistrationManager>(TYPES.ServerRegistrationManager);
         container.bind<ExtensionActivateAware>(DITYPES.ExtensionActivateAware).toConstantValue(serverRegistrationManager);
+
+        container.bind<StreamDebugManager>(TYPES.StreamDebugManager).to(StreamDebugManager).inSingletonScope();
 
         // to fire build flow
         container.get<AppsExplorerProvider>(TYPES.AppsExplorerProvider);

@@ -40,7 +40,7 @@ public class DataflowStreamLanguageLenserTests {
 				"stream1 = time|log\nstream2 = time|log");
 		List<CodeLens> lenses = lenser.lense(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
-		assertThat(lenses).hasSize(12);
+		assertThat(lenses).hasSize(8);
 	}
 
 	@Test
@@ -52,7 +52,7 @@ public class DataflowStreamLanguageLenserTests {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, data);
 		List<CodeLens> lenses = lenser.lense(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
-		assertThat(lenses).hasSize(7);
+		assertThat(lenses).hasSize(5);
 		assertThat(lenses.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 10));
 		assertThat(lenses.get(1).getRange()).isEqualTo(Range.from(1, 0, 1, 18));
 	}
@@ -69,7 +69,7 @@ public class DataflowStreamLanguageLenserTests {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, data);
 		List<CodeLens> lenses = lenser.lense(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
-		assertThat(lenses).hasSize(14);
+		assertThat(lenses).hasSize(10);
 		assertThat(lenses.get(0).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE);
 		assertThat(lenses.get(0).getCommand().getCommand()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY);
 		assertThat(lenses.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 10));
@@ -82,10 +82,10 @@ public class DataflowStreamLanguageLenserTests {
 		assertThat((Map<String, String>)lenses.get(0).getCommand().getArguments().get(2)).containsEntry("foo2", "bar2");
 		assertThat(lenses.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 10));
 		assertThat(lenses.get(1).getRange()).isEqualTo(Range.from(2, 0, 2, 18));
-		assertThat(lenses.get(7).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE);
-		assertThat(lenses.get(7).getCommand().getCommand()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY);
-		assertThat(lenses.get(7).getRange()).isEqualTo(Range.from(3, 0, 3, 10));
-		assertThat(lenses.get(8).getRange()).isEqualTo(Range.from(4, 0, 4, 18));
+		assertThat(lenses.get(5).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE);
+		assertThat(lenses.get(5).getCommand().getCommand()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY);
+		assertThat(lenses.get(5).getRange()).isEqualTo(Range.from(3, 0, 3, 10));
+		assertThat(lenses.get(6).getRange()).isEqualTo(Range.from(4, 0, 4, 18));
 	}
 
 	@Test
@@ -98,7 +98,7 @@ public class DataflowStreamLanguageLenserTests {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, data);
 		List<CodeLens> lenses = lenser.lense(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
-		assertThat(lenses).hasSize(8);
+		assertThat(lenses).hasSize(6);
 		assertThat(lenses.get(0).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE);
 		assertThat(lenses.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 10));
 		assertThat(lenses.get(1).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE);

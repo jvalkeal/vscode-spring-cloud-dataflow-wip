@@ -31,7 +31,6 @@ import { AppsUnregisterCommand } from './apps-unregister-command';
 import { StreamsLogCommand } from './streams-log-command';
 import { StreamsShowCommand } from './streams-show-command';
 import { ExplorerRefreshCommand } from './explorer-refresh-command';
-import { StreamDebugLaunchCommand } from './stream-debug-launch-command';
 import { StreamDebugAttachCommand } from './stream-debug-attach-command';
 import { StreamsLogCloseallCommand } from './streams-log-closeall-command';
 import { TasksCreateCommand } from './tasks-create-command';
@@ -46,7 +45,6 @@ const commandsContainerModule = new ContainerModule((bind) => {
     bind<Command>(DITYPES.Command).to(StreamsDeployCommand);
     bind<Command>(DITYPES.Command).to(StreamsUndeployCommand);
     bind<Command>(DITYPES.Command).to(StreamsDestroyCommand);
-    bind<Command>(DITYPES.Command).to(StreamDebugLaunchCommand);
     bind<Command>(DITYPES.Command).to(StreamDebugAttachCommand);
     bind<Command>(DITYPES.Command).to(ServerRegisterCommand);
     bind<Command>(DITYPES.Command).to(ServerUnregisterCommand);

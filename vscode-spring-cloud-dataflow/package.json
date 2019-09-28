@@ -94,8 +94,8 @@
 				"category": "SCDF"
 			},
 			{
-				"command": "vscode-spring-cloud-dataflow.streams.app.debugattach",
-				"title": "Debug Attach Application",
+				"command": "vscode-spring-cloud-dataflow.streams.debugattach",
+				"title": "Debug Attach",
 				"category": "SCDF"
 			},
 			{
@@ -204,7 +204,7 @@
 					"when": "viewItem == definedStream"
 				},
 				{
-					"command": "vscode-spring-cloud-dataflow.streams.app.debugattach",
+					"command": "vscode-spring-cloud-dataflow.streams.debugattach",
 					"when": "viewItem == runningStreamAppInstance"
 				},
 				{
