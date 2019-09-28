@@ -16,7 +16,6 @@
 import { injectable, inject } from 'inversify';
 import { Command } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_STREAM_DEBUG_ATTACH } from '../extension-globals';
-import { ServerRegistrationManager } from '../service/server-registration-manager';
 import { TYPES } from '../types';
 import { InstanceNode } from '../explorer/models/instance-node';
 import { StreamDebugManager } from '../debug/stream-debug-manager';
@@ -25,7 +24,6 @@ import { StreamDebugManager } from '../debug/stream-debug-manager';
 export class StreamDebugAttachCommand implements Command {
 
     constructor(
-        @inject(TYPES.ServerRegistrationManager) private serverRegistrationManager: ServerRegistrationManager,
         @inject(TYPES.StreamDebugManager) private streamDebugManager: StreamDebugManager
     ) {}
 
