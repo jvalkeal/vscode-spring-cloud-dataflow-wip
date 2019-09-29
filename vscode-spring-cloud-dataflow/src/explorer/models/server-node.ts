@@ -92,6 +92,6 @@ export class ServerNode extends BaseNode {
         const serverId = this.registration.url.replace(/[^\w]/g, '');
         return scdfModel.getJobs().then(jobs =>
             jobs.map(job =>
-                new JobNode(job.executionId.toString(), job.name, this.getIconManager())));
+                new JobNode(job.executionId.toString(), `${job.name} ${job.status}`, this.getIconManager(), this.registration, job.executionId)));
     }
 }

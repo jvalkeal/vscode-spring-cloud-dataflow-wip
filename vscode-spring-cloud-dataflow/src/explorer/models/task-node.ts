@@ -41,7 +41,7 @@ export class TaskNode extends BaseNode {
     }
 
     protected getThemedIconPath(): ThemedIconPath {
-        return this.getIconManager().getThemedIconPath('stream');
+        return this.getIconManager().getThemedIconPath('task');
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {

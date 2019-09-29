@@ -16,22 +16,39 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import { IconManager, ThemedIconPath } from '@pivotal-tools/vscode-extension-core';
 import { BaseNode } from './base-node';
+import { StepNode } from './step-node';
+import { ScdfModel } from '../../service/scdf-model';
+import { ServerRegistration } from '../../service/server-registration-manager';
 
 export class JobNode extends BaseNode {
 
     constructor(
         label: string,
         public readonly description: string | undefined,
-        iconManager: IconManager
+        iconManager: IconManager,
+        private readonly registration: ServerRegistration,
+        private readonly executionId: number
     ) {
-        super(label, description, iconManager, 'definedJob');
+        super(label, description, iconManager, 'executedJob');
     }
 
     protected getThemedIconPath(): ThemedIconPath {
-        return this.getIconManager().getThemedIconPath('stream');
+        return this.getIconManager().getThemedIconPath('task');
     }
 
-    protected getTreeItemCollapsibleState(): TreeItemCollapsibleState {
-        return TreeItemCollapsibleState.None;
+    public async getChildren(element: BaseNode): Promise<BaseNode[]> {
+        return this.getStepNodes();
+    }
+
+    private async getStepNodes(): Promise<StepNode[]> {
+        const stepNodes: StepNode[] = [];
+        const scdfModel = new ScdfModel(this.registration);
+        await scdfModel.getJobExecution(this.executionId)
+            .then(execution => {
+                execution.jobExecution.stepExecutions.forEach(step => {
+                    stepNodes.push(new StepNode(step.id.toString(), `${step.stepName} ${step.status}`, this.getIconManager()));
+                });
+            });
+        return stepNodes;
     }
 }
