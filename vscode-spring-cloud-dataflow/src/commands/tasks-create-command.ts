@@ -17,24 +17,28 @@ import { injectable, inject } from 'inversify';
 import { LanguageServerManager } from '@pivotal-tools/vscode-extension-core';
 import { Command } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_TASKS_CREATE, LSP_SCDF_CREATE_TASK } from '../extension-globals';
-import { DataflowStreamCreateParams } from './stream-commands';
+import { DataflowTaskCreateParams } from './stream-commands';
 import { TYPES } from '../types';
+import { ServerRegistrationManager } from '../service/server-registration-manager';
 
 @injectable()
 export class TasksCreateCommand implements Command {
 
     constructor(
-        @inject(TYPES.LanguageServerManager)private languageServerManager: LanguageServerManager
+        @inject(TYPES.ServerRegistrationManager) private serverRegistrationManager: ServerRegistrationManager,
+        @inject(TYPES.LanguageServerManager) private languageServerManager: LanguageServerManager
     ) {}
 
     get id() {
         return COMMAND_SCDF_TASKS_CREATE;
     }
 
-    execute(...args: any[]) {
-        const params: DataflowStreamCreateParams = {
-            name: args[0],
-            definition: args[1]
+    async execute(name: string, definition: string) {
+        const registration = await this.serverRegistrationManager.getDefaultServer();
+        const params: DataflowTaskCreateParams = {
+            name: name,
+            definition: definition,
+            server: registration.name
         };
         this.languageServerManager.getLanguageClient('scdft').sendNotification(LSP_SCDF_CREATE_TASK, params);
     }

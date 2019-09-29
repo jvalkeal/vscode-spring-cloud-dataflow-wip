@@ -17,24 +17,27 @@ import { injectable, inject } from 'inversify';
 import { LanguageServerManager } from '@pivotal-tools/vscode-extension-core';
 import { Command } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_STREAMS_DESTROY, LSP_SCDF_DESTROY_STREAM } from '../extension-globals';
-import { DataflowStreamCreateParams } from './stream-commands';
+import { DataflowStreamDestroyParams } from './stream-commands';
 import { TYPES } from '../types';
+import { ServerRegistrationManager } from '../service/server-registration-manager';
 
 @injectable()
 export class StreamsDestroyCommand implements Command {
 
     constructor(
-        @inject(TYPES.LanguageServerManager)private languageServerManager: LanguageServerManager
+        @inject(TYPES.ServerRegistrationManager) private serverRegistrationManager: ServerRegistrationManager,
+        @inject(TYPES.LanguageServerManager) private languageServerManager: LanguageServerManager
     ) {}
 
     get id() {
         return COMMAND_SCDF_STREAMS_DESTROY;
     }
 
-    execute(...args: any[]) {
-        const params: DataflowStreamCreateParams = {
-            name: args[0],
-            definition: args[1]
+    async execute(name: string) {
+        const registration = await this.serverRegistrationManager.getDefaultServer();
+        const params: DataflowStreamDestroyParams = {
+            name: name,
+            server: registration.name
         };
         this.languageServerManager.getLanguageClient('scdfs').sendNotification(LSP_SCDF_DESTROY_STREAM, params);
     }

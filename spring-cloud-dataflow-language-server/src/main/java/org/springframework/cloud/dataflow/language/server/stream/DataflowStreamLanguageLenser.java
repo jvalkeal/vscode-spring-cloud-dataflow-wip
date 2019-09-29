@@ -58,27 +58,40 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 
 	private List<CodeLens> codeLensWithStream(StreamItem item) {
 		return Arrays.asList(
-			codeLens(item, DataflowLanguages.COMMAND_STREAM_CREATE,
-				DataflowLanguages.COMMAND_STREAM_CREATE_TITLE),
-			codeLens(item, DataflowLanguages.COMMAND_STREAM_DESTROY,
-				DataflowLanguages.COMMAND_STREAM_DESTROY_TITLE),
-			codeLens(item, DataflowLanguages.COMMAND_STREAM_DEPLOY,
-				DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE),
-			codeLens(item, DataflowLanguages.COMMAND_STREAM_UNDEPLOY,
-				DataflowLanguages.COMMAND_STREAM_UNDEPLOY_TITLE)
+			CodeLens.codeLens()
+				.range(item.getDefinitionItem().getRange())
+				.command()
+					.command(DataflowLanguages.COMMAND_STREAM_CREATE)
+					.title(DataflowLanguages.COMMAND_STREAM_CREATE_TITLE)
+					.argument(item.getDefinitionItem().getStreamNode().getName())
+					.argument(getDefinition(item.getDefinitionItem().getStreamNode()))
+					.and()
+				.build(),
+			CodeLens.codeLens()
+				.range(item.getDefinitionItem().getRange())
+				.command()
+					.command(DataflowLanguages.COMMAND_STREAM_DESTROY)
+					.title(DataflowLanguages.COMMAND_STREAM_DESTROY_TITLE)
+					.argument(item.getDefinitionItem().getStreamNode().getName())
+					.and()
+				.build(),
+			CodeLens.codeLens()
+				.range(item.getDefinitionItem().getRange())
+				.command()
+					.command(DataflowLanguages.COMMAND_STREAM_DEPLOY)
+					.title(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE)
+					.argument(item.getDefinitionItem().getStreamNode().getName())
+					.and()
+				.build(),
+			CodeLens.codeLens()
+				.range(item.getDefinitionItem().getRange())
+				.command()
+					.command(DataflowLanguages.COMMAND_STREAM_UNDEPLOY)
+					.title(DataflowLanguages.COMMAND_STREAM_UNDEPLOY_TITLE)
+					.argument(item.getDefinitionItem().getStreamNode().getName())
+					.and()
+				.build()
 		);
-	}
-
-	private CodeLens codeLens(StreamItem item, String command, String title) {
-		return CodeLens.codeLens()
-			.range(item.getDefinitionItem().getRange())
-			.command()
-				.command(command)
-				.title(title)
-				.argument(item.getDefinitionItem().getStreamNode().getName())
-				.argument(getDefinition(item.getDefinitionItem().getStreamNode()))
-				.and()
-			.build();
 	}
 
 	private String getDefinition(StreamNode streamNode) {

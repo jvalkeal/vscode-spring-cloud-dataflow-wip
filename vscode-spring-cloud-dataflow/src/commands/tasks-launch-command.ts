@@ -18,13 +18,15 @@ import { LanguageServerManager, NotificationManager } from '@pivotal-tools/vscod
 import { Command, DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { TYPES } from '../types';
 import { COMMAND_SCDF_TASKS_LAUNCH, LSP_SCDF_LAUNCH_TASK } from '../extension-globals';
-import { TaskLaunchParams } from '../language/scdf-language-interfaces';
+import { ServerRegistrationManager } from '../service/server-registration-manager';
+import { DataflowTaskLaunchParams } from './stream-commands';
 
 @injectable()
 export class TasksLaunchCommand implements Command {
 
     constructor(
-        @inject(TYPES.LanguageServerManager)private languageServerManager: LanguageServerManager,
+        @inject(TYPES.ServerRegistrationManager) private serverRegistrationManager: ServerRegistrationManager,
+        @inject(TYPES.LanguageServerManager) private languageServerManager: LanguageServerManager,
         @inject(DITYPES.NotificationManager) private notificationManager: NotificationManager
     ) {}
 
@@ -32,9 +34,11 @@ export class TasksLaunchCommand implements Command {
         return COMMAND_SCDF_TASKS_LAUNCH;
     }
 
-    execute(...args: any[]) {
-        const params: TaskLaunchParams = {
-            name: args[0]
+    async execute(name: string) {
+        const registration = await this.serverRegistrationManager.getDefaultServer();
+        const params: DataflowTaskLaunchParams = {
+            name: name,
+            server: registration.name
         };
         this.languageServerManager.getLanguageClient('scdft').sendNotification(LSP_SCDF_LAUNCH_TASK, params);
         this.notificationManager.showMessage('Task launch sent');

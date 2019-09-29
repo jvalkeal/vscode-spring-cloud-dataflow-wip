@@ -14,12 +14,42 @@
  * limitations under the License.
  */
 
-interface DeploymentProperties {
+export interface DeploymentProperties {
     [key: string]: string;
 }
 
-export interface DataflowStreamCreateParams {
+export interface DataflowStreamParams {
     name: string;
+    server?: string;
+}
+
+export interface DataflowStreamCreateParams extends DataflowStreamParams {
     definition: string;
+}
+
+export interface DataflowStreamDeployParams extends DataflowStreamParams {
     properties?: DeploymentProperties;
+}
+
+export interface DataflowStreamUndeployParams extends DataflowStreamParams {
+}
+
+export interface DataflowStreamDestroyParams extends DataflowStreamParams {
+}
+
+export interface DataflowTaskParams {
+    name: string;
+    server: string;
+}
+
+export interface DataflowTaskCreateParams extends DataflowTaskParams {
+    definition: string;
+}
+
+export interface DataflowTaskLaunchParams extends DataflowTaskParams {
+    properties?: DeploymentProperties;
+    arguments?: string[];
+}
+
+export interface DataflowTaskDestroyParams extends DataflowTaskParams {
 }

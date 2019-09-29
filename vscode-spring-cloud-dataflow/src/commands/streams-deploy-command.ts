@@ -17,14 +17,16 @@ import { injectable, inject } from 'inversify';
 import { LanguageServerManager, NotificationManager } from '@pivotal-tools/vscode-extension-core';
 import { Command, DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_STREAMS_DEPLOY, LSP_SCDF_DEPLOY_STREAM } from '../extension-globals';
-import { DataflowStreamCreateParams } from './stream-commands';
+import { DeploymentProperties, DataflowStreamDeployParams } from './stream-commands';
 import { TYPES } from '../types';
+import { ServerRegistrationManager } from '../service/server-registration-manager';
 
 @injectable()
 export class StreamsDeployCommand implements Command {
 
     constructor(
-        @inject(TYPES.LanguageServerManager)private languageServerManager: LanguageServerManager,
+        @inject(TYPES.ServerRegistrationManager) private serverRegistrationManager: ServerRegistrationManager,
+        @inject(TYPES.LanguageServerManager) private languageServerManager: LanguageServerManager,
         @inject(DITYPES.NotificationManager) private notificationManager: NotificationManager
     ) {}
 
@@ -32,11 +34,12 @@ export class StreamsDeployCommand implements Command {
         return COMMAND_SCDF_STREAMS_DEPLOY;
     }
 
-    execute(...args: any[]) {
-        const params: DataflowStreamCreateParams = {
-            name: args[0],
-            definition: args[1],
-            properties: args[2] || {}
+    async execute(name: string, properties?: DeploymentProperties) {
+        const registration = await this.serverRegistrationManager.getDefaultServer();
+        const params: DataflowStreamDeployParams = {
+            name: name,
+            server: registration.name,
+            properties: properties || {}
         };
         this.languageServerManager.getLanguageClient('scdfs').sendNotification(LSP_SCDF_DEPLOY_STREAM, params);
         this.notificationManager.showMessage('Stream deploy sent');

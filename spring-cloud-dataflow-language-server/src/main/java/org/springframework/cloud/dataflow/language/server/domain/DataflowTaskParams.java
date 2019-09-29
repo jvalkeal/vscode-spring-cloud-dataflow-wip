@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.dataflow.language.server.task;
+package org.springframework.cloud.dataflow.language.server.domain;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-public class DataflowTaskLaunchParams {
+public class DataflowTaskParams {
 
 	private String name;
-	private List<String> arguments = Collections.emptyList();
-	private Map<String, String> properties = Collections.emptyMap();
+	private String server;
 
 	public String getName() {
 		return name;
@@ -33,19 +28,16 @@ public class DataflowTaskLaunchParams {
 		this.name = name;
 	}
 
-	public Map<String, String> getProperties() {
-		return properties;
+	public String getServer() {
+		return server;
 	}
 
-	public void setProperties(Map<String, String> properties) {
-		this.properties = properties;
+	public void setServer(String server) {
+		this.server = server;
 	}
 
-	public List<String> getArguments() {
-		return arguments;
-	}
-
-	public void setArguments(List<String> arguments) {
-		this.arguments = arguments;
+	@Override
+	public String toString() {
+		return "DataflowTaskParams [name=" + name + ", server=" + server + "]";
 	}
 }

@@ -24,8 +24,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
 import org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams;
 import org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams.Environment;
-import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamCreateParams;
-import org.springframework.cloud.dataflow.language.server.task.DataflowTaskLaunchParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowStreamCreateParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowStreamDeployParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowStreamDestroyParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowStreamUndeployParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowTaskCreateParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowTaskDestroyParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowTaskLaunchParams;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowTaskParams;
 import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
 import org.springframework.cloud.dataflow.rest.client.DataFlowTemplate;
 import org.springframework.cloud.dataflow.rest.util.HttpClientConfigurer;
@@ -35,6 +41,7 @@ import org.springframework.dsl.jsonrpc.annotation.JsonRpcRequestParams;
 import org.springframework.dsl.jsonrpc.session.JsonRpcSession;
 import org.springframework.dsl.lsp.client.LspClient;
 import org.springframework.dsl.service.DslContext;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -76,10 +83,10 @@ public class DataflowJsonRpcController {
 			LspClient lspClient) {
 		return Mono.fromRunnable(() -> {
 			log.debug("Client sending stream create request, params {}", params);
-			DataFlowOperations operations = getDataFlowOperations(session);
+			DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
 			if (operations != null) {
 				log.debug("Creating stream {}", params);
-				operations.streamOperations().createStream(params.getName(), params.getDefinition(), "", false);
+				operations.streamOperations().createStream(params.getName(), params.getDefinition(), params.getDescription(), false);
 			} else {
 				log.info("Unable to create stream");
 			}
@@ -88,11 +95,11 @@ public class DataflowJsonRpcController {
 
 	@JsonRpcRequestMapping(method = "deployStream")
 	@JsonRpcNotification
-	public Mono<Void> deployStream(@JsonRpcRequestParams DataflowStreamCreateParams params, JsonRpcSession session,
+	public Mono<Void> deployStream(@JsonRpcRequestParams DataflowStreamDeployParams params, JsonRpcSession session,
 			LspClient lspClient) {
 		return Mono.fromRunnable(() -> {
 			log.debug("Client sending stream deploy request, params {}", params);
-			DataFlowOperations operations = getDataFlowOperations(session);
+			DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
 			if (operations != null) {
 				log.debug("Deploying stream {}", params);
 				operations.streamOperations().deploy(params.getName(), params.getProperties());
@@ -104,11 +111,11 @@ public class DataflowJsonRpcController {
 
 	@JsonRpcRequestMapping(method = "undeployStream")
 	@JsonRpcNotification
-	public Mono<Void> undeployStream(@JsonRpcRequestParams DataflowStreamCreateParams params, JsonRpcSession session,
+	public Mono<Void> undeployStream(@JsonRpcRequestParams DataflowStreamUndeployParams params, JsonRpcSession session,
 			LspClient lspClient) {
 		return Mono.fromRunnable(() -> {
 			log.debug("Client sending stream create request, params {}", params);
-			DataFlowOperations operations = getDataFlowOperations(session);
+			DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
 			if (operations != null) {
 				log.debug("Undeploying stream {}", params);
 				operations.streamOperations().undeploy(params.getName());
@@ -120,11 +127,11 @@ public class DataflowJsonRpcController {
 
 	@JsonRpcRequestMapping(method = "destroyStream")
 	@JsonRpcNotification
-	public Mono<Void> destroyStream(@JsonRpcRequestParams DataflowStreamCreateParams params, JsonRpcSession session,
+	public Mono<Void> destroyStream(@JsonRpcRequestParams DataflowStreamDestroyParams params, JsonRpcSession session,
 			LspClient lspClient) {
 		return Mono.fromRunnable(() -> {
 			log.debug("Client sending stream destroy request, params {}", params);
-			DataFlowOperations operations = getDataFlowOperations(session);
+			DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
 			if (operations != null) {
 				log.debug("Destroying stream {}", params);
 				operations.streamOperations().destroy(params.getName());
@@ -136,14 +143,14 @@ public class DataflowJsonRpcController {
 
 	@JsonRpcRequestMapping(method = "createTask")
 	@JsonRpcNotification
-	public Mono<Void> createTask(@JsonRpcRequestParams DataflowStreamCreateParams params, JsonRpcSession session,
+	public Mono<Void> createTask(@JsonRpcRequestParams DataflowTaskCreateParams params, JsonRpcSession session,
 			LspClient lspClient) {
 		return Mono.fromRunnable(() -> {
 			log.debug("Client sending task create request, params {}", params);
-			DataFlowOperations operations = getDataFlowOperations(session);
+			DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
 			if (operations != null) {
 				log.debug("Creating task {}", params);
-				operations.taskOperations().create(params.getName(), params.getDefinition(), "");
+				operations.taskOperations().create(params.getName(), params.getDefinition(), params.getDescription());
 			} else {
 				log.info("Unable to create task");
 			}
@@ -156,7 +163,7 @@ public class DataflowJsonRpcController {
 			LspClient lspClient) {
 		return Mono.fromRunnable(() -> {
 			log.debug("Client sending task launch request, params {}", params);
-			DataFlowOperations operations = getDataFlowOperations(session);
+			DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
 			if (operations != null) {
 				log.debug("Creating task {}", params);
 				operations.taskOperations().launch(params.getName(), params.getProperties(), params.getArguments(), null);
@@ -168,11 +175,11 @@ public class DataflowJsonRpcController {
 
 	@JsonRpcRequestMapping(method = "destroyTask")
 	@JsonRpcNotification
-	public Mono<Void> destroyTask(@JsonRpcRequestParams DataflowStreamCreateParams params, JsonRpcSession session,
+	public Mono<Void> destroyTask(@JsonRpcRequestParams DataflowTaskDestroyParams params, JsonRpcSession session,
 			LspClient lspClient) {
 		return Mono.fromRunnable(() -> {
 			log.debug("Client sending task destroy request, params {}", params);
-			DataFlowOperations operations = getDataFlowOperations(session);
+			DataFlowOperations operations = getDataFlowOperations(session, params.getServer());
 			if (operations != null) {
 				log.debug("Destroying task {}", params);
 				operations.taskOperations().destroy(params.getName());
@@ -182,14 +189,15 @@ public class DataflowJsonRpcController {
 		}).then(lspClient.notification().method("scdf/destroyedTask").exchange());
 	}
 
-	protected DataFlowOperations getDataFlowOperations(JsonRpcSession session) {
+	protected DataFlowOperations getDataFlowOperations(JsonRpcSession session, String server) {
 		org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams params = session
 				.getAttribute(DataflowLanguages.CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE);
 		List<Environment> environments = params.getEnvironments();
-		if (environments.size() > 0) {
-			return buildDataFlowTemplate(environments.get(0));
-		}
-		return null;
+		Environment environment = environments.stream()
+			.filter(e -> ObjectUtils.nullSafeEquals(e.getName(), server))
+			.findAny()
+			.orElse(null);
+		return buildDataFlowTemplate(environment);
 	}
 
 	private DataFlowTemplate buildDataFlowTemplate(Environment environment) {

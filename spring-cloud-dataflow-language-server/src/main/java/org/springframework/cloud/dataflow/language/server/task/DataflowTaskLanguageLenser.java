@@ -32,27 +32,34 @@ public class DataflowTaskLanguageLenser extends AbstractDataflowTaskLanguageServ
 				.filter(item -> item.getTaskNode() != null)
 				.flatMap(item -> {
 					return Flux.just(
-						codeLens(item, DataflowLanguages.COMMAND_TASK_CREATE,
-							DataflowLanguages.COMMAND_TASK_CREATE_TITLE),
-						codeLens(item, DataflowLanguages.COMMAND_TASK_DESTROY,
-							DataflowLanguages.COMMAND_TASK_DESTROY_TITLE),
-						codeLens(item, DataflowLanguages.COMMAND_TASK_LAUNCH,
-							DataflowLanguages.COMMAND_TASK_LAUNCH_TITLE)
+						CodeLens.codeLens()
+							.range(item.getRange())
+							.command()
+								.command(DataflowLanguages.COMMAND_TASK_CREATE)
+								.title(DataflowLanguages.COMMAND_TASK_CREATE_TITLE)
+								.argument(item.getTaskNode().getName())
+								.argument(getDefinition(item.getTaskNode()))
+								.and()
+							.build(),
+						CodeLens.codeLens()
+							.range(item.getRange())
+							.command()
+								.command(DataflowLanguages.COMMAND_TASK_DESTROY)
+								.title(DataflowLanguages.COMMAND_TASK_DESTROY_TITLE)
+								.argument(item.getTaskNode().getName())
+								.and()
+							.build(),
+						CodeLens.codeLens()
+							.range(item.getRange())
+							.command()
+								.command(DataflowLanguages.COMMAND_TASK_LAUNCH)
+								.title(DataflowLanguages.COMMAND_TASK_LAUNCH_TITLE)
+								.argument(item.getTaskNode().getName())
+								.and()
+							.build()
 				);
 			});
 		});
-	}
-
-	private CodeLens codeLens(TaskParseItem item, String command, String title) {
-		return CodeLens.codeLens()
-			.range(item.getRange())
-			.command()
-				.command(command)
-				.title(title)
-				.argument(item.getTaskNode().getName())
-				.argument(getDefinition(item.getTaskNode()))
-				.and()
-			.build();
 	}
 
 	private String getDefinition(TaskNode taskNode) {

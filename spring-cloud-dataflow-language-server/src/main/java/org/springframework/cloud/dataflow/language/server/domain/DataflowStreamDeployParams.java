@@ -13,32 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.dataflow.language.server.stream;
+package org.springframework.cloud.dataflow.language.server.domain;
 
 import java.util.Collections;
 import java.util.Map;
 
-public class DataflowStreamCreateParams {
+public class DataflowStreamDeployParams extends DataflowStreamParams {
 
-	private String name;
-	private String definition;
 	private Map<String, String> properties = Collections.emptyMap();
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDefinition() {
-		return definition;
-	}
-
-	public void setDefinition(String definition) {
-		this.definition = definition;
-	}
 
 	public Map<String, String> getProperties() {
 		return properties;
@@ -50,6 +32,7 @@ public class DataflowStreamCreateParams {
 
 	@Override
 	public String toString() {
-		return "DataflowStreamCreateParams [name=" + name + ", definition" + definition + ", properties=" + properties + "]";
+		return "DataflowStreamDeployParams [name=" + getName() + ", server=" + getServer() + ", properties="
+				+ properties + "]";
 	}
 }

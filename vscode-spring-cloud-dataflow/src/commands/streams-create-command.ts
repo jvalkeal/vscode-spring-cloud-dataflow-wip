@@ -19,22 +19,26 @@ import { Command } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_STREAMS_CREATE, LSP_SCDF_CREATE_STREAM } from '../extension-globals';
 import { DataflowStreamCreateParams } from './stream-commands';
 import { TYPES } from '../types';
+import { ServerRegistrationManager } from '../service/server-registration-manager';
 
 @injectable()
 export class StreamsCreateCommand implements Command {
 
     constructor(
-        @inject(TYPES.LanguageServerManager)private languageServerManager: LanguageServerManager
+        @inject(TYPES.ServerRegistrationManager) private serverRegistrationManager: ServerRegistrationManager,
+        @inject(TYPES.LanguageServerManager) private languageServerManager: LanguageServerManager
     ) {}
 
     get id() {
         return COMMAND_SCDF_STREAMS_CREATE;
     }
 
-    execute(...args: any[]) {
+    async execute(streamName: string, definition: string) {
+        const registration = await this.serverRegistrationManager.getDefaultServer();
         const params: DataflowStreamCreateParams = {
-            name: args[0],
-            definition: args[1]
+            name: streamName,
+            definition: definition,
+            server: registration.name
         };
         this.languageServerManager.getLanguageClient('scdfs').sendNotification(LSP_SCDF_CREATE_STREAM, params);
     }
