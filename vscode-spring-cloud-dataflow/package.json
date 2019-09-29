@@ -20,6 +20,7 @@
 		"onView:scdfApps",
 		"onView:scdfStreams",
 		"onView:scdfTasks",
+		"onView:scdfJobs",
 		"onLanguage:scdfs",
 		"onLanguage:scdft",
 		"onLanguage:scdfa",
@@ -180,6 +181,11 @@
 					"command": "vscode-spring-cloud-dataflow.explorer.refresh",
 					"when": "view == scdfTasks",
 					"group": "navigation"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.explorer.refresh",
+					"when": "view == scdfJobs",
+					"group": "navigation"
 				}
 			],
 			"view/item/context": [
@@ -268,6 +274,10 @@
 				{
 					"id": "scdfTasks",
 					"name": "Tasks"
+				},
+				{
+					"id": "scdfJobs",
+					"name": "Jobs"
 				}
 			]
 		},

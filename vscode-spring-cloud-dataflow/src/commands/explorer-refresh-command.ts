@@ -20,6 +20,7 @@ import { TYPES } from '../types';
 import { AppsExplorerProvider } from '../explorer/apps-explorer-provider';
 import { StreamsExplorerProvider } from '../explorer/streams-explorer-provider';
 import { TasksExplorerProvider } from '../explorer/tasks-explorer-provider';
+import { JobsExplorerProvider } from '../explorer/jobs-explorer-provider';
 
 @injectable()
 export class ExplorerRefreshCommand implements Command {
@@ -27,16 +28,18 @@ export class ExplorerRefreshCommand implements Command {
     constructor(
         @inject(TYPES.AppsExplorerProvider) private appsExplorerProvider: AppsExplorerProvider,
         @inject(TYPES.StreamsExplorerProvider) private streamsExplorerProvider: StreamsExplorerProvider,
-        @inject(TYPES.TasksExplorerProvider) private tasksExplorerProvider: TasksExplorerProvider
+        @inject(TYPES.TasksExplorerProvider) private tasksExplorerProvider: TasksExplorerProvider,
+        @inject(TYPES.JobsExplorerProvider) private jobsExplorerProvider: JobsExplorerProvider
     ) {}
 
     get id() {
         return COMMAND_SCDF_EXPLORER_REFRESH;
     }
 
-    execute(...args: any[]) {
+    execute() {
         this.appsExplorerProvider.refresh();
         this.streamsExplorerProvider.refresh();
         this.tasksExplorerProvider.refresh();
+        this.jobsExplorerProvider.refresh();
     }
 }

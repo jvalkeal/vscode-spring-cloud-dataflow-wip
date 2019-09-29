@@ -20,6 +20,7 @@ export const TYPES = {
     AppsExplorerProvider: Symbol('AppsExplorerProvider'),
     StreamsExplorerProvider: Symbol('StreamsExplorerProvider'),
     TasksExplorerProvider: Symbol('TasksExplorerProvider'),
+    JobsExplorerProvider: Symbol('JobsExplorerProvider'),
     IconManager: Symbol('IconManager'),
     ServerRegistrationStatusBarManagerItem: Symbol('ServerRegistrationStatusBarManagerItem'),
     StreamDebugManager: Symbol('StreamDebugManager')

@@ -30,6 +30,7 @@ import { TasksExplorerProvider } from './explorer/tasks-explorer-provider';
 import { ServerRegistrationStatusBarManagerItem } from './statusbar/server-registration-status-bar-manager-item';
 import { ServerRegistrationManager } from './service/server-registration-manager';
 import { StreamDebugManager } from './debug/stream-debug-manager';
+import { JobsExplorerProvider } from './explorer/jobs-explorer-provider';
 
 export class ScdfExtension extends DiExtension {
 
@@ -64,6 +65,7 @@ export class ScdfExtension extends DiExtension {
         container.bind<AppsExplorerProvider>(TYPES.AppsExplorerProvider).to(AppsExplorerProvider).inSingletonScope();
         container.bind<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider).to(StreamsExplorerProvider).inSingletonScope();
         container.bind<TasksExplorerProvider>(TYPES.TasksExplorerProvider).to(TasksExplorerProvider).inSingletonScope();
+        container.bind<JobsExplorerProvider>(TYPES.JobsExplorerProvider).to(JobsExplorerProvider).inSingletonScope();
 
         // bind and then bind again with different type as there might be multiple items
         container.bind<StatusBarManagerItem>(TYPES.ServerRegistrationStatusBarManagerItem).to(ServerRegistrationStatusBarManagerItem).inSingletonScope();
@@ -79,6 +81,7 @@ export class ScdfExtension extends DiExtension {
         container.get<AppsExplorerProvider>(TYPES.AppsExplorerProvider);
         container.get<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider);
         container.get<TasksExplorerProvider>(TYPES.TasksExplorerProvider);
+        container.get<JobsExplorerProvider>(TYPES.JobsExplorerProvider);
         container.get<LanguageServerManager>(TYPES.LanguageServerManager);
         container.get<NotificationManager>(DITYPES.NotificationManager).setLocationKey('scdf.notification.location');
         container.get<StatusBarManager>(DITYPES.StatusBarManager);

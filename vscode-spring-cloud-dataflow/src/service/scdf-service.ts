@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import axios from 'axios';
-import { ScdfStreamEntry, ScdfAppEntry, ScdfStreamDeploymentEntry, ScdfStreamRuntimeEntry, ScdfStreamLogs, ScdfTaskEntry, ScdfTaskExecutionEntry } from './scdf-model';
+import { ScdfStreamEntry, ScdfAppEntry, ScdfStreamDeploymentEntry, ScdfStreamRuntimeEntry, ScdfStreamLogs, ScdfTaskEntry, ScdfTaskExecutionEntry, ScdfJobEntry } from './scdf-model';
 import { ServerRegistration } from './server-registration-manager';
 
 export class ScdfService {
@@ -97,6 +97,22 @@ export class ScdfService {
             }
             catch (error) {
                 resolve(([] as ScdfTaskExecutionEntry[]));
+            }
+        });
+    }
+
+    public getJobs(registration: ServerRegistration): Thenable<ScdfJobEntry[]> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const response = await axios.get(registration.url + '/jobs/thinexecutions?page=0&size=1000', {
+                    auth: registration.credentials
+                });
+                const data = (response.data._embedded &&
+                    response.data._embedded.jobExecutionThinResourceList) || [];
+                resolve((data as ScdfJobEntry[]));
+            }
+            catch (error) {
+                resolve(([] as ScdfJobEntry[]));
             }
         });
     }

@@ -60,6 +60,14 @@ export interface ScdfTaskExecutionEntry extends BaseEntry {
     taskName: string;
 }
 
+export interface ScdfJobEntry extends BaseEntry {
+    executionId: number;
+    instanceId: number;
+    jobId: number;
+    name: string;
+    status: string;
+}
+
 interface DeploymentProperties {
     [key: string]: string;
 }
@@ -143,6 +151,10 @@ export class ScdfModel {
 
     public getTaskExecutions(streamName: string): Thenable<ScdfTaskExecutionEntry[]> {
         return this.scdfService.getTaskExecutions(this.registration, streamName);
+    }
+
+    public getJobs(): Thenable<ScdfJobEntry[]> {
+        return this.scdfService.getJobs(this.registration);
     }
 
     public registerApp(type: string, name: string, uri: string, metadataUri: string): Thenable<void> {
