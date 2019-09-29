@@ -22,11 +22,12 @@ export class ExecutionNode extends BaseNode {
 
     constructor(
         label: string,
+        public readonly description: string | undefined,
         iconManager: IconManager,
         public readonly externalExecutionId: string,
         private readonly registration: ServerRegistration
     ) {
-        super(label, undefined, iconManager, 'executedTaskInstance');
+        super(label, description, iconManager, 'executedTaskInstance');
     }
 
     protected getThemedIconPath(): ThemedIconPath {

@@ -55,7 +55,8 @@ export class TaskNode extends BaseNode {
             .then(executions => executions
                 .forEach(execution => {
                     executionNodes.push(new ExecutionNode(
-                        `${execution.executionId} (${execution.taskExecutionStatus})`,
+                        `${execution.executionId}`,
+                        execution.taskExecutionStatus,
                         this.getIconManager(),
                         execution.externalExecutionId,
                         this.registration));
