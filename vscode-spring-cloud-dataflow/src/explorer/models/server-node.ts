@@ -41,7 +41,7 @@ export class ServerNode extends BaseNode {
         public readonly registration: ServerRegistration,
         private readonly mode: ServerMode
     ) {
-        super(registration.name, undefined, iconManager, 'serverRegistration');
+        super(registration.name, registration.url, iconManager, 'serverRegistration');
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {
