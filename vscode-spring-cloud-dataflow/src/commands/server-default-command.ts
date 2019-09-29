@@ -18,7 +18,7 @@ import { Command } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_SERVER_DEFAULT } from '../extension-globals';
 import { ServerRegistrationManager } from '../service/server-registration-manager';
 import { TYPES } from '../types';
-import { BaseNode } from '../explorer/models/base-node';
+import { ServerNode } from '../explorer/models/server-node';
 
 @injectable()
 export class ServerDefaultCommand implements Command {
@@ -31,7 +31,7 @@ export class ServerDefaultCommand implements Command {
         return COMMAND_SCDF_SERVER_DEFAULT;
     }
 
-    async execute(args: BaseNode) {
+    async execute(args: ServerNode) {
         await this.serverRegistrationManager.setDefaultServer(args);
     }
 }

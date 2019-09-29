@@ -30,7 +30,7 @@ export class ServerRegisterCommand implements Command {
         return COMMAND_SCDF_SERVER_REGISTER;
     }
 
-    async execute(...args: any[]) {
+    async execute() {
         await this.serverRegistrationManager.connectServer();
     }
 }

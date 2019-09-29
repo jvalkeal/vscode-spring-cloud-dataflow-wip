@@ -21,6 +21,7 @@ import { BaseNode } from '../explorer/models/base-node';
 import { commands, window, ExtensionContext } from 'vscode';
 import { TYPES } from '../types';
 import { ServerRegistrationStatusBarManagerItem } from '../statusbar/server-registration-status-bar-manager-item';
+import { ServerNode } from '../explorer/models/server-node';
 
 export interface ServerRegistrationNonsensitive {
     url: string;
@@ -105,12 +106,10 @@ export class ServerRegistrationManager implements ExtensionActivateAware {
         }
     }
 
-    public async setDefaultServer(node: BaseNode): Promise<void> {
-        const server = node.label.toLowerCase();
-        // TODO: maybe custom type as we get only label from node
-        const registration: ServerRegistrationNonsensitive = {url: server, name: server};
+    public async setDefaultServer(node: ServerNode): Promise<void> {
+        const registration: ServerRegistrationNonsensitive = {url: node.registration.url, name: node.registration.name};
         this.serverRegistrationStatusBarManagerItem.setRegistrationName(registration.name);
-        await this.context.globalState.update(this.customRegistriesKey2, registration);
+        await this.settingsManager.setNonsensitive<ServerRegistrationNonsensitive>(this.customRegistriesKey2, registration);
     }
 
     public async chooseDefaultServer(): Promise<void> {
@@ -124,11 +123,10 @@ export class ServerRegistrationManager implements ExtensionActivateAware {
         });
         const registration = servers.find(server => server.name === result);
 
-        console.log('new default registration', registration);
         if (registration) {
             this.serverRegistrationStatusBarManagerItem.setRegistrationName(registration.name);
         }
-        await this.context.globalState.update(this.customRegistriesKey2, registration);
+        await this.settingsManager.setNonsensitive<ServerRegistrationNonsensitive>(this.customRegistriesKey2, registration);
     }
 
     public async getDefaultServer(): Promise<ServerRegistration> {

@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-	QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext,
-	QuickInputButtons, Uri
-} from 'vscode';
+import { window, Disposable, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons } from 'vscode';
 
 export async function registerServerInput(context: ExtensionContext) {
 
@@ -81,7 +78,6 @@ export async function registerServerInput(context: ExtensionContext) {
 			validate: validateNameIsUnique,
 			shouldResume: shouldResume
 		});
-		// return (input: MultiStepInput) => inputName(input, state);
 	}
 
 	return await collectInputs();
@@ -95,7 +91,6 @@ function shouldResume() {
 }
 
 async function validateNameIsUnique(name: string) {
-    // ...validate...
     await new Promise(resolve => setTimeout(resolve, 100));
     return name === 'vscode' ? 'Name not unique' : undefined;
 }
