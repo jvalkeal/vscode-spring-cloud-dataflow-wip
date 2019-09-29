@@ -31,7 +31,6 @@ import org.springframework.cloud.dataflow.language.server.domain.DataflowStreamU
 import org.springframework.cloud.dataflow.language.server.domain.DataflowTaskCreateParams;
 import org.springframework.cloud.dataflow.language.server.domain.DataflowTaskDestroyParams;
 import org.springframework.cloud.dataflow.language.server.domain.DataflowTaskLaunchParams;
-import org.springframework.cloud.dataflow.language.server.domain.DataflowTaskParams;
 import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
 import org.springframework.cloud.dataflow.rest.client.DataFlowTemplate;
 import org.springframework.cloud.dataflow.rest.util.HttpClientConfigurer;
