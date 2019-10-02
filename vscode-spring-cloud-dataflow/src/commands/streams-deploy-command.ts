@@ -34,11 +34,11 @@ export class StreamsDeployCommand implements Command {
         return COMMAND_SCDF_STREAMS_DEPLOY;
     }
 
-    async execute(name: string, properties?: DeploymentProperties) {
-        const registration = await this.serverRegistrationManager.getDefaultServer();
+    async execute(name: string, environment: string, properties?: DeploymentProperties) {
+        const server = environment || (await this.serverRegistrationManager.getDefaultServer()).name;
         const params: DataflowStreamDeployParams = {
             name: name,
-            server: registration.name,
+            server: server,
             properties: properties || {}
         };
         this.languageServerManager.getLanguageClient('scdfs').sendNotification(LSP_SCDF_DEPLOY_STREAM, params);

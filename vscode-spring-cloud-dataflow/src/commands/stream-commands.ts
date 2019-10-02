@@ -24,6 +24,7 @@ export interface DataflowStreamParams {
 }
 
 export interface DataflowStreamCreateParams extends DataflowStreamParams {
+    description: string;
     definition: string;
 }
 

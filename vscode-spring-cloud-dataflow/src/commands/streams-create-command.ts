@@ -33,12 +33,13 @@ export class StreamsCreateCommand implements Command {
         return COMMAND_SCDF_STREAMS_CREATE;
     }
 
-    async execute(streamName: string, definition: string) {
-        const registration = await this.serverRegistrationManager.getDefaultServer();
+    async execute(name: string, environment: string, description: string, definition: string) {
+        const server = environment || (await this.serverRegistrationManager.getDefaultServer()).name;
         const params: DataflowStreamCreateParams = {
-            name: streamName,
+            name: name,
+            description: description,
             definition: definition,
-            server: registration.name
+            server: server
         };
         this.languageServerManager.getLanguageClient('scdfs').sendNotification(LSP_SCDF_CREATE_STREAM, params);
     }

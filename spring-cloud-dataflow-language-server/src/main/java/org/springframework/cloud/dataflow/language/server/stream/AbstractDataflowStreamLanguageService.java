@@ -36,6 +36,10 @@ import reactor.core.publisher.Flux;
 
 public abstract class AbstractDataflowStreamLanguageService extends AbstractDslService {
 
+	private static final DocumentText envPrefix = DocumentText.from("@env");
+	private static final DocumentText namePrefix = DocumentText.from("@name");
+	private static final DocumentText descPrefix = DocumentText.from("@desc");
+
 	public AbstractDataflowStreamLanguageService() {
 		super(DataflowLanguages.LANGUAGE_STREAM);
 	}
@@ -74,12 +78,16 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 	private StreamItem parseNextStream(Document document, StreamItem previous) {
 		List<DeploymentItems> deployments = new ArrayList<>();
 		List<DeploymentItem> deploymentItems = new ArrayList<>();
+		DeploymentItem envItem = null;
+		DeploymentItem nameItem = null;
+		DeploymentItem descItem = null;
 		Range deploymentItemsRange = null;
 		Position deploymentItemsStart = null;
 		Position deploymentItemsEnd = null;
 		StreamItem streamItem = null;
 		int lineCount = document.lineCount();
 		int start = previous != null ? previous.range.getEnd().getLine() + 1 : 0;
+
 		for (int line = start; streamItem == null && line < lineCount; line++) {
 			Range lineRange = document.getLineRange(line);
 			DocumentText lineContent = document.content(lineRange);
@@ -87,22 +95,29 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 			if (trim.hasText() && Character.isLetterOrDigit(trim.charAt(0))) {
 				DefinitionItem definitionItem = parseDefinition(lineContent);
 				definitionItem.range = lineRange;
+				definitionItem.envItem = envItem;
+				definitionItem.nameItem = nameItem;
+				definitionItem.descItem = descItem;
 				streamItem = new StreamItem();
 				streamItem.definitionItem = definitionItem;
 				streamItem.range = Range.from(start, 0, line, lineContent.length());
 				if (!deploymentItems.isEmpty()) {
 					DeploymentItems items = new DeploymentItems();
-					items.range = deploymentItemsRange;
-					items.fullRange = Range.from(deploymentItemsStart, deploymentItemsEnd);
+					items.envItem = envItem;
+					items.startLineRange = deploymentItemsRange;
+					items.range = Range.from(deploymentItemsStart, deploymentItemsEnd);
 					items.items.addAll(deploymentItems);
 					deployments.add(items);
 				}
 				streamItem.deployments.addAll(new ArrayList<>(deployments));
 				deploymentItems.clear();
 				deployments.clear();
+				envItem = null;
+				nameItem = null;
+				descItem = null;
 				deploymentItemsStart = null;
 			} else {
-				if (trim.length() > 2 && trim.charAt(0) == '#') {
+				if (trim.length() > 2 && (trim.charAt(0) == '#' || trim.charAt(0) == '-')) {
 					if (deploymentItemsStart == null) {
 						deploymentItemsStart = lineRange.getStart();
 						deploymentItemsRange = lineRange;
@@ -111,14 +126,32 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 					DeploymentItem item = new DeploymentItem();
 					item.range = lineRange;
 					item.text = lineContent;
-					deploymentItems.add(item);
+
+					int contentStart = findContentStart(lineContent);
+					if (contentStart > -1) {
+						item.contentRange = Range.from(lineRange.getStart().getLine(), contentStart,
+								lineRange.getEnd().getLine(), lineRange.getEnd().getCharacter());
+					}
+					if (contentStart > -1 && lineContent.startsWith(envPrefix, contentStart)) {
+						envItem = item;
+					} else if (contentStart > -1 && lineContent.startsWith(namePrefix, contentStart)) {
+						nameItem = item;
+					} else if (contentStart > -1 && lineContent.startsWith(descPrefix, contentStart)) {
+						descItem = item;
+					} else {
+						deploymentItems.add(item);
+					}
 				} else {
 					if (!deploymentItems.isEmpty()) {
 						DeploymentItems items = new DeploymentItems();
-						items.range = deploymentItemsRange;
-						items.fullRange = Range.from(deploymentItemsStart, deploymentItemsEnd);
+						items.envItem = envItem;
+						items.startLineRange = deploymentItemsRange;
+						items.range = Range.from(deploymentItemsStart, deploymentItemsEnd);
 						items.items.addAll(deploymentItems);
 						deployments.add(items);
+						envItem = null;
+						nameItem = null;
+						descItem = null;
 						deploymentItemsStart = null;
 					}
 					deploymentItems.clear();
@@ -126,6 +159,23 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 			}
 		}
 		return streamItem;
+	}
+
+	private static int findContentStart(DocumentText text) {
+		for (int i = 0; i < text.length(); i++) {
+			if (Character.isWhitespace(text.charAt(i))) {
+				continue;
+			} else if (text.charAt(i) == '-') {
+				continue;
+			} else if (text.charAt(i) == '#') {
+				continue;
+			} else if (text.charAt(i) == '@') {
+				return i;
+			} else if (Character.isLetterOrDigit(text.charAt(i))) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	private DefinitionItem parseDefinition(DocumentText text) {
@@ -145,28 +195,38 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 
 	protected static class DeploymentItems {
 		private List<DeploymentItem> items = new ArrayList<>();
+		private Range startLineRange;
 		private Range range;
-		private Range fullRange;
+		private DeploymentItem envItem;
 
 		public List<DeploymentItem> getItems() {
 			return items;
 		}
 
-		public Range getRange() {
-			return range;
+		public DeploymentItem getEnvItem() {
+			return envItem;
 		}
 
-		public Range getFullRange() {
-			return fullRange;
+		public Range getStartLineRange() {
+			return startLineRange;
+		}
+
+		public Range getRange() {
+			return range;
 		}
 	}
 
 	protected static class DeploymentItem {
+		private Range contentRange;
 		private Range range;
 		private DocumentText text;
 
 		public Range getRange() {
 			return range;
+		}
+
+		public Range getContentRange() {
+			return contentRange;
 		}
 
 		public DocumentText getText() {
@@ -178,6 +238,9 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 		private StreamNode streamNode;
 		private Range range;
 		private ReconcileProblem reconcileProblem;
+		private DeploymentItem envItem;
+		private DeploymentItem nameItem;
+		private DeploymentItem descItem;
 
 		public StreamNode getStreamNode() {
 			return streamNode;
@@ -189,6 +252,18 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 
 		public ReconcileProblem getReconcileProblem() {
 			return reconcileProblem;
+		}
+
+		public DeploymentItem getEnvItem() {
+			return envItem;
+		}
+
+		public DeploymentItem getNameItem() {
+			return nameItem;
+		}
+
+		public DeploymentItem getDescItem() {
+			return descItem;
 		}
 	}
 

@@ -18,6 +18,8 @@ package org.springframework.cloud.dataflow.language.server.stream;
 import java.net.URI;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
 import org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams.Environment;
 import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
@@ -38,17 +40,22 @@ import reactor.core.publisher.Flux;
 
 public class DataflowStreamLanguageCompletioner extends AbstractDataflowStreamLanguageService implements Completioner {
 
+	private static final Logger log = LoggerFactory.getLogger(DataflowStreamLanguageCompletioner.class);
+
 	@Override
 	public Flux<CompletionItem> complete(DslContext context, Position position) {
 		return Flux.defer(() -> {
+			log.debug("Start of complete request");
 			Range prefixRange = Range.from(position.getLine(), 0, position.getLine(), position.getCharacter());
 			String prefix = context.getDocument().content(prefixRange).toString();
 			DataFlowOperations dataFlowOperations = getDataFlowOperations(context);
 			if (dataFlowOperations == null) {
 				return Flux.empty();
 			}
+			log.debug("Start of complete request scdf");
 			CompletionProposalsResource proposals = dataFlowOperations.completionOperations()
 					.streamCompletions(prefix, 1);
+			log.debug("End of complete request scdf");
 			return Flux.fromIterable(proposals.getProposals())
 				.map(proposal -> {
 					return CompletionItem.completionItem()
@@ -60,6 +67,9 @@ public class DataflowStreamLanguageCompletioner extends AbstractDataflowStreamLa
 							.newText(proposal.getText())
 						.and()
 						.build();
+				})
+				.doOnComplete(() -> {
+					log.debug("End of complete request");
 				});
 		});
 	}

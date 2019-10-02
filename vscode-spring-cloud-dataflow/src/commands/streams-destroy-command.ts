@@ -33,11 +33,11 @@ export class StreamsDestroyCommand implements Command {
         return COMMAND_SCDF_STREAMS_DESTROY;
     }
 
-    async execute(name: string) {
-        const registration = await this.serverRegistrationManager.getDefaultServer();
+    async execute(name: string, environment: string) {
+        const server = environment || (await this.serverRegistrationManager.getDefaultServer()).name;
         const params: DataflowStreamDestroyParams = {
             name: name,
-            server: registration.name
+            server: server
         };
         this.languageServerManager.getLanguageClient('scdfs').sendNotification(LSP_SCDF_DESTROY_STREAM, params);
     }

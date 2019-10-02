@@ -25,8 +25,10 @@ import org.springframework.cloud.dataflow.core.dsl.StreamNode;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
 import org.springframework.dsl.document.DocumentText;
 import org.springframework.dsl.domain.CodeLens;
+import org.springframework.dsl.domain.Range;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.Lenser;
+import org.springframework.util.StringUtils;
 
 import reactor.core.publisher.Flux;
 
@@ -43,12 +45,12 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 		return item.getDeployments().stream()
 			.map(deployment -> {
 				return CodeLens.codeLens()
-					.range(deployment.getRange())
+					.range(deployment.getStartLineRange())
 					.command()
 						.command(DataflowLanguages.COMMAND_STREAM_DEPLOY)
 						.title(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE)
-						.argument(item.getDefinitionItem().getStreamNode().getName())
-						.argument(getDefinition(item.getDefinitionItem().getStreamNode()))
+						.argument(getStreamName(item))
+						.argument(getStreamEnvironment(deployment, item))
 						.argument(getDeploymentProperties(deployment.getItems()))
 						.and()
 					.build();
@@ -57,13 +59,19 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 	}
 
 	private List<CodeLens> codeLensWithStream(StreamItem item) {
+		String streamName = getStreamName(item);
+		String streamEnvironment = getStreamEnvironment(item);
+		String streamDescription = getStreamDescription(item);
+
 		return Arrays.asList(
 			CodeLens.codeLens()
 				.range(item.getDefinitionItem().getRange())
 				.command()
 					.command(DataflowLanguages.COMMAND_STREAM_CREATE)
 					.title(DataflowLanguages.COMMAND_STREAM_CREATE_TITLE)
-					.argument(item.getDefinitionItem().getStreamNode().getName())
+					.argument(streamName)
+					.argument(streamEnvironment)
+					.argument(streamDescription)
 					.argument(getDefinition(item.getDefinitionItem().getStreamNode()))
 					.and()
 				.build(),
@@ -72,7 +80,8 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 				.command()
 					.command(DataflowLanguages.COMMAND_STREAM_DESTROY)
 					.title(DataflowLanguages.COMMAND_STREAM_DESTROY_TITLE)
-					.argument(item.getDefinitionItem().getStreamNode().getName())
+					.argument(streamName)
+					.argument(streamEnvironment)
 					.and()
 				.build(),
 			CodeLens.codeLens()
@@ -80,7 +89,8 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 				.command()
 					.command(DataflowLanguages.COMMAND_STREAM_DEPLOY)
 					.title(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE)
-					.argument(item.getDefinitionItem().getStreamNode().getName())
+					.argument(streamName)
+					.argument(streamEnvironment)
 					.and()
 				.build(),
 			CodeLens.codeLens()
@@ -88,7 +98,8 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 				.command()
 					.command(DataflowLanguages.COMMAND_STREAM_UNDEPLOY)
 					.title(DataflowLanguages.COMMAND_STREAM_UNDEPLOY_TITLE)
-					.argument(item.getDefinitionItem().getStreamNode().getName())
+					.argument(streamName)
+					.argument(streamEnvironment)
 					.and()
 				.build()
 		);
@@ -96,6 +107,59 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 
 	private String getDefinition(StreamNode streamNode) {
 		return streamNode.getStreamText().substring(streamNode.getStartPos());
+	}
+
+	private String getStreamName(StreamItem item) {
+		String streamName = item.getDefinitionItem().getStreamNode().getName();
+		if (!StringUtils.hasText(streamName)) {
+			DeploymentItem nameItem = item.getDefinitionItem().getNameItem();
+			if (nameItem != null) {
+				Range contentRange = nameItem.getContentRange();
+				streamName = nameItem.getText()
+						.substring(contentRange.getStart().getCharacter() + 5, nameItem.getText().length()).trim()
+						.toString();
+			}
+		}
+		return streamName;
+	}
+
+	private String getStreamDescription(StreamItem item) {
+		String streamDescription = null;
+		DeploymentItem descItem = item.getDefinitionItem().getDescItem();
+		if (descItem != null) {
+			Range contentRange = descItem.getContentRange();
+			streamDescription = descItem.getText()
+					.substring(contentRange.getStart().getCharacter() + 5, descItem.getText().length()).trim()
+					.toString();
+		}
+		return streamDescription;
+	}
+
+	private String getStreamEnvironment(StreamItem item) {
+		String streamEnvironment = null;
+		DeploymentItem envItem = item.getDefinitionItem().getEnvItem();
+		if (envItem != null) {
+			Range contentRange = envItem.getContentRange();
+			streamEnvironment = envItem.getText()
+					.substring(contentRange.getStart().getCharacter() + 4, envItem.getText().length()).trim()
+					.toString();
+		}
+		return streamEnvironment;
+	}
+
+	private String getStreamEnvironment(DeploymentItems items, StreamItem item) {
+		String streamEnvironment = null;
+		DeploymentItem envItem = items.getEnvItem();
+		if (envItem != null) {
+			Range contentRange = envItem.getContentRange();
+			streamEnvironment = envItem.getText()
+					.substring(contentRange.getStart().getCharacter() + 4, envItem.getText().length()).trim()
+					.toString();
+		}
+		if (!StringUtils.hasText(streamEnvironment)) {
+			streamEnvironment = getStreamEnvironment(item);
+		}
+		return streamEnvironment;
 	}
 
 	private Map<String, String> getDeploymentProperties(List<DeploymentItem> items) {
