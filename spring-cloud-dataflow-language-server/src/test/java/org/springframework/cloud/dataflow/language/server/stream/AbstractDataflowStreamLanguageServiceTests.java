@@ -41,6 +41,17 @@ public class AbstractDataflowStreamLanguageServiceTests {
 		"-- @desc desc1\n" +
 		"time|log\n";
 
+	public static final String DSL_STREAMS_SAME_NAMES =
+		"-- @name name\n" +
+		"-- @desc desc\n" +
+		"-- @env env1\n" +
+		"time|log\n" +
+		"\n" +
+		"-- @name name\n" +
+		"-- @desc desc\n" +
+		"-- @env env2\n" +
+		"time|log\n";
+
 		@Test
 		public void testMultiEnvsAndNameDescDefinedInMetadata() {
 			Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,

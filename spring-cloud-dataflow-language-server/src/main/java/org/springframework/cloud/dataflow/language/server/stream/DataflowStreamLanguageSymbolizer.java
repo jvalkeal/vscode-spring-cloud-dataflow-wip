@@ -31,6 +31,7 @@ import org.springframework.dsl.service.symbol.Symbolizer;
 import org.springframework.dsl.symboltable.Symbol;
 import org.springframework.dsl.symboltable.SymbolTable;
 import org.springframework.dsl.symboltable.model.ClassSymbol;
+import org.springframework.dsl.symboltable.model.LocalScope;
 import org.springframework.dsl.symboltable.support.DefaultSymbolTable;
 import org.springframework.dsl.symboltable.support.DocumentSymbolTableVisitor;
 import org.springframework.util.StringUtils;
@@ -108,10 +109,14 @@ public class DataflowStreamLanguageSymbolizer extends AbstractDataflowStreamLang
 			int line = item.getRange().getStart().getLine();
 			int startPos = streamNode.getStartPos();
 			int endPos = streamNode.getEndPos();
-			String streamName = streamNode.getStreamName();
+			String streamName = getStreamName(item);
+
+			LocalScope streamScope = new LocalScope(table.getGlobalScope());
+			table.getGlobalScope().nest(streamScope);
+
 			StreamSymbol streamClass = new StreamSymbol(streamName != null ? streamName : "[unnamed]");
 			streamClass.setRange(Range.from(line, startPos, line, endPos));
-			table.defineGlobal(streamClass);
+			streamScope.define(streamClass);
 
 			for (int i = 0; i < streamNode.getAppNodes().size(); i++) {
 				AppNode appNode = streamNode.getAppNodes().get(i);
@@ -134,6 +139,20 @@ public class DataflowStreamLanguageSymbolizer extends AbstractDataflowStreamLang
 			}
 		}
 		return table;
+	}
+
+	private static String getStreamName(StreamItem item) {
+		String streamName = item.getDefinitionItem().getStreamNode().getName();
+		if (!StringUtils.hasText(streamName)) {
+			DeploymentItem nameItem = item.getDefinitionItem().getNameItem();
+			if (nameItem != null) {
+				Range contentRange = nameItem.getContentRange();
+				streamName = nameItem.getText()
+						.substring(contentRange.getStart().getCharacter() + 5, nameItem.getText().length()).trim()
+						.toString();
+			}
+		}
+		return streamName;
 	}
 
 	private static class SymbolQuery implements Function<Symbol, Boolean> {
@@ -199,6 +218,10 @@ public class DataflowStreamLanguageSymbolizer extends AbstractDataflowStreamLang
 		public Flux<SymbolInformation> symbolInformations() {
 			return symbolizeInfo.map(si -> si.symbolInformations()).flatMapMany(i -> i);
 		}
+	}
+
+	public static class StreamBlock {
+
 	}
 
 	public static class StreamSymbol extends ClassSymbol {
