@@ -21,6 +21,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
+import org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams;
 import org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams.Environment;
 import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
 import org.springframework.cloud.dataflow.rest.client.DataFlowTemplate;
@@ -33,6 +34,7 @@ import org.springframework.dsl.jsonrpc.session.JsonRpcSession;
 import org.springframework.dsl.lsp.LspSystemConstants;
 import org.springframework.dsl.service.Completioner;
 import org.springframework.dsl.service.DslContext;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -76,12 +78,18 @@ public class DataflowStreamLanguageCompletioner extends AbstractDataflowStreamLa
 
 	protected DataFlowOperations getDataFlowOperations(DslContext context) {
 		JsonRpcSession session = context.getAttribute(LspSystemConstants.CONTEXT_SESSION_ATTRIBUTE);
-		org.springframework.cloud.dataflow.language.server.domain.DataflowEnvironmentParams params = session
+		DataflowEnvironmentParams params = session
 				.getAttribute(DataflowLanguages.CONTEXT_SESSION_ENVIRONMENTS_ATTRIBUTE);
+		String defaultEnvironment = params.getDefaultEnvironment();
 		List<Environment> environments = params.getEnvironments();
-		if (environments.size() > 0) {
+		Environment environment = environments.stream()
+			.filter(env -> ObjectUtils.nullSafeEquals(defaultEnvironment, env.getName()))
+			.findFirst()
+			.orElse(null);
+		if (environment != null) {
 			try {
-				return buildDataFlowTemplate(environments.get(0));
+				log.debug("Building DataFlowTemplate for environment {}", environment);
+				return buildDataFlowTemplate(environment);
 			} catch (Exception e) {
 				return null;
 			}

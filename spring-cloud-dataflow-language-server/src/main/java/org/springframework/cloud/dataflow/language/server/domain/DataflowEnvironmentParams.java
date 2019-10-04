@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 public class DataflowEnvironmentParams {
 
     private List<Environment> environments = new ArrayList<>();
+    private String defaultEnvironment;
 
     public List<Environment> getEnvironments() {
         return environments;
@@ -32,9 +33,17 @@ public class DataflowEnvironmentParams {
         this.environments = environments;
     }
 
+    public String getDefaultEnvironment() {
+        return defaultEnvironment;
+    }
+
+    public void setDefaultEnvironment(String defaultEnvironment) {
+        this.defaultEnvironment = defaultEnvironment;
+    }
+
     @Override
     public String toString() {
-        return "DataflowEnvironmentParams [" + environments +"]";
+        return "DataflowEnvironmentParams [" + environments + ", defaultEnvironment=" + defaultEnvironment + "]";
     }
 
     public static class Environment {

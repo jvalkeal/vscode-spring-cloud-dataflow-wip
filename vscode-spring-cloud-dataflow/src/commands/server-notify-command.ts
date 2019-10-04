@@ -30,7 +30,7 @@ export class ServerNotifyCommand implements Command {
         return COMMAND_SCDF_SERVER_NOTIFY;
     }
 
-    async execute(...args: any[]) {
+    async execute() {
         await this.serverRegistrationManager.notifyServers();
     }
 }

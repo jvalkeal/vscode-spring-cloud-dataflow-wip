@@ -39,6 +39,7 @@ export interface ServerRegistration extends ServerRegistrationNonsensitive {
 
 export interface DataflowEnvironmentParams {
     environments: ServerRegistration[];
+    defaultEnvironment: string;
 }
 
 @injectable()
@@ -66,10 +67,12 @@ export class ServerRegistrationManager implements ExtensionActivateAware {
         const registrations: ServerRegistration[] = [];
         const servers = await this.getServers();
         servers.forEach(registration => registrations.push(registration));
+        const registration = await this.getDefaultServer();
         const params: DataflowEnvironmentParams = {
-            environments: registrations
+            environments: registrations,
+            defaultEnvironment: registration.name
         };
-        await this.languageServerManager.getLanguageClient('scdfs').sendNotification('scdf/environment', params);
+        this.languageServerManager.getLanguageClient('scdfs').sendNotification('scdf/environment', params);
     }
 
     public async connectServer(): Promise<void> {
@@ -127,6 +130,7 @@ export class ServerRegistrationManager implements ExtensionActivateAware {
             this.serverRegistrationStatusBarManagerItem.setRegistrationName(registration.name);
         }
         await this.settingsManager.setNonsensitive<ServerRegistrationNonsensitive>(this.customRegistriesKey2, registration);
+        await this.notifyServers();
     }
 
     public async getDefaultServer(): Promise<ServerRegistration> {
