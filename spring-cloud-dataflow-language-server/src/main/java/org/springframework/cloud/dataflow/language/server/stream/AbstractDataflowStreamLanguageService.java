@@ -156,15 +156,7 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 	}
 
 	protected Flux<StreamItem> parse(Document document) {
-		return Flux.<StreamItem, StreamItem>generate(() -> null, (previous, sink) -> {
-			StreamItem next = parseNextStream(document, previous);
-			if (next != null) {
-				sink.next(next);
-			} else {
-				sink.complete();
-			}
-			return next;
-		});
+		return parseCachedMono(document).flatMapMany(items -> Flux.fromIterable(items));
 	}
 
 	private List<StreamItem> parseStreams(Document document) {

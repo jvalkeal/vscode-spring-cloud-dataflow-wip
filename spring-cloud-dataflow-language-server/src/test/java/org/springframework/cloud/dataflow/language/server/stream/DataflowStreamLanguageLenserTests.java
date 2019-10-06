@@ -21,18 +21,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
+import org.springframework.cloud.dataflow.language.server.support.DataFlowOperationsService;
+import org.springframework.cloud.dataflow.language.server.support.DataflowCacheService;
 import org.springframework.dsl.document.Document;
 import org.springframework.dsl.document.TextDocument;
 import org.springframework.dsl.domain.CodeLens;
 import org.springframework.dsl.domain.Range;
 import org.springframework.dsl.service.DslContext;
-import org.springframework.dsl.service.Lenser;
 
 public class DataflowStreamLanguageLenserTests {
 
-    private final Lenser lenser = new DataflowStreamLanguageLenser();
+	private final DataflowStreamLanguageLenser lenser = new DataflowStreamLanguageLenser();
+
+	@BeforeEach
+	public void setup() {
+		lenser.setDataflowCacheService(new DataflowCacheService());
+		lenser.setDataflowOperationsService(new DataFlowOperationsService());
+	}
 
 	@Test
 	public void testLintsMultipleStreams() {

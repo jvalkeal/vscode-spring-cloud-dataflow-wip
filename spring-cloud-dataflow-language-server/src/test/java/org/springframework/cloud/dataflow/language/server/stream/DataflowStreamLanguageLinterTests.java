@@ -20,8 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
+import org.springframework.cloud.dataflow.language.server.support.DataFlowOperationsService;
+import org.springframework.cloud.dataflow.language.server.support.DataflowCacheService;
 import org.springframework.dsl.document.Document;
 import org.springframework.dsl.document.TextDocument;
 import org.springframework.dsl.service.DslContext;
@@ -30,6 +33,12 @@ import org.springframework.dsl.service.reconcile.ReconcileProblem;
 public class DataflowStreamLanguageLinterTests {
 
 	private final DataflowStreamLanguageLinter linter = new DataflowStreamLanguageLinter();
+
+	@BeforeEach
+	public void setup() {
+		linter.setDataflowCacheService(new DataflowCacheService());
+		linter.setDataflowOperationsService(new DataFlowOperationsService());
+	}
 
 	@Test
 	public void testEmpty() {

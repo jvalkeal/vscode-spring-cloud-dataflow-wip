@@ -20,8 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
+import org.springframework.cloud.dataflow.language.server.support.DataFlowOperationsService;
+import org.springframework.cloud.dataflow.language.server.support.DataflowCacheService;
 import org.springframework.dsl.document.Document;
 import org.springframework.dsl.document.TextDocument;
 import org.springframework.dsl.domain.DocumentSymbol;
@@ -34,6 +37,12 @@ import org.springframework.dsl.service.symbol.SymbolizeInfo;
 public class DataflowStreamLanguageSymbolizerTests {
 
     private final DataflowStreamLanguageSymbolizer symbolizer = new DataflowStreamLanguageSymbolizer();
+
+	@BeforeEach
+	public void setup() {
+		symbolizer.setDataflowCacheService(new DataflowCacheService());
+		symbolizer.setDataflowOperationsService(new DataFlowOperationsService());
+	}
 
     @Test
     public void testSimpleStreamWithName() {
