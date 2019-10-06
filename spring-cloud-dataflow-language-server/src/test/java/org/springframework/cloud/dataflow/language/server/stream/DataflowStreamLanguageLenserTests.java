@@ -137,4 +137,13 @@ public class DataflowStreamLanguageLenserTests {
 
 		assertThat(lenses.get(5).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_UNDEPLOY_TITLE);
 	}
+
+	@Test
+	public void testJustMetadataWithoutStream() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
+				AbstractDataflowStreamLanguageServiceTests.DSL_STREAMS_JUST_METADATA);
+		List<CodeLens> lenses = lenser.lense(DslContext.builder().document(document).build()).toStream()
+				.collect(Collectors.toList());
+		assertThat(lenses).hasSize(0);
+	}
 }

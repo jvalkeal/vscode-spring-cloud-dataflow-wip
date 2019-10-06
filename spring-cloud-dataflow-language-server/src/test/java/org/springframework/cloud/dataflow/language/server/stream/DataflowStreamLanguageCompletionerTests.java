@@ -20,6 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
+import org.springframework.cloud.dataflow.language.server.support.DataflowCacheService;
 import org.springframework.cloud.dataflow.rest.client.CompletionOperations;
 import org.springframework.cloud.dataflow.rest.client.DataFlowOperations;
 import org.springframework.cloud.dataflow.rest.resource.CompletionProposalsResource;
@@ -58,7 +60,8 @@ public class DataflowStreamLanguageCompletionerTests {
         Mockito.when(dataFlowOperations.completionOperations()).thenReturn(completionOperations);
         Mockito.when(completionOperations.streamCompletions(any(), anyInt())).thenReturn(proposalsResource);
         Mockito.when(proposalsResource.getProposals()).thenReturn(Arrays.asList(proposal));
-        DataflowStreamLanguageCompletioner completioner = mockCompletioner();
+        MockDataflowStreamLanguageCompletioner completioner = mockCompletioner();
+        completioner.setDataflowCacheService(new DataflowCacheService());
 
         List<CompletionItem> completes = completioner
                 .complete(DslContext.builder().document(document).build(), Position.zero()).toStream()
@@ -80,7 +83,8 @@ public class DataflowStreamLanguageCompletionerTests {
         Mockito.when(completionOperations.streamCompletions(any(), anyInt())).thenReturn(proposalsResource);
         Mockito.when(proposalsResource.getProposals())
                 .thenReturn(Arrays.asList(proposal1, proposal2, proposal3, proposal4, proposal5, proposal6));
-        DataflowStreamLanguageCompletioner completioner = mockCompletioner();
+        MockDataflowStreamLanguageCompletioner completioner = mockCompletioner();
+        completioner.setDataflowCacheService(new DataflowCacheService());
 
         List<CompletionItem> completes = completioner
                 .complete(DslContext.builder().document(document).build(), Position.from(0, 16)).toStream()
@@ -112,12 +116,35 @@ public class DataflowStreamLanguageCompletionerTests {
         assertThat(completes.get(5).getTextEdit().getNewText()).isEqualTo("ticktock = time --date-format=");
     }
 
-    private DataflowStreamLanguageCompletioner mockCompletioner() {
-        return new DataflowStreamLanguageCompletioner() {
-            @Override
-            protected DataFlowOperations getDataFlowOperations(DslContext context) {
-                return dataFlowOperations;
-            }
-        };
+    @Test
+    public void testCorrectEnvPickedFromMetadata() {
+        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
+                AbstractDataflowStreamLanguageServiceTests.DSL_STREAMS_JUST_METADATA);
+        Mockito.when(dataFlowOperations.completionOperations()).thenReturn(completionOperations);
+        Mockito.when(completionOperations.streamCompletions(any(), anyInt())).thenReturn(proposalsResource);
+        Mockito.when(proposalsResource.getProposals()).thenReturn(Collections.emptyList());
+        MockDataflowStreamLanguageCompletioner completioner = mockCompletioner();
+        completioner.setDataflowCacheService(new DataflowCacheService());
+
+        List<CompletionItem> completes = completioner
+                .complete(DslContext.builder().document(document).build(), Position.from(3, 0)).toStream()
+                .collect(Collectors.toList());
+        assertThat(completes).hasSize(0);
+        assertThat(completioner.nameToCheck).isEqualTo("env1");
+    }
+
+    private MockDataflowStreamLanguageCompletioner mockCompletioner() {
+        return new MockDataflowStreamLanguageCompletioner();
+    }
+
+    private class MockDataflowStreamLanguageCompletioner extends DataflowStreamLanguageCompletioner {
+
+        String nameToCheck;
+
+        @Override
+        protected DataFlowOperations resolveDataFlowOperations(DslContext context, Position position) {
+            nameToCheck = resolveDefinedEnvironmentName(context, position);
+            return dataFlowOperations;
+        }
     }
 }

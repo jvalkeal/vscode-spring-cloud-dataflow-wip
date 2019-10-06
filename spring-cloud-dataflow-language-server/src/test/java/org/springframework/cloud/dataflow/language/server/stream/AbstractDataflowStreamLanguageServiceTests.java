@@ -22,6 +22,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
 import org.springframework.cloud.dataflow.language.server.stream.AbstractDataflowStreamLanguageService.StreamItem;
+import org.springframework.cloud.dataflow.language.server.support.DataflowCacheService;
 import org.springframework.dsl.document.Document;
 import org.springframework.dsl.document.TextDocument;
 import org.springframework.dsl.domain.Range;
@@ -51,6 +52,27 @@ public class AbstractDataflowStreamLanguageServiceTests {
 		"-- @desc desc\n" +
 		"-- @env env2\n" +
 		"time|log\n";
+
+	public static final String DSL_STREAMS_JUST_METADATA =
+		"-- @name name\n" +
+		"-- @desc desc\n" +
+		"-- @env env1\n";
+
+		@Test
+		public void testMetadataWithoutStream() {
+			Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
+				DSL_STREAMS_JUST_METADATA);
+
+			List<StreamItem> result = service.parseCachedMono(document).block();
+
+			assertThat(result).hasSize(1);
+			assertThat(result.get(0).getDeployments()).hasSize(0);
+			assertThat(result.get(0).getDefinitionItem()).isNotNull();
+			assertThat(result.get(0).getDefinitionItem().getEnvItem().getText().toString()).isEqualTo("-- @env env1");
+			assertThat(result.get(0).getDefinitionItem().getDescItem().getText().toString()).isEqualTo("-- @desc desc");
+			assertThat(result.get(0).getDefinitionItem().getNameItem().getText().toString()).isEqualTo("-- @name name");
+			assertThat(result.get(0).getRange()).isEqualTo(Range.from(0, 0, 3, 0));
+		}
 
 		@Test
 		public void testMultiEnvsAndNameDescDefinedInMetadata() {
@@ -244,5 +266,9 @@ public class AbstractDataflowStreamLanguageServiceTests {
 	}
 
 	private static class TestDataflowStreamLanguageService extends AbstractDataflowStreamLanguageService {
+
+		public TestDataflowStreamLanguageService() {
+			setDataflowCacheService(new DataflowCacheService());
+		}
 	}
 }

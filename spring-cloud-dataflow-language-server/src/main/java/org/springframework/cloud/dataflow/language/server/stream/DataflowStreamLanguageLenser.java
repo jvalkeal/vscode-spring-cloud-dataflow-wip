@@ -16,6 +16,7 @@
 package org.springframework.cloud.dataflow.language.server.stream;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,11 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 		String streamName = getStreamName(item);
 		String streamEnvironment = getStreamEnvironment(item);
 		String streamDescription = getStreamDescription(item);
+
+		if (item.getDefinitionItem().getStreamNode() == null) {
+			// no stream yet, no lenses
+			return Collections.emptyList();
+		}
 
 		return Arrays.asList(
 			CodeLens.codeLens()
@@ -110,9 +116,10 @@ public class DataflowStreamLanguageLenser extends AbstractDataflowStreamLanguage
 	}
 
 	private String getStreamName(StreamItem item) {
-		String streamName = item.getDefinitionItem().getStreamNode().getName();
+		DefinitionItem definitionItem = item.getDefinitionItem();
+		String streamName = definitionItem.getStreamNode() != null ? definitionItem.getStreamNode().getName() : null;
 		if (!StringUtils.hasText(streamName)) {
-			DeploymentItem nameItem = item.getDefinitionItem().getNameItem();
+			DeploymentItem nameItem = definitionItem.getNameItem();
 			if (nameItem != null) {
 				Range contentRange = nameItem.getContentRange();
 				streamName = nameItem.getText()

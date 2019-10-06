@@ -77,9 +77,52 @@ public class DataflowEnvironmentParams {
         }
 
         @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((url == null) ? 0 : url.hashCode());
+            result = prime * result + ((name == null) ? 0 : name.hashCode());
+            result = prime * result + ((credentials == null) ? 0 : credentials.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Environment other = (Environment) obj;
+            if (url == null) {
+                if (other.url != null) {
+                    return false;
+                }
+            } else if (!url.equals(other.url)) {
+                return false;
+            }
+            if (name == null) {
+                if (other.name != null) {
+                    return false;
+                }
+            } else if (!name.equals(other.name)) {
+                return false;
+            }
+            if (credentials == null) {
+                if (other.credentials != null) {
+                    return false;
+                }
+            } else if (!credentials.equals(other.credentials)) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
         public String toString() {
-            return "DataflowEnvironmentParam [url=" + url + ", username=" + credentials.getUsername() + ", password="
-                    + (StringUtils.hasText(credentials.getPassword()) ? "********" : "") + "]";
+            return "DataflowEnvironmentParam [url=" + url + ", name=" + name + ", username=" + credentials.getUsername()
+                    + ", password=" + (StringUtils.hasText(credentials.getPassword()) ? "********" : "") + "]";
         }
     }
 
@@ -102,6 +145,39 @@ public class DataflowEnvironmentParams {
 
         public void setPassword(String password) {
             this.password = password;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((username == null) ? 0 : username.hashCode());
+            result = prime * result + ((password == null) ? 0 : password.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Credentials other = (Credentials) obj;
+            if (username == null) {
+                if (other.username != null)
+                    return false;
+            } else if (!username.equals(other.username)) {
+                return false;
+            }
+            if (password == null) {
+                if (other.password != null)
+                    return false;
+            } else if (!password.equals(other.password)) {
+                return false;
+            }
+            return true;
         }
     }
 }
