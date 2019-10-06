@@ -66,61 +66,56 @@ public class AbstractDataflowStreamLanguageServiceTests {
 		"-- @desc desc\n" +
 		"-- @env env1\n";
 
-		@Test
-		public void testMetadataWithoutStream() {
-			Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
-				DSL_STREAMS_JUST_METADATA);
+	public static final String DSL_STREAMS_ERROR_IN_OPTION =
+		"ticktock = time --fixed-delay=| log";
 
-			List<StreamItem> result = service.parseCachedMono(document).block();
-
-			assertThat(result).hasSize(1);
-			assertThat(result.get(0).getDeployments()).hasSize(0);
-			assertThat(result.get(0).getDefinitionItem()).isNotNull();
-			assertThat(result.get(0).getDefinitionItem().getEnvItem().getText().toString()).isEqualTo("-- @env env1");
-			assertThat(result.get(0).getDefinitionItem().getDescItem().getText().toString()).isEqualTo("-- @desc desc");
-			assertThat(result.get(0).getDefinitionItem().getNameItem().getText().toString()).isEqualTo("-- @name name");
-			assertThat(result.get(0).getRange()).isEqualTo(Range.from(0, 0, 3, 0));
-		}
-
-		@Test
-		public void testMultiEnvsAndNameDescDefinedInMetadata() {
-			Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
-					AbstractDataflowStreamLanguageServiceTests.DSL_ONE_MULTI_ENV);
-
-			List<StreamItem> result = service.parse(document).collectList().block();
-
-			assertThat(result).hasSize(1);
-			assertThat(result.get(0).getDeployments()).hasSize(2);
-
-			assertThat(result.get(0).getDeployments().get(0).getItems()).hasSize(1);
-			assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getText().toString()).isEqualTo("-- foo1=bar1");
-			assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getRange()).isEqualTo(Range.from(1, 0, 1, 12));
-			assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getContentRange()).isEqualTo(Range.from(1, 3, 1, 12));
-			assertThat(result.get(0).getDeployments().get(0).getEnvItem().getText().toString()).isEqualTo("-- @env env1");
-			assertThat(result.get(0).getDeployments().get(0).getEnvItem().getRange()).isEqualTo(Range.from(0, 0, 0, 12));
-			assertThat(result.get(0).getDeployments().get(0).getEnvItem().getContentRange()).isEqualTo(Range.from(0, 3, 0, 12));
-
-			assertThat(result.get(0).getDeployments().get(1).getItems()).hasSize(1);
-			assertThat(result.get(0).getDeployments().get(1).getItems().get(0).getText().toString()).isEqualTo("-- foo2=bar2");
-			assertThat(result.get(0).getDeployments().get(1).getItems().get(0).getRange()).isEqualTo(Range.from(4, 0, 4, 12));
-			assertThat(result.get(0).getDeployments().get(1).getItems().get(0).getContentRange()).isEqualTo(Range.from(4, 3, 4, 12));
-			assertThat(result.get(0).getDeployments().get(1).getEnvItem().getText().toString()).isEqualTo("-- @env env2");
-			assertThat(result.get(0).getDeployments().get(1).getEnvItem().getRange()).isEqualTo(Range.from(3, 0, 3, 12));
-			assertThat(result.get(0).getDeployments().get(1).getEnvItem().getContentRange()).isEqualTo(Range.from(3, 3, 3, 12));
-
-			assertThat(result.get(0).getDefinitionItem()).isNotNull();
-			assertThat(result.get(0).getDefinitionItem().getEnvItem()).isNull();
-			assertThat(result.get(0).getDefinitionItem().getNameItem().getText().toString()).isEqualTo("-- @name name1");
-			assertThat(result.get(0).getDefinitionItem().getNameItem().getRange()).isEqualTo(Range.from(6, 0, 6, 14));
-			assertThat(result.get(0).getDefinitionItem().getNameItem().getContentRange()).isEqualTo(Range.from(6, 3, 6, 14));
-			assertThat(result.get(0).getDefinitionItem().getDescItem().getText().toString()).isEqualTo("-- @desc desc1");
-			assertThat(result.get(0).getDefinitionItem().getDescItem().getRange()).isEqualTo(Range.from(7, 0, 7, 14));
-			assertThat(result.get(0).getDefinitionItem().getDescItem().getContentRange()).isEqualTo(Range.from(7, 3, 7, 14));
-			assertThat(result.get(0).getDefinitionItem().getRange()).isEqualTo(Range.from(8, 0, 8, 8));
-			assertThat(result.get(0).getDefinitionItem().getReconcileProblem()).isNull();
-			assertThat(result.get(0).getDefinitionItem().getStreamNode()).isNotNull();
-			assertThat(result.get(0).getDefinitionItem().getStreamNode().getName()).isNull();
-		}
+	@Test
+	public void testMetadataWithoutStream() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
+			DSL_STREAMS_JUST_METADATA);
+		List<StreamItem> result = service.parseCachedMono(document).block();
+		assertThat(result).hasSize(1);
+		assertThat(result.get(0).getDeployments()).hasSize(0);
+		assertThat(result.get(0).getDefinitionItem()).isNotNull();
+		assertThat(result.get(0).getDefinitionItem().getEnvItem().getText().toString()).isEqualTo("-- @env env1");
+		assertThat(result.get(0).getDefinitionItem().getDescItem().getText().toString()).isEqualTo("-- @desc desc");
+		assertThat(result.get(0).getDefinitionItem().getNameItem().getText().toString()).isEqualTo("-- @name name");
+		assertThat(result.get(0).getRange()).isEqualTo(Range.from(0, 0, 3, 0));
+	}
+	@Test
+	public void testMultiEnvsAndNameDescDefinedInMetadata() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
+				AbstractDataflowStreamLanguageServiceTests.DSL_ONE_MULTI_ENV);
+		List<StreamItem> result = service.parse(document).collectList().block();
+		assertThat(result).hasSize(1);
+		assertThat(result.get(0).getDeployments()).hasSize(2);
+		assertThat(result.get(0).getDeployments().get(0).getItems()).hasSize(1);
+		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getText().toString()).isEqualTo("-- foo1=bar1");
+		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getRange()).isEqualTo(Range.from(1, 0, 1, 12));
+		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getContentRange()).isEqualTo(Range.from(1, 3, 1, 12));
+		assertThat(result.get(0).getDeployments().get(0).getEnvItem().getText().toString()).isEqualTo("-- @env env1");
+		assertThat(result.get(0).getDeployments().get(0).getEnvItem().getRange()).isEqualTo(Range.from(0, 0, 0, 12));
+		assertThat(result.get(0).getDeployments().get(0).getEnvItem().getContentRange()).isEqualTo(Range.from(0, 3, 0, 12));
+		assertThat(result.get(0).getDeployments().get(1).getItems()).hasSize(1);
+		assertThat(result.get(0).getDeployments().get(1).getItems().get(0).getText().toString()).isEqualTo("-- foo2=bar2");
+		assertThat(result.get(0).getDeployments().get(1).getItems().get(0).getRange()).isEqualTo(Range.from(4, 0, 4, 12));
+		assertThat(result.get(0).getDeployments().get(1).getItems().get(0).getContentRange()).isEqualTo(Range.from(4, 3, 4, 12));
+		assertThat(result.get(0).getDeployments().get(1).getEnvItem().getText().toString()).isEqualTo("-- @env env2");
+		assertThat(result.get(0).getDeployments().get(1).getEnvItem().getRange()).isEqualTo(Range.from(3, 0, 3, 12));
+		assertThat(result.get(0).getDeployments().get(1).getEnvItem().getContentRange()).isEqualTo(Range.from(3, 3, 3, 12));
+		assertThat(result.get(0).getDefinitionItem()).isNotNull();
+		assertThat(result.get(0).getDefinitionItem().getEnvItem()).isNull();
+		assertThat(result.get(0).getDefinitionItem().getNameItem().getText().toString()).isEqualTo("-- @name name1");
+		assertThat(result.get(0).getDefinitionItem().getNameItem().getRange()).isEqualTo(Range.from(6, 0, 6, 14));
+		assertThat(result.get(0).getDefinitionItem().getNameItem().getContentRange()).isEqualTo(Range.from(6, 3, 6, 14));
+		assertThat(result.get(0).getDefinitionItem().getDescItem().getText().toString()).isEqualTo("-- @desc desc1");
+		assertThat(result.get(0).getDefinitionItem().getDescItem().getRange()).isEqualTo(Range.from(7, 0, 7, 14));
+		assertThat(result.get(0).getDefinitionItem().getDescItem().getContentRange()).isEqualTo(Range.from(7, 3, 7, 14));
+		assertThat(result.get(0).getDefinitionItem().getRange()).isEqualTo(Range.from(8, 0, 8, 8));
+		assertThat(result.get(0).getDefinitionItem().getReconcileProblem()).isNull();
+		assertThat(result.get(0).getDefinitionItem().getStreamNode()).isNotNull();
+		assertThat(result.get(0).getDefinitionItem().getStreamNode().getName()).isNull();
+	}
 
 	@Test
 	public void testEmpty() {
@@ -271,6 +266,19 @@ public class AbstractDataflowStreamLanguageServiceTests {
 		assertThat(result.get(0).getDefinitionItem().getDescItem().getText().toString()).isEqualTo("-- @desc foodesc");
 		assertThat(result.get(0).getDefinitionItem().getDescItem().getRange()).isEqualTo(Range.from(2, 0, 2, 16));
 		assertThat(result.get(0).getDefinitionItem().getDescItem().getContentRange()).isEqualTo(Range.from(2, 3, 2, 16));
+	}
+
+	@Test
+	public void testErrorInDsl() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
+				DSL_STREAMS_ERROR_IN_OPTION);
+		List<StreamItem> result = service.parse(document).collectList().block();
+		assertThat(result).hasSize(1);
+		assertThat(result.get(0).getDeployments()).hasSize(0);
+		assertThat(result.get(0).getDefinitionItem().getDescItem()).isNull();
+		assertThat(result.get(0).getDefinitionItem().getEnvItem()).isNull();
+		assertThat(result.get(0).getDefinitionItem().getNameItem()).isNull();
+		assertThat(result.get(0).getDefinitionItem().getReconcileProblem()).isNotNull();
 	}
 
 	private static class TestDataflowStreamLanguageService extends AbstractDataflowStreamLanguageService {

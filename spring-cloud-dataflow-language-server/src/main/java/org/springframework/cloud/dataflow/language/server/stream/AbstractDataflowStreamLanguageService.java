@@ -288,8 +288,8 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 
 	private DefinitionItem parseDefinition(DocumentText text) {
 		DefinitionItem definitionItem = new DefinitionItem();
-		StreamParser parser = new StreamParser(text.toString());
 		try {
+			StreamParser parser = new StreamParser(text.toString());
 			definitionItem.streamNode = parser.parse();
 		} catch (ParseException e) {
 			String message = e.getMessage();
