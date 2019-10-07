@@ -49,12 +49,6 @@ export class ScdfExtension extends DiExtension {
         container.load(commandsContainerModule);
 
         container.bind<LanguageSupport>(DITYPES.LanguageSupport).to(ScdfLanguageSupport);
-        container.bind<IconManager>(TYPES.IconManager).toDynamicValue(
-            context => {
-                const extensionContext = context.container.get<ExtensionContext>(DITYPES.ExtensionContext);
-                return new IconManager(extensionContext);
-            }
-        ).inSingletonScope();
         container.bind<AppsExplorerProvider>(TYPES.AppsExplorerProvider).to(AppsExplorerProvider).inSingletonScope();
         container.bind<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider).to(StreamsExplorerProvider).inSingletonScope();
         container.bind<TasksExplorerProvider>(TYPES.TasksExplorerProvider).to(TasksExplorerProvider).inSingletonScope();

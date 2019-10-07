@@ -34,9 +34,9 @@ export class StreamsExplorerProvider implements TreeDataProvider<BaseNode>, Text
 	// onDidChange?: Event<Uri> | undefined;
 
     constructor(
-        @inject(TYPES.ServerRegistrationManager)private serverRegistrationManager: ServerRegistrationManager,
-		@inject(TYPES.IconManager)private iconManager: IconManager,
-		@inject(DITYPES.ExtensionContext)private extensionContext: ExtensionContext
+        @inject(TYPES.ServerRegistrationManager) private serverRegistrationManager: ServerRegistrationManager,
+		@inject(DITYPES.IconManager) private iconManager: IconManager,
+		@inject(DITYPES.ExtensionContext) private extensionContext: ExtensionContext
     ) {
 		window.createTreeView('scdfStreams', { treeDataProvider: this });
 		this.extensionContext.subscriptions.push(workspace.registerTextDocumentContentProvider('scdfs', this));

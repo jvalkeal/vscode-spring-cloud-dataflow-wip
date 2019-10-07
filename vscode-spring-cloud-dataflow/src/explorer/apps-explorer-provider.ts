@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TreeDataProvider, TreeItem, ProviderResult, EventEmitter, window, ExtensionContext } from "vscode";
+import { TreeDataProvider, TreeItem, ProviderResult, EventEmitter, window } from "vscode";
 import { IconManager } from "@pivotal-tools/vscode-extension-core";
 import { DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { BaseNode } from "./models/base-node";
@@ -29,9 +29,8 @@ export class AppsExplorerProvider implements TreeDataProvider<BaseNode> {
     onDidChangeTreeData: Event<BaseNode> = this._onDidChangeTreeData.event;
 
     constructor(
-        @inject(DITYPES.ExtensionContext)private context: ExtensionContext,
-        @inject(TYPES.ServerRegistrationManager)private serverRegistrationManager: ServerRegistrationManager,
-        @inject(TYPES.IconManager)private iconManager: IconManager
+        @inject(TYPES.ServerRegistrationManager) private serverRegistrationManager: ServerRegistrationManager,
+        @inject(DITYPES.IconManager) private iconManager: IconManager
     ) {
         window.createTreeView('scdfApps', { treeDataProvider: this });
     }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import {
-	TreeDataProvider, ExtensionContext, window, workspace, ProviderResult, TreeItem, EventEmitter, Event
+	TreeDataProvider, window, ProviderResult, TreeItem, EventEmitter, Event
 } from 'vscode';
 import { injectable, inject } from 'inversify';
 import { IconManager } from '@pivotal-tools/vscode-extension-core';
@@ -32,8 +32,7 @@ export class JobsExplorerProvider implements TreeDataProvider<BaseNode> {
 
     constructor(
         @inject(TYPES.ServerRegistrationManager) private serverRegistrationManager: ServerRegistrationManager,
-		@inject(TYPES.IconManager) private iconManager: IconManager,
-		@inject(DITYPES.ExtensionContext) private extensionContext: ExtensionContext
+		@inject(DITYPES.IconManager) private iconManager: IconManager
     ) {
 		window.createTreeView('scdfJobs', { treeDataProvider: this });
 	}

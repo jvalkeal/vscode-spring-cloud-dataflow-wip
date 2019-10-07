@@ -19,6 +19,7 @@ export const DITYPES = {
     ExtensionContext: Symbol('ExtensionContext'),
     LanguageServerManager: Symbol('LanguageServerManager'),
     LanguageSupport: Symbol('LanguageSupport'),
+    IconManager: Symbol('IconManager'),
     Command: Symbol('Command'),
     CommandManager: Symbol('CommandManager'),
     SettingsManager: Symbol('SettingsManager'),
