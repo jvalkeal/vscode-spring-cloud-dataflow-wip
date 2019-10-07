@@ -16,6 +16,7 @@
 import { ExtensionContext } from "vscode";
 import { LanguageClient } from "vscode-languageclient";
 import { LanguageSupport } from "./language-support";
+import { NotificationManager } from "../ui/notification-manager";
 
 export class LanguageServerManager {
 
@@ -23,13 +24,15 @@ export class LanguageServerManager {
 
     constructor(
         private context: ExtensionContext,
-        languageSupports: LanguageSupport[] = []
+        languageSupports: LanguageSupport[] = [],
+        private notificationManager: NotificationManager
     ){
         languageSupports.forEach(ls => {
             const lc = ls.buildLanguageClient();
             ls.getLanguageIds().forEach(li => {
                 this.clients.set(li, lc);
             });
+            this.notificationManager.showMessage('Starting Language Support for ' + ls.getLanguageIds().join(','));
             const disposable = lc.start();
             this.context.subscriptions.push(disposable);
         });

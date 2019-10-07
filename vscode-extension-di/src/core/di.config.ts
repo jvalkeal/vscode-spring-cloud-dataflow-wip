@@ -55,7 +55,8 @@ const coreContainerModule = new ContainerModule((bind) => {
         context => {
             const extensionContext = context.container.get<ExtensionContext>(DITYPES.ExtensionContext);
             const languageSupports = context.container.getAll<LanguageSupport>(DITYPES.LanguageSupport);
-            return new LanguageServerManager(extensionContext, languageSupports);
+            const notificationManager = context.container.get<NotificationManager>(DITYPES.NotificationManager);
+            return new LanguageServerManager(extensionContext, languageSupports, notificationManager);
         }
     ).inSingletonScope();
     bind<IconManager>(DITYPES.IconManager).toDynamicValue(
