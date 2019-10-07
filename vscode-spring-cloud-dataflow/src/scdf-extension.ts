@@ -17,7 +17,7 @@ import 'reflect-metadata';
 import { ExtensionContext } from 'vscode';
 import { Container } from 'inversify';
 import {
-    LanguageSupport, LanguageServerManager, IconManager, NotificationManager, StatusBarManagerItem, StatusBarManager,
+    LanguageSupport, LanguageServerManager, NotificationManager, StatusBarManagerItem, StatusBarManager,
     ExtensionActivateAware
 } from '@pivotal-tools/vscode-extension-core';
 import { DITYPES, DiExtension } from '@pivotal-tools/vscode-extension-di';
@@ -31,6 +31,7 @@ import { ServerRegistrationStatusBarManagerItem } from './statusbar/server-regis
 import { ServerRegistrationManager } from './service/server-registration-manager';
 import { StreamDebugManager } from './debug/stream-debug-manager';
 import { JobsExplorerProvider } from './explorer/jobs-explorer-provider';
+import { CONFIG_SCDF_NOTIFICATION_LOCATION } from './extension-globals';
 
 export class ScdfExtension extends DiExtension {
 
@@ -47,6 +48,8 @@ export class ScdfExtension extends DiExtension {
     public onContainer(container: Container): void {
         super.onContainer(container);
         container.load(commandsContainerModule);
+
+        container.bind<string>(DITYPES.NotificationManagerLocationKey).toConstantValue(CONFIG_SCDF_NOTIFICATION_LOCATION);
 
         container.bind<LanguageSupport>(DITYPES.LanguageSupport).to(ScdfLanguageSupport);
         container.bind<AppsExplorerProvider>(TYPES.AppsExplorerProvider).to(AppsExplorerProvider).inSingletonScope();
@@ -70,7 +73,7 @@ export class ScdfExtension extends DiExtension {
         container.get<TasksExplorerProvider>(TYPES.TasksExplorerProvider);
         container.get<JobsExplorerProvider>(TYPES.JobsExplorerProvider);
         container.get<LanguageServerManager>(DITYPES.LanguageServerManager);
-        container.get<NotificationManager>(DITYPES.NotificationManager).setLocationKey('scdf.notification.location');
+        container.get<NotificationManager>(DITYPES.NotificationManager);
         container.get<StatusBarManager>(DITYPES.StatusBarManager);
     }
 }

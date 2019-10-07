@@ -24,6 +24,7 @@ export const DITYPES = {
     CommandManager: Symbol('CommandManager'),
     SettingsManager: Symbol('SettingsManager'),
     NotificationManager: Symbol('NotificationManager'),
+    NotificationManagerLocationKey: Symbol('NotificationManagerLocationKey'),
     OutputManager: Symbol('OutputManager'),
     StatusBarManager: Symbol('StatusBarManager'),
     StatusBarManagerItem: Symbol('StatusBarManagerItem')

@@ -28,7 +28,15 @@ const coreContainerModule = new ContainerModule((bind) => {
     bind<ExtensionActivateAware>(DITYPES.ExtensionActivateAware).to(ExtensionActivateManager);
     bind<ExtensionContextAware>(DITYPES.ExtensionContextAware).to(CommandsManager);
     bind<OutputManager>(DITYPES.OutputManager).toDynamicValue(() => new OutputManager()).inSingletonScope();
-    bind<NotificationManager>(DITYPES.NotificationManager).toDynamicValue(() => new NotificationManager()).inSingletonScope();
+    bind<NotificationManager>(DITYPES.NotificationManager).toDynamicValue(
+        context => {
+            let locationKey: string|undefined;
+            if (context.container.isBound(DITYPES.NotificationManagerLocationKey)) {
+                locationKey = context.container.get<string>(DITYPES.NotificationManagerLocationKey);
+            }
+            return new NotificationManager(locationKey);
+        }
+    ).inSingletonScope();
     bind<SettingsManager>(DITYPES.SettingsManager).toDynamicValue(
         context => {
             const extensionContext = context.container.get<ExtensionContext>(DITYPES.ExtensionContext);

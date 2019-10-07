@@ -20,27 +20,25 @@ import { window, workspace } from 'vscode';
  */
 export class NotificationManager {
 
-    private locationKey: string|undefined;
+    private location: string|undefined;
 
     constructor(
+        locationKey: string|undefined
     ){
-    }
-
-    public setLocationKey(locationKey: string) {
-        this.locationKey = locationKey;
+        if (locationKey) {
+            this.location = workspace.getConfiguration().get<string>(locationKey);
+            workspace.onDidChangeConfiguration(e => {
+                if (e.affectsConfiguration(locationKey)) {
+                    this.location = workspace.getConfiguration().get<string>(locationKey);
+                }
+            });
+        }
     }
 
     public showMessage(text: string): void {
-        let showInNotifications = true;
-        if (this.locationKey) {
-            const location = workspace.getConfiguration().get<string>(this.locationKey);
-            if (location === 'statusbar') {
-                showInNotifications = false;
-            }
-        }
-        if (showInNotifications) {
+        if (this.location === 'notifications') {
             window.showInformationMessage(text);
-        } else {
+        } else if (this.location === 'statusbar') {
             window.setStatusBarMessage(text, 5000);
         }
     }

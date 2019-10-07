@@ -18,6 +18,7 @@
 
 export const EXTENSION_ID: string = 'vscode-spring-cloud-dataflow';
 export const CONFIG_PREFIX: string = 'scdf';
+export const CONFIG_SCDF_NOTIFICATION_LOCATION: string = CONFIG_PREFIX + '.notification.location';
 export const LANGUAGE_SCDF_STREAM_PREFIX: string = 'scdfs';
 export const LANGUAGE_SCDF_TASK_PREFIX: string = 'scdft';
 export const LANGUAGE_SCDF_APP_PREFIX: string = 'scdfa';
