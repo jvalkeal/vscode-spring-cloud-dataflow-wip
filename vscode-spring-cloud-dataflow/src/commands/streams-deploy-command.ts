@@ -26,7 +26,7 @@ export class StreamsDeployCommand implements Command {
 
     constructor(
         @inject(TYPES.ServerRegistrationManager) private serverRegistrationManager: ServerRegistrationManager,
-        @inject(TYPES.LanguageServerManager) private languageServerManager: LanguageServerManager,
+        @inject(DITYPES.LanguageServerManager) private languageServerManager: LanguageServerManager,
         @inject(DITYPES.NotificationManager) private notificationManager: NotificationManager
     ) {}
 

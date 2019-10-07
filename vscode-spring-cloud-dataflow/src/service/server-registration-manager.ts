@@ -51,7 +51,7 @@ export class ServerRegistrationManager implements ExtensionActivateAware {
     constructor(
         @inject(DITYPES.ExtensionContext) private context: ExtensionContext,
         @inject(DITYPES.SettingsManager) private settingsManager: SettingsManager,
-        @inject(TYPES.LanguageServerManager) private languageServerManager: LanguageServerManager,
+        @inject(DITYPES.LanguageServerManager) private languageServerManager: LanguageServerManager,
         @inject(TYPES.ServerRegistrationStatusBarManagerItem) private serverRegistrationStatusBarManagerItem: ServerRegistrationStatusBarManagerItem
     ) {}
 

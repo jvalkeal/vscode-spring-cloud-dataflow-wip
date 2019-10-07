@@ -17,7 +17,8 @@ import { ExtensionContext } from 'vscode';
 import { ContainerModule, decorate, injectable } from 'inversify';
 import {
     ExtensionActivateAware, ExtensionContextAware, SettingsManager, DefaultSettingsManager, NotificationManager,
-    OutputManager, StatusBarManager, StatusBarManagerItem, AbstractStatusBarManagerItem
+    OutputManager, StatusBarManager, StatusBarManagerItem, AbstractStatusBarManagerItem, LanguageServerManager,
+    LanguageSupport
 } from '@pivotal-tools/vscode-extension-core';
 import { DITYPES } from './ditypes';
 import { ExtensionActivateManager } from './extension-activate-manager';
@@ -40,6 +41,13 @@ const coreContainerModule = new ContainerModule((bind) => {
         context => {
             const items = context.container.getAll<StatusBarManagerItem>(DITYPES.StatusBarManagerItem);
             return new StatusBarManager(items);
+        }
+    ).inSingletonScope();
+    bind<LanguageServerManager>(DITYPES.LanguageServerManager).toDynamicValue(
+        context => {
+            const extensionContext = context.container.get<ExtensionContext>(DITYPES.ExtensionContext);
+            const languageSupports = context.container.getAll<LanguageSupport>(DITYPES.LanguageSupport);
+            return new LanguageServerManager(extensionContext, languageSupports);
         }
     ).inSingletonScope();
 });

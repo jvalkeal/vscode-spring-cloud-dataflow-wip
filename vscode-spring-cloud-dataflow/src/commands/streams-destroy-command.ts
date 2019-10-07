@@ -15,7 +15,7 @@
  */
 import { injectable, inject } from 'inversify';
 import { LanguageServerManager } from '@pivotal-tools/vscode-extension-core';
-import { Command } from '@pivotal-tools/vscode-extension-di';
+import { Command, DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_STREAMS_DESTROY, LSP_SCDF_DESTROY_STREAM } from '../extension-globals';
 import { DataflowStreamDestroyParams } from './stream-commands';
 import { TYPES } from '../types';
@@ -26,7 +26,7 @@ export class StreamsDestroyCommand implements Command {
 
     constructor(
         @inject(TYPES.ServerRegistrationManager) private serverRegistrationManager: ServerRegistrationManager,
-        @inject(TYPES.LanguageServerManager) private languageServerManager: LanguageServerManager
+        @inject(DITYPES.LanguageServerManager) private languageServerManager: LanguageServerManager
     ) {}
 
     get id() {

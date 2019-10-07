@@ -50,7 +50,7 @@ export class ScdfLanguageSupport implements LanguageSupport {
     }
 
     public buildLanguageClient(): LanguageClient {
-        const languageClient= new LanguageClient(CONFIG_PREFIX, LANGUAGE_SCDF_DESC, this.getServerOptions(), this.getLanguageClientOptions());
+        const languageClient = new LanguageClient(CONFIG_PREFIX, LANGUAGE_SCDF_DESC, this.getServerOptions(), this.getLanguageClientOptions());
         languageClient.onReady().then(() => {
             languageClient.onNotification(this.destroyedStreamNotification, () => {
                 commands.executeCommand(COMMAND_SCDF_EXPLORER_REFRESH);

@@ -15,7 +15,7 @@
  */
 import { injectable, inject } from 'inversify';
 import { LanguageServerManager } from '@pivotal-tools/vscode-extension-core';
-import { Command } from '@pivotal-tools/vscode-extension-di';
+import { Command, DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_STREAMS_CREATE, LSP_SCDF_CREATE_STREAM } from '../extension-globals';
 import { DataflowStreamCreateParams } from './stream-commands';
 import { TYPES } from '../types';
@@ -26,7 +26,7 @@ export class StreamsCreateCommand implements Command {
 
     constructor(
         @inject(TYPES.ServerRegistrationManager) private serverRegistrationManager: ServerRegistrationManager,
-        @inject(TYPES.LanguageServerManager) private languageServerManager: LanguageServerManager
+        @inject(DITYPES.LanguageServerManager) private languageServerManager: LanguageServerManager
     ) {}
 
     get id() {

@@ -48,14 +48,7 @@ export class ScdfExtension extends DiExtension {
         super.onContainer(container);
         container.load(commandsContainerModule);
 
-        container.bind<LanguageSupport>(TYPES.LanguageSupport).to(ScdfLanguageSupport);
-        container.bind<LanguageServerManager>(TYPES.LanguageServerManager).toDynamicValue(
-            context => {
-                const extensionContext = context.container.get<ExtensionContext>(DITYPES.ExtensionContext);
-                const languageSupports = context.container.getAll<LanguageSupport>(TYPES.LanguageSupport);
-                return new LanguageServerManager(extensionContext, languageSupports);
-            }
-        ).inSingletonScope();
+        container.bind<LanguageSupport>(DITYPES.LanguageSupport).to(ScdfLanguageSupport);
         container.bind<IconManager>(TYPES.IconManager).toDynamicValue(
             context => {
                 const extensionContext = context.container.get<ExtensionContext>(DITYPES.ExtensionContext);
@@ -82,7 +75,7 @@ export class ScdfExtension extends DiExtension {
         container.get<StreamsExplorerProvider>(TYPES.StreamsExplorerProvider);
         container.get<TasksExplorerProvider>(TYPES.TasksExplorerProvider);
         container.get<JobsExplorerProvider>(TYPES.JobsExplorerProvider);
-        container.get<LanguageServerManager>(TYPES.LanguageServerManager);
+        container.get<LanguageServerManager>(DITYPES.LanguageServerManager);
         container.get<NotificationManager>(DITYPES.NotificationManager).setLocationKey('scdf.notification.location');
         container.get<StatusBarManager>(DITYPES.StatusBarManager);
     }
