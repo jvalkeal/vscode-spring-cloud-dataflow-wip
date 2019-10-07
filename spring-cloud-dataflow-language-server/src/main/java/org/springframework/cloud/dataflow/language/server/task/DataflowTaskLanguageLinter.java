@@ -26,9 +26,9 @@ public class DataflowTaskLanguageLinter extends AbstractDataflowTaskLanguageServ
 	@Override
 	public Flux<ReconcileProblem> lint(DslContext context) {
 		return Flux.defer(() -> {
-			return Flux.fromIterable(parseTasks(context.getDocument()))
-				.filter(item -> item.getReconcileProblem() != null)
-				.map(item -> item.getReconcileProblem());
+			return parse(context.getDocument())
+				.filter(item -> item.getDefinitionItem().getReconcileProblem() != null)
+				.map(item -> item.getDefinitionItem().getReconcileProblem());
 		});
 	}
 }

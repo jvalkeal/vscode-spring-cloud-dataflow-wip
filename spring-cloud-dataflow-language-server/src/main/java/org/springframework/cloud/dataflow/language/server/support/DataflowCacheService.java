@@ -22,6 +22,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import org.springframework.cloud.dataflow.language.server.stream.AbstractDataflowStreamLanguageService.StreamItem;
+import org.springframework.cloud.dataflow.language.server.task.AbstractDataflowTaskLanguageService.TaskItem;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,11 +34,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataflowCacheService {
 
-	private final Cache<String, List<StreamItem>> cache = Caffeine.newBuilder()
+	private final Cache<String, List<StreamItem>> streamItemCache = Caffeine.newBuilder()
+		.expireAfterAccess(Duration.ofMinutes(1))
+		.build();
+
+	private final Cache<String, List<TaskItem>> taskItemCache = Caffeine.newBuilder()
 		.expireAfterAccess(Duration.ofMinutes(1))
 		.build();
 
 	public Cache<String, List<StreamItem>> getStreamItemCache() {
-		return cache;
+		return streamItemCache;
+	}
+
+	public Cache<String, List<TaskItem>> getTaskItemCache() {
+		return taskItemCache;
 	}
 }

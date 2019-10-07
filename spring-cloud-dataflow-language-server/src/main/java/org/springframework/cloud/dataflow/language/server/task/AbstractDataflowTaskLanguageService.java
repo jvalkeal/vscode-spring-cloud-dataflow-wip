@@ -17,79 +17,50 @@ package org.springframework.cloud.dataflow.language.server.task;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.dataflow.core.dsl.ParseException;
 import org.springframework.cloud.dataflow.core.dsl.TaskNode;
 import org.springframework.cloud.dataflow.core.dsl.TaskParser;
 import org.springframework.cloud.dataflow.language.server.DataflowLanguages;
+import org.springframework.cloud.dataflow.language.server.support.DataFlowOperationsService;
+import org.springframework.cloud.dataflow.language.server.support.DataflowCacheService;
 import org.springframework.dsl.document.Document;
+import org.springframework.dsl.document.DocumentText;
+import org.springframework.dsl.domain.Position;
 import org.springframework.dsl.domain.Range;
 import org.springframework.dsl.service.AbstractDslService;
 import org.springframework.dsl.service.reconcile.DefaultReconcileProblem;
 import org.springframework.dsl.service.reconcile.ProblemSeverity;
 import org.springframework.dsl.service.reconcile.ProblemType;
 import org.springframework.dsl.service.reconcile.ReconcileProblem;
-import org.springframework.util.StringUtils;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public abstract class AbstractDataflowTaskLanguageService extends AbstractDslService {
+
+	private static final Logger log = LoggerFactory.getLogger(AbstractDataflowTaskLanguageService.class);
+	protected DataFlowOperationsService dataflowOperationsService;
+	protected DataflowCacheService dataflowCacheService;
+	private static final DocumentText envPrefix = DocumentText.from("@env");
+	private static final DocumentText namePrefix = DocumentText.from("@name");
+	private static final DocumentText descPrefix = DocumentText.from("@desc");
 
 	public AbstractDataflowTaskLanguageService() {
 		super(DataflowLanguages.LANGUAGE_TASK);
 	}
 
-	protected List<TaskParseItem> parseTasks(Document document) {
-		List<TaskParseItem> items = new ArrayList<>();
-		for (int line = 0; line < document.lineCount(); line++) {
-			TaskParseItem taskParseItem = new TaskParseItem();
-			Range lineRange = document.getLineRange(line);
-			taskParseItem.setRange(lineRange);
-			String content = document.content(lineRange).toString();
-			if (!StringUtils.hasText(content)) {
-				continue;
-			}
-			String name = null;
-			int l = 0;
-			String parseSection = parseNameSection(content);
-			if (parseSection != null) {
-				l = parseSection.length();
-				parseSection = parseSection.trim();
-				parseSection = parseSection.replace("=", "");
-				name = parseSection.trim();
-			} else {
-				String message = "Name missing";
-				int position = 0;
-				Range range = Range.from(0, position, 0, position);
-				DefaultReconcileProblem problem = new DefaultReconcileProblem(new ErrorProblemType(""), message, range);
-				taskParseItem.setReconcileProblem(problem);
-				items.add(taskParseItem);
-				continue;
-			}
-			// TODO: parser should support naming format
-			TaskParser parser = new TaskParser(name, content.substring(l), true, true);
-			try {
-				TaskNode node = parser.parse();
-				taskParseItem.setTaskNode(node);
-			} catch (ParseException e) {
-				String message = e.getMessage();
-				int position = e.getPosition();
-				Range range = Range.from(0, position, 0, position);
-				DefaultReconcileProblem problem = new DefaultReconcileProblem(new ErrorProblemType(""), message, range);
-				taskParseItem.setReconcileProblem(problem);
-			}
-			items.add(taskParseItem);
-		}
-		return items;
+	@Autowired
+	public void setDataflowOperationsService(DataFlowOperationsService dataflowOperationsService) {
+		this.dataflowOperationsService = dataflowOperationsService;
 	}
 
-	private String parseNameSection(String content) {
-		Pattern p = Pattern.compile("^[ a-zA-z0-9]*=");
-		Matcher m = p.matcher(content);
-		if(m.find()) {
-			return content.substring(0, m.end());
-		}
-		return null;
+	@Autowired
+	public void setDataflowCacheService(DataflowCacheService dataflowCacheService) {
+		this.dataflowCacheService = dataflowCacheService;
 	}
 
 	protected static class ErrorProblemType implements ProblemType {
@@ -111,34 +82,286 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 		}
 	}
 
-	protected static class TaskParseItem {
+	protected Flux<TaskItem> parse(Document document) {
+		return parseCachedMono(document).flatMapMany(items -> Flux.fromIterable(items));
+	}
 
+	protected Mono<List<TaskItem>> parseCachedMono(Document document) {
+		return Mono.defer(() -> {
+			return Mono.just(parseCached(document));
+		});
+	}
+
+	protected List<TaskItem> parseCached(Document document) {
+		String cacheKey = document.uri() + "#" + document.getVersion();
+		log.debug("Used cache key for streamItemCache is {}", cacheKey);
+		return dataflowCacheService.getTaskItemCache().get(cacheKey, key -> {
+			return parseTasksx(document);
+		});
+	}
+
+	private List<TaskItem> parseTasksx(Document document) {
+		ArrayList<TaskItem> items = new ArrayList<>();
+		TaskItem item = null;
+		do {
+			item = parseNextTask(document, item);
+			if (item != null) {
+				items.add(item);
+			}
+		} while (item != null);
+		return items;
+	}
+
+	private static int findContentStart(DocumentText text) {
+		for (int i = 0; i < text.length(); i++) {
+			if (Character.isWhitespace(text.charAt(i))) {
+				continue;
+			} else if (text.charAt(i) == '-') {
+				continue;
+			} else if (text.charAt(i) == '#') {
+				continue;
+			} else if (text.charAt(i) == '@') {
+				return i;
+			} else if (Character.isLetterOrDigit(text.charAt(i))) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	private TaskItem parseNextTask(Document document, TaskItem previous) {
+		List<LaunchItems> launches = new ArrayList<>();
+		List<LaunchItem> launchItems = new ArrayList<>();
+		LaunchItem envItem = null;
+		LaunchItem nameItem = null;
+		LaunchItem descItem = null;
+		Range launchItemsRange = null;
+		Position launchItemsStart = null;
+		Position launchItemsEnd = null;
+		TaskItem taskItem = null;
+		int lineCount = document.lineCount();
+		int start = previous != null ? previous.range.getEnd().getLine() + 1 : 0;
+		Range lineRange = null;
+
+		for (int line = start; taskItem == null && line < lineCount; line++) {
+			lineRange = document.getLineRange(line);
+			DocumentText lineContent = document.content(lineRange);
+			DocumentText trim = lineContent.trimStart();
+			if (trim.hasText() && Character.isLetterOrDigit(trim.charAt(0))) {
+				DefinitionItem definitionItem = parseDefinition(lineContent, nameItem);
+				definitionItem.range = lineRange;
+				definitionItem.envItem = envItem;
+				definitionItem.nameItem = nameItem;
+				definitionItem.descItem = descItem;
+				taskItem = new TaskItem();
+				taskItem.definitionItem = definitionItem;
+				taskItem.range = Range.from(start, 0, line, lineContent.length());
+				if (!launchItems.isEmpty()) {
+					LaunchItems items = new LaunchItems();
+					items.envItem = envItem;
+					items.startLineRange = launchItemsRange;
+					items.range = Range.from(launchItemsStart, launchItemsEnd);
+					items.items.addAll(launchItems);
+					launches.add(items);
+				}
+				taskItem.deployments.addAll(new ArrayList<>(launches));
+				launchItems.clear();
+				launches.clear();
+				envItem = null;
+				nameItem = null;
+				descItem = null;
+				launchItemsStart = null;
+			} else {
+				if (trim.length() > 2 && (trim.charAt(0) == '#' || trim.charAt(0) == '-')) {
+					if (launchItemsStart == null) {
+						launchItemsStart = lineRange.getStart();
+						launchItemsRange = lineRange;
+					}
+					launchItemsEnd = lineRange.getEnd();
+					LaunchItem item = new LaunchItem();
+					item.range = lineRange;
+					item.text = lineContent;
+
+					int contentStart = findContentStart(lineContent);
+					if (contentStart > -1) {
+						item.contentRange = Range.from(lineRange.getStart().getLine(), contentStart,
+								lineRange.getEnd().getLine(), lineRange.getEnd().getCharacter());
+					}
+					if (contentStart > -1 && lineContent.startsWith(envPrefix, contentStart)) {
+						envItem = item;
+					} else if (contentStart > -1 && lineContent.startsWith(namePrefix, contentStart)) {
+						nameItem = item;
+					} else if (contentStart > -1 && lineContent.startsWith(descPrefix, contentStart)) {
+						descItem = item;
+					} else {
+						launchItems.add(item);
+					}
+				} else {
+					if (!launchItems.isEmpty()) {
+						LaunchItems items = new LaunchItems();
+						items.envItem = envItem;
+						items.startLineRange = launchItemsRange;
+						items.range = Range.from(launchItemsStart, launchItemsEnd);
+						items.items.addAll(launchItems);
+						launches.add(items);
+						envItem = null;
+						nameItem = null;
+						descItem = null;
+						launchItemsStart = null;
+					}
+					launchItems.clear();
+				}
+			}
+		}
+		// no check case when with metadata but no dsl
+		if (envItem != null || nameItem != null || descItem != null) {
+			DefinitionItem definitionItem = new DefinitionItem();
+			definitionItem.envItem = envItem;
+			definitionItem.nameItem = nameItem;
+			definitionItem.descItem = descItem;
+			taskItem = new TaskItem();
+			taskItem.definitionItem = definitionItem;
+			taskItem.range = Range.from(launchItemsStart, lineRange.getEnd());
+		}
+
+		return taskItem;
+	}
+
+	private DocumentText parseName(DocumentText text) {
+		int i = 0;
+		do {
+			char c = text.charAt(i);
+			if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) {
+				i++;
+				continue;
+			} else if (c == '=') {
+				return text.subtext(0, i + 1);
+			}
+			i++;
+		} while (i < text.length());
+		return null;
+	}
+
+	private DefinitionItem parseDefinition(DocumentText text, LaunchItem nameItem) {
+		DefinitionItem definitionItem = new DefinitionItem();
+		try {
+			int l = 0;
+			String taskName = null;
+			DocumentText name = parseName(text);
+			if (name != null) {
+				l = name.length();
+				name = name.trim();
+				name = name.subtext(0, l - 1);
+				taskName = name.toString();
+			}
+			if (taskName == null && nameItem != null) {
+				Range contentRange = nameItem.getContentRange();
+				taskName = nameItem.getText()
+						.substring(contentRange.getStart().getCharacter() + 6, nameItem.getText().length()).trim()
+						.toString();
+			}
+			TaskParser parser = new TaskParser(taskName, text.subtext(l, text.length()).toString(), true, true);
+			TaskNode node = parser.parse();
+			definitionItem.taskNode = node;
+		} catch (ParseException e) {
+			String message = e.getMessage();
+			int position = e.getPosition();
+			Range range = Range.from(0, position, 0, position);
+			DefaultReconcileProblem problem = new DefaultReconcileProblem(new ErrorProblemType(""), message, range);
+			definitionItem.reconcileProblem = problem;
+		}
+		return definitionItem;
+	}
+
+	public static class LaunchItems {
+		private List<LaunchItem> items = new ArrayList<>();
+		private Range startLineRange;
+		private Range range;
+		private LaunchItem envItem;
+
+		public List<LaunchItem> getItems() {
+			return items;
+		}
+
+		public LaunchItem getEnvItem() {
+			return envItem;
+		}
+
+		public Range getStartLineRange() {
+			return startLineRange;
+		}
+
+		public Range getRange() {
+			return range;
+		}
+	}
+
+	public static class LaunchItem {
+		private Range contentRange;
+		private Range range;
+		private DocumentText text;
+
+		public Range getRange() {
+			return range;
+		}
+
+		public Range getContentRange() {
+			return contentRange;
+		}
+
+		public DocumentText getText() {
+			return text;
+		}
+	}
+
+	public static class DefinitionItem {
 		private TaskNode taskNode;
 		private Range range;
 		private ReconcileProblem reconcileProblem;
+		private LaunchItem envItem;
+		private LaunchItem nameItem;
+		private LaunchItem descItem;
 
 		public TaskNode getTaskNode() {
 			return taskNode;
-		}
-
-		public void setTaskNode(TaskNode taskNode) {
-			this.taskNode = taskNode;
 		}
 
 		public Range getRange() {
 			return range;
 		}
 
-		public void setRange(Range range) {
-			this.range = range;
-		}
-
 		public ReconcileProblem getReconcileProblem() {
 			return reconcileProblem;
 		}
 
-		public void setReconcileProblem(ReconcileProblem reconcileProblem) {
-			this.reconcileProblem = reconcileProblem;
+		public LaunchItem getEnvItem() {
+			return envItem;
+		}
+
+		public LaunchItem getNameItem() {
+			return nameItem;
+		}
+
+		public LaunchItem getDescItem() {
+			return descItem;
+		}
+	}
+
+	public static class TaskItem {
+		private List<LaunchItems> deployments = new ArrayList<>();
+		private DefinitionItem definitionItem;
+		private Range range;
+
+		public List<LaunchItems> getDeployments() {
+			return deployments;
+		}
+
+		public DefinitionItem getDefinitionItem() {
+			return definitionItem;
+		}
+
+		public Range getRange() {
+			return range;
 		}
 	}
 }

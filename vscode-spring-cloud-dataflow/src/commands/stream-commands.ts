@@ -44,6 +44,7 @@ export interface DataflowTaskParams {
 }
 
 export interface DataflowTaskCreateParams extends DataflowTaskParams {
+    description: string;
     definition: string;
 }
 

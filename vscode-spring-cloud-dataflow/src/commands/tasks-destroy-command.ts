@@ -33,11 +33,11 @@ export class TasksDestroyCommand implements Command {
         return COMMAND_SCDF_TASKS_DESTROY;
     }
 
-    async execute(name: string) {
-        const registration = await this.serverRegistrationManager.getDefaultServer();
+    async execute(name: string, environment: string) {
+        const server = environment || (await this.serverRegistrationManager.getDefaultServer()).name;
         const params: DataflowTaskDestroyParams = {
             name: name,
-            server: registration.name
+            server: server
         };
         this.languageServerManager.getLanguageClient('scdft').sendNotification(LSP_SCDF_DESTROY_TASK, params);
     }
