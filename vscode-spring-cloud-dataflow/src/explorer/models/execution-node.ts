@@ -23,9 +23,10 @@ export class ExecutionNode extends BaseNode {
     constructor(
         label: string,
         public readonly description: string | undefined,
+        public readonly taskName: string,
         iconManager: IconManager,
         public readonly externalExecutionId: string,
-        private readonly registration: ServerRegistration
+        public readonly registration: ServerRegistration
     ) {
         super(label, description, iconManager, 'executedTaskInstance');
     }

@@ -108,6 +108,11 @@
 				"command": "vscode-spring-cloud-dataflow.tasks.log",
 				"title": "Show Task Log",
 				"category": "SCDF"
+			},
+			{
+				"command": "vscode-spring-cloud-dataflow.tasks.debugattach",
+				"title": "Debug Attach",
+				"category": "SCDF"
 			}
 		],
 		"configuration": [
@@ -219,6 +224,10 @@
 				},
 				{
 					"command": "vscode-spring-cloud-dataflow.tasks.log",
+					"when": "viewItem == executedTaskInstance"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.tasks.debugattach",
 					"when": "viewItem == executedTaskInstance"
 				}
 			]

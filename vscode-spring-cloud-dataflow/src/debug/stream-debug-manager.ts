@@ -17,6 +17,7 @@ import { DebugConfiguration, debug } from 'vscode';
 import { injectable } from 'inversify';
 import { InstanceNode } from '../explorer/models/instance-node';
 import { ScdfModel } from '../service/scdf-model';
+import { ExecutionNode } from '../explorer/models/execution-node';
 
 @injectable()
 export class StreamDebugManager {
@@ -37,6 +38,23 @@ export class StreamDebugManager {
         return config;
     }
 
+    public async taskExecutionNodeDebugConfiguration(executedTaskInstance: ExecutionNode): Promise<DebugConfiguration> {
+        const model = new ScdfModel(executedTaskInstance.registration);
+        // const deployment = model.getStreamDeployment(executedTaskInstance.taskName);
+        // const entry = await deployment;
+        const name = `Debug (Attach) - ${executedTaskInstance.taskName} ${executedTaskInstance.externalExecutionId}`;
+        // const port = +entry.deploymentProperties.log['spring.cloud.deployer.local.debug-port'];
+        // TODO: just hardcode until we get these exposed from dataflow
+        const port = 20100;
+        const config: DebugConfiguration = {
+            type: 'java',
+            name: name,
+            request: 'attach',
+            hostName: "localhost",
+            port: port
+        };
+        return config;
+    }
     public launchDebug(configs: DebugConfiguration[]): void {
         configs.forEach(config => {
             debug.startDebugging(undefined, config);

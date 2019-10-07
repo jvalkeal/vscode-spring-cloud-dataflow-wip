@@ -38,6 +38,7 @@ import { TasksDestroyCommand } from './tasks-destroy-command';
 import { TasksLaunchCommand } from './tasks-launch-command';
 import { TasksLogCommand } from './tasks-log-command';
 import { StreamsAppLogCommand } from './streams-app-log-command';
+import { TasksDebugAttachCommand } from './tasks-debug-attach-command';
 
 const commandsContainerModule = new ContainerModule((bind) => {
     bind<ServerRegistrationManager>(TYPES.ServerRegistrationManager).to(ServerRegistrationManager).inSingletonScope();
@@ -55,6 +56,7 @@ const commandsContainerModule = new ContainerModule((bind) => {
     bind<Command>(DITYPES.Command).to(TasksCreateCommand);
     bind<Command>(DITYPES.Command).to(TasksLaunchCommand);
     bind<Command>(DITYPES.Command).to(TasksDestroyCommand);
+    bind<Command>(DITYPES.Command).to(TasksDebugAttachCommand);
     bind<Command>(DITYPES.Command).to(AppsRegisterCommand);
     bind<Command>(DITYPES.Command).to(AppsUnregisterCommand);
     bind<Command>(DITYPES.Command).to(StreamsLogCommand);

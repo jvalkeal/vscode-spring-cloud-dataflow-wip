@@ -43,6 +43,7 @@ export const COMMAND_SCDF_TASKS_LOG: string = 'vscode-spring-cloud-dataflow.task
 export const COMMAND_SCDF_TASKS_CREATE: string = 'vscode-spring-cloud-dataflow.tasks.create';
 export const COMMAND_SCDF_TASKS_LAUNCH: string = 'vscode-spring-cloud-dataflow.tasks.launch';
 export const COMMAND_SCDF_TASKS_DESTROY: string = 'vscode-spring-cloud-dataflow.tasks.destroy';
+export const COMMAND_SCDF_TASKS_DEBUG_ATTACH: string = 'vscode-spring-cloud-dataflow.tasks.debugattach';
 export const COMMAND_SCDF_APPS_REGISTER: string = 'vscode-spring-cloud-dataflow.apps.register';
 export const COMMAND_SCDF_APPS_UNREGISTER: string = 'vscode-spring-cloud-dataflow.apps.unregister';
 export const LSP_SCDF_CREATE_STREAM: string = CONFIG_PREFIX + '/createStream';
