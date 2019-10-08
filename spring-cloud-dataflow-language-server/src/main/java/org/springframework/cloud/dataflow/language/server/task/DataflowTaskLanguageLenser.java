@@ -15,6 +15,7 @@
  */
 package org.springframework.cloud.dataflow.language.server.task;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,6 +54,7 @@ public class DataflowTaskLanguageLenser extends AbstractDataflowTaskLanguageServ
 						.argument(getTaskName(item))
 						.argument(getTaskEnvironment(deployment, item))
 						.argument(getDeploymentProperties(deployment.getItems()))
+						.argument(getCommandLineArgs(deployment.getArgItems()))
 						.and()
 					.build();
 			})
@@ -164,12 +166,25 @@ public class DataflowTaskLanguageLenser extends AbstractDataflowTaskLanguageServ
 			if (split.length == 2) {
 				int firstAlphaNumeric = firstLetterOrDigit(split[0]);
 				if (firstAlphaNumeric > -1) {
-					properties.put(split[0].subSequence(firstAlphaNumeric, split[0].length()).toString().trim(),
+					int lastIndexOf = split[0].indexOf(propPrefix);
+					if (lastIndexOf > -1) {
+						properties.put(split[0].subSequence(lastIndexOf + propPrefix.length(), split[0].length()).toString().trim(),
 						split[1].toString().trim());
+					}
 				}
 			}
 		});
 		return properties;
+	}
+	private List<String> getCommandLineArgs(List<LaunchItem> items) {
+		List<String> args = new ArrayList<>();
+		items.stream().forEach(item -> {
+			int lastIndexOf = item.getText().indexOf(argPrefix);
+			if (lastIndexOf > -1) {
+				args.add(item.getText().subSequence(lastIndexOf + propPrefix.length(), item.getText().length()).toString().trim());
+			}
+		});
+		return args;
 	}
 
 	private static int firstLetterOrDigit(DocumentText text) {

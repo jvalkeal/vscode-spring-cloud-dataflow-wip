@@ -48,6 +48,8 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 	private static final DocumentText envPrefix = DocumentText.from("@env");
 	private static final DocumentText namePrefix = DocumentText.from("@name");
 	private static final DocumentText descPrefix = DocumentText.from("@desc");
+	protected static final DocumentText propPrefix = DocumentText.from("@prop");
+	protected static final DocumentText argPrefix = DocumentText.from("@arg");
 
 	public AbstractDataflowTaskLanguageService() {
 		super(DataflowLanguages.LANGUAGE_TASK);
@@ -132,6 +134,7 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 	private TaskItem parseNextTask(Document document, TaskItem previous) {
 		List<LaunchItems> launches = new ArrayList<>();
 		List<LaunchItem> launchItems = new ArrayList<>();
+		List<LaunchItem> launchArgItems = new ArrayList<>();
 		LaunchItem envItem = null;
 		LaunchItem nameItem = null;
 		LaunchItem descItem = null;
@@ -166,6 +169,7 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 				}
 				taskItem.deployments.addAll(new ArrayList<>(launches));
 				launchItems.clear();
+				launchArgItems.clear();
 				launches.clear();
 				envItem = null;
 				nameItem = null;
@@ -193,16 +197,19 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 						nameItem = item;
 					} else if (contentStart > -1 && lineContent.startsWith(descPrefix, contentStart)) {
 						descItem = item;
-					} else {
+					} else if (contentStart > -1 && lineContent.startsWith(propPrefix, contentStart)) {
 						launchItems.add(item);
+					} else if (contentStart > -1 && lineContent.startsWith(argPrefix, contentStart)) {
+						launchArgItems.add(item);
 					}
 				} else {
-					if (!launchItems.isEmpty()) {
+					if (!launchItems.isEmpty() || !launchArgItems.isEmpty()) {
 						LaunchItems items = new LaunchItems();
 						items.envItem = envItem;
 						items.startLineRange = launchItemsRange;
 						items.range = Range.from(launchItemsStart, launchItemsEnd);
 						items.items.addAll(launchItems);
+						items.argItems.addAll(launchArgItems);
 						launches.add(items);
 						envItem = null;
 						nameItem = null;
@@ -210,6 +217,7 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 						launchItemsStart = null;
 					}
 					launchItems.clear();
+					launchArgItems.clear();
 				}
 			}
 		}
@@ -275,12 +283,17 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 
 	public static class LaunchItems {
 		private List<LaunchItem> items = new ArrayList<>();
+		private List<LaunchItem> argItems = new ArrayList<>();
 		private Range startLineRange;
 		private Range range;
 		private LaunchItem envItem;
 
 		public List<LaunchItem> getItems() {
 			return items;
+		}
+
+		public List<LaunchItem> getArgItems() {
+			return argItems;
 		}
 
 		public LaunchItem getEnvItem() {

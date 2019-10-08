@@ -34,12 +34,13 @@ export class TasksLaunchCommand implements Command {
         return COMMAND_SCDF_TASKS_LAUNCH;
     }
 
-    async execute(name: string, environment: string, properties?: DeploymentProperties) {
+    async execute(name: string, environment: string, properties?: DeploymentProperties, args?: string[]) {
         const server = environment || (await this.serverRegistrationManager.getDefaultServer()).name;
         const params: DataflowTaskLaunchParams = {
             name: name,
             server: server,
-            properties: properties || {}
+            properties: properties || {},
+            arguments: args || []
         };
         this.languageServerManager.getLanguageClient('scdft').sendNotification(LSP_SCDF_LAUNCH_TASK, params);
         this.notificationManager.showMessage('Task launch sent');

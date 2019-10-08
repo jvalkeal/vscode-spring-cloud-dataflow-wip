@@ -35,10 +35,15 @@ public class AbstractDataflowTaskLanguageServiceTests {
 
 	public static final String DSL_ONE_MULTI_ENV =
 		"-- @env env1\n" +
-		"-- foo1=bar1\n" +
+		"-- @prop foo1=bar1\n" +
+		"-- @arg --foo1=bar1\n" +
 		"\n" +
 		"-- @env env2\n" +
-		"-- foo2=bar2\n" +
+		"-- @prop foo2=bar2\n" +
+		"-- @arg --foo2=bar2\n" +
+		"\n" +
+		"-- @env env4\n" +
+		"-- @arg --foo4=bar4\n" +
 		"\n" +
 		"-- @env env3\n" +
 		"-- @name name3\n" +
@@ -59,17 +64,26 @@ public class AbstractDataflowTaskLanguageServiceTests {
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_TASK, 0, DSL_ONE_MULTI_ENV);
 		List<TaskItem> result = service.parse(document).collectList().block();
 		assertThat(result).hasSize(1);
-		assertThat(result.get(0).getDeployments()).hasSize(2);
+		assertThat(result.get(0).getDeployments()).hasSize(3);
 		assertThat(result.get(0).getDeployments().get(0).getStartLineRange()).isEqualTo(Range.from(0, 0, 0, 12));
-		assertThat(result.get(0).getDeployments().get(0).getRange()).isEqualTo(Range.from(0, 0, 1, 12));
+		assertThat(result.get(0).getDeployments().get(0).getRange()).isEqualTo(Range.from(0, 0, 2, 19));
 		assertThat(result.get(0).getDeployments().get(0).getItems()).hasSize(1);
-		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getText().toString()).isEqualTo("-- foo1=bar1");
-		assertThat(result.get(0).getDeployments().get(1).getStartLineRange()).isEqualTo(Range.from(3, 0, 3, 12));
-		assertThat(result.get(0).getDeployments().get(1).getRange()).isEqualTo(Range.from(3, 0, 4, 12));
+		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getText().toString()).isEqualTo("-- @prop foo1=bar1");
+		assertThat(result.get(0).getDeployments().get(0).getArgItems()).hasSize(1);
+		assertThat(result.get(0).getDeployments().get(0).getArgItems().get(0).getText().toString()).isEqualTo("-- @arg --foo1=bar1");
+		assertThat(result.get(0).getDeployments().get(1).getStartLineRange()).isEqualTo(Range.from(4, 0, 4, 12));
+		assertThat(result.get(0).getDeployments().get(1).getRange()).isEqualTo(Range.from(4, 0, 6, 19));
 		assertThat(result.get(0).getDeployments().get(1).getItems()).hasSize(1);
-		assertThat(result.get(0).getDeployments().get(1).getItems().get(0).getText().toString()).isEqualTo("-- foo2=bar2");
+		assertThat(result.get(0).getDeployments().get(1).getItems().get(0).getText().toString()).isEqualTo("-- @prop foo2=bar2");
+		assertThat(result.get(0).getDeployments().get(1).getArgItems()).hasSize(1);
+		assertThat(result.get(0).getDeployments().get(1).getArgItems().get(0).getText().toString()).isEqualTo("-- @arg --foo2=bar2");
+		assertThat(result.get(0).getDeployments().get(2).getStartLineRange()).isEqualTo(Range.from(8, 0, 8, 12));
+		assertThat(result.get(0).getDeployments().get(2).getRange()).isEqualTo(Range.from(8, 0, 9, 19));
+		assertThat(result.get(0).getDeployments().get(2).getItems()).hasSize(0);
+		assertThat(result.get(0).getDeployments().get(2).getArgItems()).hasSize(1);
+		assertThat(result.get(0).getDeployments().get(2).getArgItems().get(0).getText().toString()).isEqualTo("-- @arg --foo4=bar4");
 		assertThat(result.get(0).getDefinitionItem()).isNotNull();
-		assertThat(result.get(0).getDefinitionItem().getRange()).isEqualTo(Range.from(9, 0, 9, 9));
+		assertThat(result.get(0).getDefinitionItem().getRange()).isEqualTo(Range.from(14, 0, 14, 9));
 		assertThat(result.get(0).getDefinitionItem().getEnvItem().getText().toString()).isEqualTo("-- @env env3");
 		assertThat(result.get(0).getDefinitionItem().getNameItem().getText().toString()).isEqualTo("-- @name name3");
 		assertThat(result.get(0).getDefinitionItem().getDescItem().getText().toString()).isEqualTo("-- @desc desc3");
