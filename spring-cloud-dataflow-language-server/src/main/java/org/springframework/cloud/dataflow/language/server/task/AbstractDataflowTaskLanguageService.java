@@ -177,11 +177,6 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 				launchItemsStart = null;
 			} else {
 				if (trim.length() > 2 && (trim.charAt(0) == '#' || trim.charAt(0) == '-')) {
-					if (launchItemsStart == null) {
-						launchItemsStart = lineRange.getStart();
-						launchItemsRange = lineRange;
-					}
-					launchItemsEnd = lineRange.getEnd();
 					LaunchItem item = new LaunchItem();
 					item.range = lineRange;
 					item.text = lineContent;
@@ -191,6 +186,7 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 						item.contentRange = Range.from(lineRange.getStart().getLine(), contentStart,
 								lineRange.getEnd().getLine(), lineRange.getEnd().getCharacter());
 					}
+					boolean match = true;
 					if (contentStart > -1 && lineContent.startsWith(envPrefix, contentStart)) {
 						envItem = item;
 					} else if (contentStart > -1 && lineContent.startsWith(namePrefix, contentStart)) {
@@ -201,6 +197,15 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 						launchItems.add(item);
 					} else if (contentStart > -1 && lineContent.startsWith(argPrefix, contentStart)) {
 						launchArgItems.add(item);
+					} else {
+						match = false;
+					}
+					if (match) {
+						if (launchItemsStart == null) {
+							launchItemsStart = lineRange.getStart();
+							launchItemsRange = lineRange;
+						}
+						launchItemsEnd = lineRange.getEnd();
 					}
 				} else {
 					if (!launchItems.isEmpty() || !launchArgItems.isEmpty()) {
