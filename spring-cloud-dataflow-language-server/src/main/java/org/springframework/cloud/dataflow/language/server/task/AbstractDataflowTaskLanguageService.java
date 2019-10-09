@@ -98,11 +98,11 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 		String cacheKey = document.uri() + "#" + document.getVersion();
 		log.debug("Used cache key for streamItemCache is {}", cacheKey);
 		return dataflowCacheService.getTaskItemCache().get(cacheKey, key -> {
-			return parseTasksx(document);
+			return parseTasks(document);
 		});
 	}
 
-	private List<TaskItem> parseTasksx(Document document) {
+	private List<TaskItem> parseTasks(Document document) {
 		ArrayList<TaskItem> items = new ArrayList<>();
 		TaskItem item = null;
 		do {
