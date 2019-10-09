@@ -261,6 +261,18 @@
 				]
 			}
 		],
+		"grammars": [
+			{
+				"language": "scdfs",
+				"scopeName": "source.scdfs",
+				"path": "./syntaxes/scdfs.tmLanguage.json"
+			},
+			{
+				"language": "scdft",
+				"scopeName": "source.scdft",
+				"path": "./syntaxes/scdft.tmLanguage.json"
+			}
+		],
 		"viewsContainers": {
 			"activitybar": [
 				{
