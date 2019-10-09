@@ -12,7 +12,7 @@
                         }
                     },
                     "end": "\\n",
-                    "name": "comment.line.double-dash.scdft"
+                    "name": "keyword.other.metadata.scdft"
                 },
                 {
 					"begin": "(^[ \\t]+)?(?=#)",
