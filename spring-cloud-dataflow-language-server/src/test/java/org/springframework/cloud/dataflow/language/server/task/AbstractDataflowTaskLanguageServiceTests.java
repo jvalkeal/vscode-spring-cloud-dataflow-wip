@@ -53,6 +53,9 @@ public class AbstractDataflowTaskLanguageServiceTests {
 	public static final String DSL_INLINE_NAME =
 		"name=timestamp\n";
 
+	public static final String DSL_INLINE_NAME_SPACE_AROUND =
+		"name = timestamp\n";
+
 	@BeforeEach
 	public void setup() {
 		service.setDataflowCacheService(new DataflowCacheService());
@@ -102,6 +105,20 @@ public class AbstractDataflowTaskLanguageServiceTests {
 		assertThat(result.get(0).getDefinitionItem().getTaskNode()).isNotNull();
 		assertThat(result.get(0).getDefinitionItem().getTaskNode().getTaskText()).isEqualTo("timestamp");
 		assertThat(result.get(0).getDefinitionItem().getTaskNode().getName()).isEqualTo("name");
+		assertThat(result.get(0).getDefinitionItem().getTaskNode().getStartPos()).isEqualTo(0);
+	}
+
+	@Test
+	public void testInlineNameSpaceAround() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_TASK, 0, DSL_INLINE_NAME_SPACE_AROUND);
+		List<TaskItem> result = service.parse(document).collectList().block();
+		assertThat(result).hasSize(1);
+		assertThat(result.get(0).getDeployments()).hasSize(0);
+		assertThat(result.get(0).getDefinitionItem()).isNotNull();
+		assertThat(result.get(0).getDefinitionItem().getTaskNode()).isNotNull();
+		assertThat(result.get(0).getDefinitionItem().getTaskNode().getTaskText()).isEqualTo("timestamp");
+		assertThat(result.get(0).getDefinitionItem().getTaskNode().getName()).isEqualTo("name");
+		assertThat(result.get(0).getDefinitionItem().getTaskNode().getStartPos()).isEqualTo(1);
 	}
 
 	private static class TestDataflowTaskLanguageService extends AbstractDataflowTaskLanguageService {

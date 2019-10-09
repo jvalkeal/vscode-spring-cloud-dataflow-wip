@@ -264,7 +264,9 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 			if (name != null) {
 				l = name.length();
 				name = name.trim();
-				name = name.subtext(0, l - 1);
+				int i = name.length();
+				name = name.subtext(0, i - 1);
+				name = name.trim();
 				taskName = name.toString();
 			}
 			if (taskName == null && nameItem != null) {

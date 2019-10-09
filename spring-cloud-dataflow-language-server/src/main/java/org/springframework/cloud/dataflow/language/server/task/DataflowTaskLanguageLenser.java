@@ -102,7 +102,7 @@ public class DataflowTaskLanguageLenser extends AbstractDataflowTaskLanguageServ
 	}
 
 	private String getDefinition(TaskNode taskNode) {
-		return taskNode.getTaskText().substring(taskNode.getStartPos());
+		return taskNode.getTaskText().toString();
 	}
 
 	private String getTaskName(TaskItem item) {
