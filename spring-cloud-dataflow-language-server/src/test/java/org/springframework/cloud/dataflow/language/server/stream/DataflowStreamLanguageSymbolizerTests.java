@@ -122,6 +122,10 @@ public class DataflowStreamLanguageSymbolizerTests {
         symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build(), "@xx");
         symbolInformations = symbolizeInfo.symbolInformations().toStream().collect(Collectors.toList());
         assertThat(symbolInformations).hasSize(0);
+
+        symbolizeInfo = symbolizer.symbolize(DslContext.builder().document(document).build(), "stream");
+        symbolInformations = symbolizeInfo.symbolInformations().toStream().collect(Collectors.toList());
+        assertThat(symbolInformations).hasSize(1);
     }
 
     @Test

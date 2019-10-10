@@ -196,6 +196,8 @@ public class DataflowStreamLanguageSymbolizer extends AbstractDataflowStreamLang
 					}
 					return true;
 				}
+			} else {
+				return symbol.getName().toLowerCase().contains(query.toLowerCase());
 			}
 			return false;
 		}
