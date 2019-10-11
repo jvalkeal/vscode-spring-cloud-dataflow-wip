@@ -216,15 +216,12 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 				deploymentItemsStart = null;
 			} else {
 				if (trim.length() > 2 && (trim.charAt(0) == '#' || trim.charAt(0) == '-')) {
-					if (deploymentItemsStart == null) {
-						deploymentItemsStart = lineRange.getStart();
-						deploymentItemsRange = lineRange;
-					}
 					deploymentItemsEnd = lineRange.getEnd();
 					DeploymentItem item = new DeploymentItem();
 					item.range = lineRange;
 					item.text = lineContent;
 
+					boolean match = true;
 					int contentStart = findContentStart(lineContent);
 					if (contentStart > -1) {
 						item.contentRange = Range.from(lineRange.getStart().getLine(), contentStart,
@@ -238,6 +235,14 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 						descItem = item;
 					} else if (contentStart > -1 && lineContent.startsWith(propPrefix, contentStart)) {
 						deploymentItems.add(item);
+					} else {
+						match = false;
+					}
+					if (match) {
+						if (deploymentItemsStart == null) {
+							deploymentItemsStart = lineRange.getStart();
+							deploymentItemsRange = lineRange;
+						}
 					}
 				} else {
 					if (!deploymentItems.isEmpty()) {
