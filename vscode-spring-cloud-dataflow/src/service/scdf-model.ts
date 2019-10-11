@@ -178,6 +178,10 @@ export class ScdfModel {
         return this.scdfService.getJobExecution(this.registration, executionId);
     }
 
+    public registerApps(uris: string[]): Thenable<void> {
+        return this.scdfService.registerApps(this.registration, uris);
+    }
+
     public registerApp(type: string, name: string, uri: string, metadataUri: string): Thenable<void> {
         return this.scdfService.registerApp(this.registration, type, name, uri, metadataUri);
     }

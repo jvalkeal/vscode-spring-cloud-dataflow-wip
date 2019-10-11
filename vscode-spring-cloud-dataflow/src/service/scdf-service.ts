@@ -145,6 +145,24 @@ export class ScdfService {
         });
     }
 
+    public registerApps(registration: ServerRegistration, uris: string[]): Thenable<void> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                await axios.post(registration.url + '/apps', {}, {
+                    params: {
+                        apps: uris.join('\n'),
+                        force: false
+                    },
+                    auth: registration.credentials
+                });
+                resolve();
+            }
+            catch (error) {
+                resolve();
+            }
+        });
+    }
+
     public registerApp(registration: ServerRegistration, type: string, name: string, uri: string, metadataUri: string): Thenable<void> {
         return new Promise(async (resolve, reject) => {
             try {

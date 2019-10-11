@@ -70,6 +70,15 @@
 				"category": "SCDF"
 			},
 			{
+				"command": "vscode-spring-cloud-dataflow.apps.registerall",
+				"title": "Register All Apps",
+				"category": "SCDF",
+				"icon": {
+					"light": "resources/light/app.svg",
+					"dark": "resources/dark/app.svg"
+				}
+			},
+			{
 				"command": "vscode-spring-cloud-dataflow.apps.unregister",
 				"title": "Unregister App",
 				"category": "SCDF"
@@ -165,6 +174,19 @@
 				{
 					"command": "vscode-spring-cloud-dataflow.tasks.log",
 					"when": "never"
+				}
+			],
+			"editor/context": [
+				{
+					"command": "vscode-spring-cloud-dataflow.apps.registerall",
+					"when": "resourceLangId == scdfa"
+				}
+			],
+			"editor/title": [
+				{
+					"command": "vscode-spring-cloud-dataflow.apps.registerall",
+					"when": "resourceLangId == scdfa",
+					"group": "navigation"
 				}
 			],
 			"view/title": [
