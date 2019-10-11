@@ -12,7 +12,13 @@
                         }
                     },
                     "end": "\\n",
-                    "name": "keyword.other.metadata.scdft"
+					"name": "meta.deployment-property.scdfs",
+					"patterns": [
+						{
+							"match": "(@\\w+) (.+)",
+							"name": "storage.type.scdfs"
+						}
+					]
                 },
                 {
 					"begin": "(^[ \\t]+)?(?=#)",

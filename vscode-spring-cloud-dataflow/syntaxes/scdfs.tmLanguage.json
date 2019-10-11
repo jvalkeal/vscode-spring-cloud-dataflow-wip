@@ -12,7 +12,13 @@
                         }
                     },
                     "end": "\\n",
-                    "name": "comment.line.double-dash.scdfs"
+					"name": "meta.deployment-property.scdfs",
+					"patterns": [
+						{
+							"match": "(@\\w+) (.+)",
+							"name": "storage.type.scdfs"
+						}
+					]
                 },
 				{
 					"begin": "(^[ \\t]+)?(?=#)",
@@ -31,7 +37,7 @@
 								}
 							},
 							"end": "\\n",
-							"name": "comment.line.double-dash.scdfs"
+							"name": "comment.line.number-sign.scdfs"
 						}
                     ]
 				},
@@ -43,7 +49,7 @@
 						}
 					},
 					"end": "\\*/",
-					"name": "comment.block.c"
+					"name": "comment.block.scdfs"
 				}
             ]
         }
