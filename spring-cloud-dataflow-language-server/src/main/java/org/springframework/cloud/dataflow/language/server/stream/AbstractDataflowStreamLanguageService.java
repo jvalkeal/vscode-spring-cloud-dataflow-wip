@@ -55,6 +55,7 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 	private static final DocumentText envPrefix = DocumentText.from("@env");
 	private static final DocumentText namePrefix = DocumentText.from("@name");
 	private static final DocumentText descPrefix = DocumentText.from("@desc");
+	protected static final DocumentText propPrefix = DocumentText.from("@prop");
 	protected DataFlowOperationsService dataflowOperationsService;
 	protected DataflowCacheService dataflowCacheService;
 
@@ -235,7 +236,7 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 						nameItem = item;
 					} else if (contentStart > -1 && lineContent.startsWith(descPrefix, contentStart)) {
 						descItem = item;
-					} else {
+					} else if (contentStart > -1 && lineContent.startsWith(propPrefix, contentStart)) {
 						deploymentItems.add(item);
 					}
 				} else {

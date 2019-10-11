@@ -41,10 +41,10 @@ public class AbstractDataflowStreamLanguageServiceTests {
 
 	public static final String DSL_ONE_MULTI_ENV =
 		"-- @env env1\n" +
-		"-- foo1=bar1\n" +
+		"-- @prop foo1=bar1\n" +
 		"\n" +
 		"-- @env env2\n" +
-		"-- foo2=bar2\n" +
+		"-- @prop foo2=bar2\n" +
 		"\n" +
 		"-- @name name1\n" +
 		"-- @desc desc1\n" +
@@ -90,16 +90,16 @@ public class AbstractDataflowStreamLanguageServiceTests {
 		assertThat(result).hasSize(1);
 		assertThat(result.get(0).getDeployments()).hasSize(2);
 		assertThat(result.get(0).getDeployments().get(0).getItems()).hasSize(1);
-		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getText().toString()).isEqualTo("-- foo1=bar1");
-		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getRange()).isEqualTo(Range.from(1, 0, 1, 12));
-		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getContentRange()).isEqualTo(Range.from(1, 3, 1, 12));
+		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getText().toString()).isEqualTo("-- @prop foo1=bar1");
+		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getRange()).isEqualTo(Range.from(1, 0, 1, 18));
+		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getContentRange()).isEqualTo(Range.from(1, 3, 1, 18));
 		assertThat(result.get(0).getDeployments().get(0).getEnvItem().getText().toString()).isEqualTo("-- @env env1");
 		assertThat(result.get(0).getDeployments().get(0).getEnvItem().getRange()).isEqualTo(Range.from(0, 0, 0, 12));
 		assertThat(result.get(0).getDeployments().get(0).getEnvItem().getContentRange()).isEqualTo(Range.from(0, 3, 0, 12));
 		assertThat(result.get(0).getDeployments().get(1).getItems()).hasSize(1);
-		assertThat(result.get(0).getDeployments().get(1).getItems().get(0).getText().toString()).isEqualTo("-- foo2=bar2");
-		assertThat(result.get(0).getDeployments().get(1).getItems().get(0).getRange()).isEqualTo(Range.from(4, 0, 4, 12));
-		assertThat(result.get(0).getDeployments().get(1).getItems().get(0).getContentRange()).isEqualTo(Range.from(4, 3, 4, 12));
+		assertThat(result.get(0).getDeployments().get(1).getItems().get(0).getText().toString()).isEqualTo("-- @prop foo2=bar2");
+		assertThat(result.get(0).getDeployments().get(1).getItems().get(0).getRange()).isEqualTo(Range.from(4, 0, 4, 18));
+		assertThat(result.get(0).getDeployments().get(1).getItems().get(0).getContentRange()).isEqualTo(Range.from(4, 3, 4, 18));
 		assertThat(result.get(0).getDeployments().get(1).getEnvItem().getText().toString()).isEqualTo("-- @env env2");
 		assertThat(result.get(0).getDeployments().get(1).getEnvItem().getRange()).isEqualTo(Range.from(3, 0, 3, 12));
 		assertThat(result.get(0).getDeployments().get(1).getEnvItem().getContentRange()).isEqualTo(Range.from(3, 3, 3, 12));
@@ -165,7 +165,7 @@ public class AbstractDataflowStreamLanguageServiceTests {
 	@Test
 	public void testOneDeployment() {
 		String data =
-			"#foo=bar\n" +
+			"-- @prop foo=bar\n" +
 			"ticktock1=time|log";
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, data);
 		List<StreamItem> result = service.parse(document).collectList().block();
@@ -176,14 +176,14 @@ public class AbstractDataflowStreamLanguageServiceTests {
 	@Test
 	public void testMultiDeployment() {
 		String data =
-			"#foo1=bar1\n" +
-			"#\n" +
-			"#foo1=bar1\n" +
-			"#foo2=bar2\n" +
+			"-- @prop foo1=bar1\n" +
 			"\n" +
-			"#foo1=bar1\n" +
-			"# foo2=bar2\n" +
-			"#foo3=bar3\n" +
+			"-- @prop foo1=bar1\n" +
+			"-- @prop foo2=bar2\n" +
+			"\n" +
+			"-- @prop foo1=bar1\n" +
+			"-- @prop foo2=bar2\n" +
+			"-- @prop foo3=bar3\n" +
 			"\n" +
 			"ticktock1=time|log";
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, data);
@@ -191,7 +191,7 @@ public class AbstractDataflowStreamLanguageServiceTests {
 		assertThat(result).hasSize(1);
 		assertThat(result.get(0).getDeployments()).hasSize(3);
 		assertThat(result.get(0).getDeployments().get(0).getItems()).hasSize(1);
-		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getText().toString()).isEqualTo("#foo1=bar1");
+		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getText().toString()).isEqualTo("-- @prop foo1=bar1");
 		assertThat(result.get(0).getDeployments().get(1).getItems()).hasSize(2);
 		assertThat(result.get(0).getDeployments().get(2).getItems()).hasSize(3);
 	}
@@ -200,15 +200,15 @@ public class AbstractDataflowStreamLanguageServiceTests {
 	public void testMultiDeployment2() {
 		String data =
 			"-- @env env1\n" +
-			"-- foo1=bar1\n" +
+			"-- @prop foo1=bar1\n" +
 			"--\n" +
-			"-- foo1=bar1\n" +
-			"-- foo2=bar2\n" +
+			"-- @prop foo1=bar1\n" +
+			"-- @prop foo2=bar2\n" +
 			"\n" +
 			"-- @env env2\n" +
-			"-- foo1=bar1\n" +
-			"-- foo2=bar2\n" +
-			"-- foo3=bar3\n" +
+			"-- @prop foo1=bar1\n" +
+			"-- @prop foo2=bar2\n" +
+			"-- @prop foo3=bar3\n" +
 			"\n" +
 			"-- @env env3\n" +
 			"-- @name fooname\n" +
@@ -219,9 +219,9 @@ public class AbstractDataflowStreamLanguageServiceTests {
 		assertThat(result).hasSize(1);
 		assertThat(result.get(0).getDeployments()).hasSize(3);
 		assertThat(result.get(0).getDeployments().get(0).getItems()).hasSize(1);
-		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getText().toString()).isEqualTo("-- foo1=bar1");
-		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getRange()).isEqualTo(Range.from(1, 0, 1, 12));
-		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getContentRange()).isEqualTo(Range.from(1, 3, 1, 12));
+		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getText().toString()).isEqualTo("-- @prop foo1=bar1");
+		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getRange()).isEqualTo(Range.from(1, 0, 1, 18));
+		assertThat(result.get(0).getDeployments().get(0).getItems().get(0).getContentRange()).isEqualTo(Range.from(1, 3, 1, 18));
 		assertThat(result.get(0).getDeployments().get(0).getEnvItem().getText().toString()).isEqualTo("-- @env env1");
 		assertThat(result.get(0).getDeployments().get(0).getEnvItem().getRange()).isEqualTo(Range.from(0, 0, 0, 12));
 		assertThat(result.get(0).getDeployments().get(0).getEnvItem().getContentRange()).isEqualTo(Range.from(0, 3, 0, 12));

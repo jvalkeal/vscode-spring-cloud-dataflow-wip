@@ -54,14 +54,14 @@ public class DataflowStreamLanguageLenserTests {
 	@Test
 	public void testLensesSingleStreamsWithDeployProperties() {
 		String data =
-			"#foo1=bar1\n" +
+			"-- @prop foo1=bar1\n" +
 			"stream1 = time|log";
 
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, data);
 		List<CodeLens> lenses = lenser.lense(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
 		assertThat(lenses).hasSize(5);
-		assertThat(lenses.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 10));
+		assertThat(lenses.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 18));
 		assertThat(lenses.get(1).getRange()).isEqualTo(Range.from(1, 0, 1, 18));
 	}
 
@@ -69,10 +69,10 @@ public class DataflowStreamLanguageLenserTests {
 	@SuppressWarnings("unchecked")
 	public void testLintsMultipleStreamsWithDeployProperties() {
 		String data =
-			"#foo1=bar1\n" +
-			"#foo2=bar2\n" +
+			"-- @prop foo1=bar1\n" +
+			"-- @prop foo2=bar2\n" +
 			"stream1 = time|log\n" +
-			"#foo3=bar3\n" +
+			"-- @prop foo3=bar3\n" +
 			"stream2 = time|log";
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, data);
 		List<CodeLens> lenses = lenser.lense(DslContext.builder().document(document).build()).toStream()
@@ -80,7 +80,7 @@ public class DataflowStreamLanguageLenserTests {
 		assertThat(lenses).hasSize(10);
 		assertThat(lenses.get(0).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE);
 		assertThat(lenses.get(0).getCommand().getCommand()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY);
-		assertThat(lenses.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 10));
+		assertThat(lenses.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 18));
 		assertThat(lenses.get(0).getCommand().getArguments()).hasSize(3);
 		assertThat(lenses.get(0).getCommand().getArguments().get(0)).isEqualTo("stream1");
 		assertThat(lenses.get(0).getCommand().getArguments().get(1)).isNull();
@@ -88,29 +88,29 @@ public class DataflowStreamLanguageLenserTests {
 		assertThat((Map<String, String>)lenses.get(0).getCommand().getArguments().get(2)).hasSize(2);
 		assertThat((Map<String, String>)lenses.get(0).getCommand().getArguments().get(2)).containsEntry("foo1", "bar1");
 		assertThat((Map<String, String>)lenses.get(0).getCommand().getArguments().get(2)).containsEntry("foo2", "bar2");
-		assertThat(lenses.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 10));
+		assertThat(lenses.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 18));
 		assertThat(lenses.get(1).getRange()).isEqualTo(Range.from(2, 0, 2, 18));
 		assertThat(lenses.get(5).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE);
 		assertThat(lenses.get(5).getCommand().getCommand()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY);
-		assertThat(lenses.get(5).getRange()).isEqualTo(Range.from(3, 0, 3, 10));
+		assertThat(lenses.get(5).getRange()).isEqualTo(Range.from(3, 0, 3, 18));
 		assertThat(lenses.get(6).getRange()).isEqualTo(Range.from(4, 0, 4, 18));
 	}
 
 	@Test
 	public void testLintsMultipleStreamsWithDeployProperties2() {
 		String data =
-			"#foo1=bar1\n" +
-			"#\n" +
-			"#foo2=bar2\n" +
+			"-- @prop foo1=bar1\n" +
+			"\n" +
+			"-- @prop foo2=bar2\n" +
 			"stream1 = time|log";
 		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, data);
 		List<CodeLens> lenses = lenser.lense(DslContext.builder().document(document).build()).toStream()
 				.collect(Collectors.toList());
 		assertThat(lenses).hasSize(6);
 		assertThat(lenses.get(0).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE);
-		assertThat(lenses.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 10));
+		assertThat(lenses.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 18));
 		assertThat(lenses.get(1).getCommand().getTitle()).isEqualTo(DataflowLanguages.COMMAND_STREAM_DEPLOY_TITLE);
-		assertThat(lenses.get(1).getRange()).isEqualTo(Range.from(2, 0, 2, 10));
+		assertThat(lenses.get(1).getRange()).isEqualTo(Range.from(2, 0, 2, 18));
 	}
 
 	@Test
