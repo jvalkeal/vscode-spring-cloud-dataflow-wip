@@ -54,6 +54,12 @@ public class DataflowStreamLanguageSymbolizerTests {
         List<DocumentSymbol> documentSymbols = symbolizeInfo.documentSymbols().toStream().collect(Collectors.toList());
 
         assertThat(symbolInformations).hasSize(5);
+        assertThat(symbolInformations.get(0).getName()).isEqualTo("initial-delay");
+        assertThat(symbolInformations.get(1).getName()).isEqualTo("time");
+        assertThat(symbolInformations.get(2).getName()).isEqualTo("name");
+        assertThat(symbolInformations.get(3).getName()).isEqualTo("log");
+        assertThat(symbolInformations.get(4).getName()).isEqualTo("stream1");
+
         assertThat(documentSymbols).hasSize(1);
         assertThat(documentSymbols.get(0).getName()).isEqualTo("stream1");
         assertThat(documentSymbols.get(0).getDetail()).isNull();
@@ -66,20 +72,22 @@ public class DataflowStreamLanguageSymbolizerTests {
         assertThat(documentSymbols.get(0).getChildren().get(0)).isNotNull();
         assertThat(documentSymbols.get(0).getChildren().get(0).getName()).isEqualTo("time");
         assertThat(documentSymbols.get(0).getChildren().get(0).getKind()).isEqualTo(SymbolKind.Method);
-        assertThat(documentSymbols.get(0).getChildren().get(0).getRange()).isEqualTo(Range.from(0, 10, 0, 57));
-        assertThat(documentSymbols.get(0).getChildren().get(0).getSelectionRange()).isEqualTo(Range.from(0, 10, 0, 57));
+        assertThat(documentSymbols.get(0).getChildren().get(0).getRange()).isEqualTo(Range.from(0, 10, 0, 35));
+        assertThat(documentSymbols.get(0).getChildren().get(0).getSelectionRange()).isEqualTo(Range.from(0, 10, 0, 35));
         assertThat(documentSymbols.get(0).getChildren().get(0).getChildren()).isNotNull();
         assertThat(documentSymbols.get(0).getChildren().get(0).getChildren()).hasSize(1);
         assertThat(documentSymbols.get(0).getChildren().get(0).getChildren().get(0).getName()).isEqualTo("initial-delay");
+        assertThat(documentSymbols.get(0).getChildren().get(0).getChildren().get(0).getRange()).isEqualTo(Range.from(0, 15, 0, 35));
 
         assertThat(documentSymbols.get(0).getChildren().get(1)).isNotNull();
         assertThat(documentSymbols.get(0).getChildren().get(1).getName()).isEqualTo("log");
         assertThat(documentSymbols.get(0).getChildren().get(1).getKind()).isEqualTo(SymbolKind.Method);
-        assertThat(documentSymbols.get(0).getChildren().get(1).getRange()).isEqualTo(Range.from(0, 10, 0, 57));
-        assertThat(documentSymbols.get(0).getChildren().get(1).getSelectionRange()).isEqualTo(Range.from(0, 10, 0, 57));
+        assertThat(documentSymbols.get(0).getChildren().get(1).getRange()).isEqualTo(Range.from(0, 38, 0, 57));
+        assertThat(documentSymbols.get(0).getChildren().get(1).getSelectionRange()).isEqualTo(Range.from(0, 38, 0, 57));
         assertThat(documentSymbols.get(0).getChildren().get(1).getChildren()).isNotNull();
         assertThat(documentSymbols.get(0).getChildren().get(1).getChildren()).hasSize(1);
         assertThat(documentSymbols.get(0).getChildren().get(1).getChildren().get(0).getName()).isEqualTo("name");
+        assertThat(documentSymbols.get(0).getChildren().get(1).getChildren().get(0).getRange()).isEqualTo(Range.from(0, 42, 0, 57));
     }
 
     @Test
@@ -164,45 +172,45 @@ public class DataflowStreamLanguageSymbolizerTests {
         assertThat(documentSymbols.get(0).getName()).isEqualTo("name");
         assertThat(documentSymbols.get(0).getDetail()).isNull();
         assertThat(documentSymbols.get(0).getKind()).isEqualTo(SymbolKind.Class);
-        assertThat(documentSymbols.get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 8));
-        assertThat(documentSymbols.get(0).getSelectionRange()).isEqualTo(Range.from(0, 0, 0, 8));
+        assertThat(documentSymbols.get(0).getRange()).isEqualTo(Range.from(3, 0, 3, 8));
+        assertThat(documentSymbols.get(0).getSelectionRange()).isEqualTo(Range.from(3, 0, 3, 8));
         assertThat(documentSymbols.get(0).getChildren()).isNotNull();
         assertThat(documentSymbols.get(0).getChildren()).hasSize(2);
 
         assertThat(documentSymbols.get(0).getChildren().get(0)).isNotNull();
         assertThat(documentSymbols.get(0).getChildren().get(0).getName()).isEqualTo("time");
         assertThat(documentSymbols.get(0).getChildren().get(0).getKind()).isEqualTo(SymbolKind.Method);
-        assertThat(documentSymbols.get(0).getChildren().get(0).getRange()).isEqualTo(Range.from(0, 0, 0, 8));
-        assertThat(documentSymbols.get(0).getChildren().get(0).getSelectionRange()).isEqualTo(Range.from(0, 0, 0, 8));
+        assertThat(documentSymbols.get(0).getChildren().get(0).getRange()).isEqualTo(Range.from(3, 0, 3, 4));
+        assertThat(documentSymbols.get(0).getChildren().get(0).getSelectionRange()).isEqualTo(Range.from(3, 0, 3, 4));
         assertThat(documentSymbols.get(0).getChildren().get(0).getChildren()).isNull();
 
         assertThat(documentSymbols.get(0).getChildren().get(1)).isNotNull();
         assertThat(documentSymbols.get(0).getChildren().get(1).getName()).isEqualTo("log");
         assertThat(documentSymbols.get(0).getChildren().get(1).getKind()).isEqualTo(SymbolKind.Method);
-        assertThat(documentSymbols.get(0).getChildren().get(1).getRange()).isEqualTo(Range.from(0, 0, 0, 8));
-        assertThat(documentSymbols.get(0).getChildren().get(1).getSelectionRange()).isEqualTo(Range.from(0, 0, 0, 8));
+        assertThat(documentSymbols.get(0).getChildren().get(1).getRange()).isEqualTo(Range.from(3, 5, 3, 8));
+        assertThat(documentSymbols.get(0).getChildren().get(1).getSelectionRange()).isEqualTo(Range.from(3, 5, 3, 8));
         assertThat(documentSymbols.get(0).getChildren().get(1).getChildren()).isNull();
 
         assertThat(documentSymbols.get(1).getName()).isEqualTo("name");
         assertThat(documentSymbols.get(1).getDetail()).isNull();
         assertThat(documentSymbols.get(1).getKind()).isEqualTo(SymbolKind.Class);
-        assertThat(documentSymbols.get(1).getRange()).isEqualTo(Range.from(4, 0, 4, 8));
-        assertThat(documentSymbols.get(1).getSelectionRange()).isEqualTo(Range.from(4, 0, 4, 8));
+        assertThat(documentSymbols.get(1).getRange()).isEqualTo(Range.from(8, 0, 8, 8));
+        assertThat(documentSymbols.get(1).getSelectionRange()).isEqualTo(Range.from(8, 0, 8, 8));
         assertThat(documentSymbols.get(1).getChildren()).isNotNull();
         assertThat(documentSymbols.get(1).getChildren()).hasSize(2);
 
         assertThat(documentSymbols.get(1).getChildren().get(0)).isNotNull();
         assertThat(documentSymbols.get(1).getChildren().get(0).getName()).isEqualTo("time");
         assertThat(documentSymbols.get(1).getChildren().get(0).getKind()).isEqualTo(SymbolKind.Method);
-        assertThat(documentSymbols.get(1).getChildren().get(0).getRange()).isEqualTo(Range.from(4, 0, 4, 8));
-        assertThat(documentSymbols.get(1).getChildren().get(0).getSelectionRange()).isEqualTo(Range.from(4, 0, 4, 8));
+        assertThat(documentSymbols.get(1).getChildren().get(0).getRange()).isEqualTo(Range.from(8, 0, 8, 4));
+        assertThat(documentSymbols.get(1).getChildren().get(0).getSelectionRange()).isEqualTo(Range.from(8, 0, 8, 4));
         assertThat(documentSymbols.get(1).getChildren().get(0).getChildren()).isNull();
 
         assertThat(documentSymbols.get(1).getChildren().get(1)).isNotNull();
         assertThat(documentSymbols.get(1).getChildren().get(1).getName()).isEqualTo("log");
         assertThat(documentSymbols.get(1).getChildren().get(1).getKind()).isEqualTo(SymbolKind.Method);
-        assertThat(documentSymbols.get(1).getChildren().get(1).getRange()).isEqualTo(Range.from(4, 0, 4, 8));
-        assertThat(documentSymbols.get(1).getChildren().get(1).getSelectionRange()).isEqualTo(Range.from(4, 0, 4, 8));
+        assertThat(documentSymbols.get(1).getChildren().get(1).getRange()).isEqualTo(Range.from(8, 5, 8, 8));
+        assertThat(documentSymbols.get(1).getChildren().get(1).getSelectionRange()).isEqualTo(Range.from(8, 5, 8, 8));
         assertThat(documentSymbols.get(1).getChildren().get(1).getChildren()).isNull();
     }
 }

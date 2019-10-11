@@ -106,7 +106,7 @@ public class DataflowStreamLanguageSymbolizer extends AbstractDataflowStreamLang
 			if (streamNode == null) {
 				continue;
 			}
-			int line = item.getRange().getStart().getLine();
+			int line = item.getDefinitionItem().getRange().getStart().getLine();
 			int startPos = streamNode.getStartPos();
 			int endPos = streamNode.getEndPos();
 			String streamName = getStreamName(item);
@@ -129,11 +129,11 @@ public class DataflowStreamLanguageSymbolizer extends AbstractDataflowStreamLang
 				} else {
 					appClass = new ProcessorSymbol(appName);
 				}
-				appClass.setRange(Range.from(line, startPos, line, endPos));
+				appClass.setRange(Range.from(line, appNode.getStartPos(), line, appNode.getEndPos()));
 				streamClass.define(appClass);
 				for (ArgumentNode argumentNode : appNode.getArguments()) {
 					StreamAppOptionSymbol argumentClass = new StreamAppOptionSymbol(argumentNode.getName());
-					argumentClass.setRange(Range.from(line, startPos, line, endPos));
+					argumentClass.setRange(Range.from(line, argumentNode.getStartPos(), line, argumentNode.getEndPos()));
 					appClass.define(argumentClass);
 				}
 			}
