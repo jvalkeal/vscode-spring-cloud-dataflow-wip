@@ -71,6 +71,24 @@ public class DataflowStreamLanguageCompletionerTests {
     }
 
     @Test
+    public void testCompletionWithinIncompleteApp() {
+        Proposal proposal1 = new Proposal("ticktock = time", "");
+        Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0, "ticktock = ti");
+        Mockito.when(dataFlowOperations.completionOperations()).thenReturn(completionOperations);
+        Mockito.when(completionOperations.streamCompletions(any(), anyInt())).thenReturn(proposalsResource);
+        Mockito.when(proposalsResource.getProposals())
+                .thenReturn(Arrays.asList(proposal1));
+        MockDataflowStreamLanguageCompletioner completioner = mockCompletioner();
+        completioner.setDataflowCacheService(new DataflowCacheService());
+
+        List<CompletionItem> completes = completioner
+                .complete(DslContext.builder().document(document).build(), Position.from(0, 13)).toStream()
+                .collect(Collectors.toList());
+        assertThat(completes).hasSize(1);
+        assertThat(completes.get(0).getLabel()).isEqualTo("time");
+    }
+
+    @Test
     public void testTickTockCompletionFromBeforePipe() {
         Proposal proposal1 = new Proposal("ticktock = time --time-unit=", "The TimeUnit to apply to delay values.");
         Proposal proposal2 = new Proposal("ticktock = time --fixed-delay=", "Fixed delay for periodic triggers.");
