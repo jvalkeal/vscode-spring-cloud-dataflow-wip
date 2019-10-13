@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import axios from 'axios';
+import * as FormData from 'form-data';
 import {
     ScdfStreamEntry, ScdfAppEntry, ScdfStreamDeploymentEntry, ScdfStreamRuntimeEntry, ScdfStreamLogs, ScdfTaskEntry,
     ScdfTaskExecutionEntry, ScdfJobEntry, ScdfJobExecutionEntry
@@ -148,11 +149,12 @@ export class ScdfService {
     public registerApps(registration: ServerRegistration, uris: string[]): Thenable<void> {
         return new Promise(async (resolve, reject) => {
             try {
-                await axios.post(registration.url + '/apps', {}, {
-                    params: {
-                        apps: uris.join('\n'),
-                        force: false
-                    },
+                // https://github.com/axios/axios/issues/318
+                const formData = new FormData();
+                formData.append('force', 'false');
+                formData.append('apps', uris.join('\n'));
+                await axios.post(registration.url + '/apps', formData, {
+                    headers: formData.getHeaders(),
                     auth: registration.credentials
                 });
                 resolve();
