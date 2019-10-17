@@ -58,9 +58,17 @@ export class ServerRegistrationManager implements ExtensionActivateAware {
     public async onExtensionActivate(context: ExtensionContext): Promise<void> {
         // if we have a default server, let statusbar know about it
         const registration = await this.getDefaultServer();
-        if (registration) {
+        if (registration && registration.name) {
             this.serverRegistrationStatusBarManagerItem.setRegistrationName(registration.name);
+        } else {
+            this.serverRegistrationStatusBarManagerItem.setRegistrationName(undefined);
         }
+        // try {
+        //     const registration = await this.getDefaultServer();
+        //     this.serverRegistrationStatusBarManagerItem.setRegistrationName(registration.name);
+        // } catch (error) {
+        //     this.serverRegistrationStatusBarManagerItem.setRegistrationName(undefined);
+        // }
     }
 
     public async notifyServers(): Promise<void> {
@@ -68,11 +76,13 @@ export class ServerRegistrationManager implements ExtensionActivateAware {
         const servers = await this.getServers();
         servers.forEach(registration => registrations.push(registration));
         const registration = await this.getDefaultServer();
-        const params: DataflowEnvironmentParams = {
-            environments: registrations,
-            defaultEnvironment: registration.name
-        };
-        this.languageServerManager.getLanguageClient('scdfs').sendNotification('scdf/environment', params);
+        if (registration) {
+            const params: DataflowEnvironmentParams = {
+                environments: registrations,
+                defaultEnvironment: registration.name
+            };
+            this.languageServerManager.getLanguageClient('scdfs').sendNotification('scdf/environment', params);
+        }
     }
 
     public async connectServer(): Promise<void> {
@@ -93,20 +103,35 @@ export class ServerRegistrationManager implements ExtensionActivateAware {
         await this.saveServerRegistrationNonsensitive(servers);
         await this.refresh();
         await this.notifyServers();
+        if (servers.length === 1) {
+            this.serverRegistrationStatusBarManagerItem.setRegistrationName(servers[0].name);
+            await this.settingsManager.setNonsensitive<ServerRegistrationNonsensitive>(this.customRegistriesKey2, servers[0]);
+        }
     }
 
     public async disconnectServer(node: BaseNode): Promise<void> {
         let servers = await this.getServers();
+        const defaultServer = await this.getDefaultServer();
         let registry = servers.find(reg => reg.name.toLowerCase() === node.label.toLowerCase());
 
         if (registry) {
             let key = this.getUsernamePwdKey(node.label);
-
             await this.settingsManager.deleteSensitive(key);
             servers.splice(servers.indexOf(registry), 1);
             await this.saveServerRegistrationNonsensitive(servers);
+
+            if (defaultServer && defaultServer.name === registry.name) {
+                if (servers.length > 0) {
+                    this.serverRegistrationStatusBarManagerItem.setRegistrationName(servers[0].name);
+                    await this.settingsManager.setNonsensitive<ServerRegistrationNonsensitive>(this.customRegistriesKey2, servers[0]);
+                } else {
+                    this.serverRegistrationStatusBarManagerItem.setRegistrationName(undefined);
+                }
+            }
+
             await this.refresh();
         }
+
     }
 
     public async setDefaultServer(node: ServerNode): Promise<void> {
@@ -133,23 +158,23 @@ export class ServerRegistrationManager implements ExtensionActivateAware {
         await this.notifyServers();
     }
 
-    public async getDefaultServer(): Promise<ServerRegistration> {
+    public async getDefaultServer(): Promise<ServerRegistration | undefined> {
         const nonsensitive = this.settingsManager.getNonsensitive<ServerRegistrationNonsensitive>(this.customRegistriesKey2);
         const servers = this.getServers();
 
-        return Promise.all([nonsensitive, servers]).then((a) => {
-            let server: ServerRegistration | undefined;
-            if (a[0]) {
-                server = a[1].find(registration => registration.url.toLowerCase() === a[0].url.toLowerCase());
-            }
-            if (!server && a[1].length === 1) {
-                server = a[1][0];
-            }
-            if (server) {
+        return Promise.all([nonsensitive, servers])
+            .then((a) => {
+                let server: ServerRegistration | undefined;
+                if (a[0]) {
+                    server = a[1].find(registration => registration.url.toLowerCase() === a[0].url.toLowerCase());
+                }
+                if (!server && a[1].length === 1) {
+                    server = a[1][0];
+                }
                 return Promise.resolve(server);
-            }
-            return Promise.reject(new Error());
-        });
+            })
+            .catch(e => Promise.resolve(undefined))
+            ;
     }
 
     private getUsernamePwdKey(registryName: string): string {

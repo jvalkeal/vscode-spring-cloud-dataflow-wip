@@ -22,8 +22,8 @@ export class ServerRegistrationStatusBarManagerItem extends AbstractStatusBarMan
 
     private static readonly prefix: string = '$(database) ';
 
-    public setRegistrationName(name: string): void {
-        this.setText(ServerRegistrationStatusBarManagerItem.prefix + name);
+    public setRegistrationName(name: string | undefined): void {
+        this.setText(ServerRegistrationStatusBarManagerItem.prefix + (name || '[Connect SCDF]'));
     }
 
     public getCommand(): string {

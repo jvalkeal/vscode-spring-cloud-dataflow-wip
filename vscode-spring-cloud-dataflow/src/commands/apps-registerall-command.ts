@@ -54,9 +54,11 @@ export class AppsRegisterAllCommand implements Command {
         }
 
         const defaultServer = await this.serverRegistrationManager.getDefaultServer();
-        const model = new ScdfModel(defaultServer);
-        await model.registerApps(uris);
-        this.appsExplorerProvider.refresh();
-        this.streamsExplorerProvider.refresh();
+        if (defaultServer) {
+            const model = new ScdfModel(defaultServer);
+            await model.registerApps(uris);
+            this.appsExplorerProvider.refresh();
+            this.streamsExplorerProvider.refresh();
+        }
     }
 }

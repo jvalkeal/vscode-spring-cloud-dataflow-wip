@@ -50,9 +50,11 @@ export class AppsUnregisterCommand implements Command {
         }
 
         const defaultServer = await this.serverRegistrationManager.getDefaultServer();
-        const model = new ScdfModel(defaultServer);
-        await model.unregisterApp(resolvedType, resolvedName, resolvedVersion);
-        this.appsExplorerProvider.refresh();
-        this.streamsExplorerProvider.refresh();
+        if (defaultServer) {
+            const model = new ScdfModel(defaultServer);
+            await model.unregisterApp(resolvedType, resolvedName, resolvedVersion);
+            this.appsExplorerProvider.refresh();
+            this.streamsExplorerProvider.refresh();
+        }
     }
 }
