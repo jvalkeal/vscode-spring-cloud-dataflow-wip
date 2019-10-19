@@ -202,6 +202,21 @@ export class ScdfService {
         });
     }
 
+    public defaultApp(registration: ServerRegistration, type: string, name: string, version: string): Thenable<void> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let url = registration.url + '/apps/' + type + '/' + name + '/' + version;
+                await axios.put(url, {
+                    auth: registration.credentials
+                });
+                resolve();
+            }
+            catch (error) {
+                resolve();
+            }
+        });
+    }
+
     public streamLogs(registration: ServerRegistration, streamName: string, appName?: string): Thenable<ScdfStreamLogs> {
         return new Promise(async (resolve, reject) => {
             try {

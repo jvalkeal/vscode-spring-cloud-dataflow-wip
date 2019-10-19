@@ -84,6 +84,11 @@
 				"category": "SCDF"
 			},
 			{
+				"command": "vscode-spring-cloud-dataflow.apps.default",
+				"title": "Make Default App",
+				"category": "SCDF"
+			},
+			{
 				"command": "vscode-spring-cloud-dataflow.streams.show",
 				"title": "Show Stream",
 				"category": "SCDF"
@@ -168,6 +173,10 @@
 					"when": "never"
 				},
 				{
+					"command": "vscode-spring-cloud-dataflow.apps.default",
+					"when": "never"
+				},
+				{
 					"command": "vscode-spring-cloud-dataflow.streams.deploy",
 					"when": "never"
 				},
@@ -226,6 +235,10 @@
 				},
 				{
 					"command": "vscode-spring-cloud-dataflow.apps.unregister",
+					"when": "viewItem == definedAppVersion"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.apps.default",
 					"when": "viewItem == definedAppVersion"
 				},
 				{

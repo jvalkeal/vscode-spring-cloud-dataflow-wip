@@ -70,7 +70,7 @@ export class AppTypeNode extends BaseNode {
     private async getAppNodes(type: AppType): Promise<AppNode[]> {
         const nodes: AppNode[] = [];
         this.childData.forEach((v, k) => {
-            nodes.push(new AppNode(k, v.size.toString(), this.getIconManager(), type, [...v.keys()]));
+            nodes.push(new AppNode(k, v.size.toString(), this.getIconManager(), type, v));
         });
         return nodes;
     }

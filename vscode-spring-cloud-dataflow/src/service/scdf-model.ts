@@ -128,7 +128,6 @@ export interface ScdfStreamRuntimeApplicationInstanceEntry {
 
 export interface ScdfStreamLogs {
     logs: {[key: string]: string};
-    // logs: Map<string, string>;
 }
 
 export class ScdfModel {
@@ -188,6 +187,10 @@ export class ScdfModel {
 
     public unregisterApp(type: string, name: string, version?: string): Thenable<void> {
         return this.scdfService.unregisterApp(this.registration, type, name, version);
+    }
+
+    public defaultApp(type: string, name: string, version: string): Thenable<void> {
+        return this.scdfService.defaultApp(this.registration, type, name, version);
     }
 
     public streamLogs(streamName: string, appName?: string): Thenable<ScdfStreamLogs> {

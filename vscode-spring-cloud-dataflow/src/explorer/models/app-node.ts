@@ -17,6 +17,7 @@ import { IconManager, ThemedIconPath } from "@pivotal-tools/vscode-extension-cor
 import { BaseNode } from "./base-node";
 import { AppType } from "./app-type-node";
 import { AppVersionNode } from "./app-version-node";
+import { ScdfAppEntry } from "../../service/scdf-model";
 
 /**
  * Generic node which is any of {@link AppType}.
@@ -28,18 +29,16 @@ export class AppNode extends BaseNode {
         description: string | undefined,
         iconManager: IconManager,
         private readonly type: AppType,
-        private readonly versions: string[]
+        private childData: Map<string, ScdfAppEntry>
     ) {
         super(label, description, iconManager, 'definedApp');
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {
         let nodes: AppVersionNode[] = [];
-        if (this.versions) {
-            this.versions.forEach(v => {
-                nodes.push(new AppVersionNode(v, undefined, this.getIconManager(), this.type, this.label, v));
-            });
-        }
+        this.childData.forEach((v, k) => {
+            nodes.push(new AppVersionNode(k, v.defaultVersion ? 'default' : undefined, this.getIconManager(), this.type, this.label, k));
+        });
         return nodes;
     }
 
