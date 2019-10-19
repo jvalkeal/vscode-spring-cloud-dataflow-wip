@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { injectable, inject } from 'inversify';
-import { OutputManager }  from '@pivotal-tools/vscode-extension-core';
+import { OutputManager, NotificationManager }  from '@pivotal-tools/vscode-extension-core';
 import { Command, DITYPES } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_STREAMS_LOG } from '../extension-globals';
 import { ServerRegistration } from '../service/server-registration-manager';
@@ -24,7 +24,8 @@ import { ScdfModel } from '../service/scdf-model';
 export class StreamsLogCommand implements Command {
 
     constructor(
-        @inject(DITYPES.OutputManager)private outputManager: OutputManager
+        @inject(DITYPES.OutputManager) private outputManager: OutputManager,
+        @inject(DITYPES.NotificationManager) private notificationManager: NotificationManager
     ) {}
 
     get id() {
@@ -35,8 +36,12 @@ export class StreamsLogCommand implements Command {
         const server: ServerRegistration = args[0].registration;
         const model = new ScdfModel(server);
         const data = await model.streamLogs(args[0].streamName);
-        Object.keys(data.logs).map(key => {
-            this.outputManager.setText('SCDF ' + key, data.logs[key]);
-        });
+        if (data && data.logs) {
+            Object.keys(data.logs).map(key => {
+                this.outputManager.setText('SCDF ' + key, data.logs[key]);
+            });
+        } else {
+            this.notificationManager.showMessage(`No logs available for stream ${args[0].streamName}`);
+        }
     }
 }
