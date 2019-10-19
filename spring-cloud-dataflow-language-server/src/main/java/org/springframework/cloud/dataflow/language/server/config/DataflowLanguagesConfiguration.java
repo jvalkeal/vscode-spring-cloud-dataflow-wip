@@ -23,6 +23,7 @@ import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamL
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageLenser;
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageLinter;
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamLanguageSymbolizer;
+import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamRuntimeLanguageLenser;
 import org.springframework.cloud.dataflow.language.server.task.DataflowTaskLanguageLenser;
 import org.springframework.cloud.dataflow.language.server.task.DataflowTaskLanguageLinter;
 import org.springframework.context.annotation.Bean;
@@ -71,6 +72,11 @@ public class DataflowLanguagesConfiguration {
     @Bean
     public Completioner dataflowStreamLanguageCompletioner() {
         return new DataflowStreamLanguageCompletioner();
+    }
+
+    @Bean
+    public Lenser dataflowStreamRuntimeLanguageLenser() {
+        return new DataflowStreamRuntimeLanguageLenser();
     }
 
     @Bean

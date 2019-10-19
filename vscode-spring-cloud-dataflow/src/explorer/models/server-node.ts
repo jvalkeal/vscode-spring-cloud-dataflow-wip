@@ -21,7 +21,6 @@ import { AppTypeNode, AppType } from './app-type-node';
 import { ServerRegistration } from '../../service/server-registration-manager';
 import { TaskNode } from './task-node';
 import { JobNode } from './job-node';
-import { AppNode } from './app-node';
 
 /**
  * Enumeration of a possible child types under server in a dataflow. Mostly following web
@@ -108,7 +107,7 @@ export class ServerNode extends BaseNode {
 
     private async getStreamNodes(): Promise<StreamNode[]> {
         const scdfModel = new ScdfModel(this.registration);
-        const serverId = this.registration.url.replace(/[^\w]/g, '');
+        const serverId = this.registration.name;
         return scdfModel.getStreams().then(streams =>
             streams.map(app =>
                 new StreamNode(app.name, app.status, app.name, this.getIconManager(), serverId, this.registration)));
@@ -116,15 +115,13 @@ export class ServerNode extends BaseNode {
 
     private async getTaskNodes(): Promise<TaskNode[]> {
         const scdfModel = new ScdfModel(this.registration);
-        const serverId = this.registration.url.replace(/[^\w]/g, '');
         return scdfModel.getTasks().then(tasks =>
             tasks.map(app =>
-                new TaskNode(app.name, app.status, app.name, this.getIconManager(), serverId, this.registration)));
+                new TaskNode(app.name, app.status, app.name, this.getIconManager(), this.registration)));
     }
 
     private async getJobNodes(): Promise<JobNode[]> {
         const scdfModel = new ScdfModel(this.registration);
-        const serverId = this.registration.url.replace(/[^\w]/g, '');
         return scdfModel.getJobs().then(jobs =>
             jobs.map(job =>
                 new JobNode(job.executionId.toString(), `${job.name} ${job.status}`, this.getIconManager(), this.registration, job.executionId)));

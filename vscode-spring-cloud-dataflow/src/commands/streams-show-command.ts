@@ -17,6 +17,7 @@ import { window } from 'vscode';
 import { injectable } from 'inversify';
 import { Command } from '@pivotal-tools/vscode-extension-di';
 import { COMMAND_SCDF_STREAMS_SHOW } from '../extension-globals';
+import { StreamNode } from '../explorer/models/stream-node';
 
 @injectable()
 export class StreamsShowCommand implements Command {
@@ -28,7 +29,7 @@ export class StreamsShowCommand implements Command {
         return COMMAND_SCDF_STREAMS_SHOW;
     }
 
-    execute(...args: any[]) {
-        window.showTextDocument(args[0].getResourceUri());
+    execute(streamNode: StreamNode) {
+        window.showTextDocument(streamNode.getResourceUri());
     }
 }

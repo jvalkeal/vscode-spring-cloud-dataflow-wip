@@ -37,7 +37,7 @@ export class StreamNode extends BaseNode {
         // so that provideTextDocumentContent in StreamsExplorerProvider can
         // use correct server to request stream dsl by using serverId as
         // authority from a path
-        return Uri.parse(`scdfs://${this.serverId}/streams/${this.streamName}.scdfs`);
+        return Uri.parse(`scdfsr://${this.serverId}/streams/${this.streamName}.scdfsr`);
     }
 
     protected getThemedIconPath(): ThemedIconPath {

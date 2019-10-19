@@ -39,7 +39,7 @@ export class StreamsExplorerProvider implements TreeDataProvider<BaseNode>, Text
 		@inject(DITYPES.ExtensionContext) private extensionContext: ExtensionContext
     ) {
 		window.createTreeView('scdfStreams', { treeDataProvider: this });
-		this.extensionContext.subscriptions.push(workspace.registerTextDocumentContentProvider('scdfs', this));
+		this.extensionContext.subscriptions.push(workspace.registerTextDocumentContentProvider('scdfsr', this));
 	}
 
 	getChildren(element?: BaseNode | undefined): ProviderResult<BaseNode[]> {
@@ -55,11 +55,10 @@ export class StreamsExplorerProvider implements TreeDataProvider<BaseNode>, Text
 
 	provideTextDocumentContent(uri: Uri, token: CancellationToken): ProviderResult<string> {
 		// TODO: expecting /streams/ so substring(9) is a bit of a hack
-		const streamName = uri.path.substring(9).replace('.scdfs', "");
+		const streamName = uri.path.substring(9).replace('.scdfsr', "");
 		return this.serverRegistrationManager.getServers()
 			.then(servers => servers.find(s => {
-				const serverId = s.url.replace(/[^\w]/g, '');
-				return serverId === uri.authority;
+				return s.name === uri.authority;
 			}))
 			.then(registration => {
 				if (registration) {

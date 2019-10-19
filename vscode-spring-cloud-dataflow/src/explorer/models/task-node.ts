@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Uri } from 'vscode';
 import { IconManager, ThemedIconPath } from '@pivotal-tools/vscode-extension-core';
 import { BaseNode } from './base-node';
 import { ScdfModel } from '../../service/scdf-model';
@@ -27,17 +26,9 @@ export class TaskNode extends BaseNode {
         public readonly description: string | undefined,
         public readonly taskName: string,
         iconManager: IconManager,
-        private readonly serverId: string,
         private readonly registration: ServerRegistration
     ) {
         super(label, description, iconManager, 'definedTask');
-    }
-
-    public getResourceUri(): Uri {
-        // so that provideTextDocumentContent in StreamsExplorerProvider can
-        // use correct server to request stream dsl by using serverId as
-        // authority from a path
-        return Uri.parse(`scdfs://${this.serverId}/tasks/${this.taskName}.scdft`);
     }
 
     protected getThemedIconPath(): ThemedIconPath {

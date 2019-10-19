@@ -278,6 +278,15 @@
 				]
 			},
 			{
+				"id": "scdfsr",
+				"aliases": [
+					"SCDF Stream Runtime"
+				],
+				"extensions": [
+					".scdfsr"
+				]
+			},
+			{
 				"id": "scdft",
 				"aliases": [
 					"Spring Cloud Data Flow Task Language"

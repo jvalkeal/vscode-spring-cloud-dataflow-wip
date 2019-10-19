@@ -30,6 +30,12 @@ public class DataflowLanguages {
 	public final static String LANGUAGE_STREAM_DESC = "Spring Cloud Data Flow Stream Language";
 	public final static LanguageId LANGUAGE_STREAM = LanguageId.languageId(LANGUAGE_STREAM_ID, LANGUAGE_STREAM_DESC);
 
+	// stream runtime dsl
+	public final static String LANGUAGE_STREAM_RUNTIME_ID = "scdfsr";
+	public final static String LANGUAGE_STREAM_RUNTIME_DESC = "SCDF Stream Runtime";
+	public final static LanguageId LANGUAGE_STREAM_RUNTIME = LanguageId.languageId(LANGUAGE_STREAM_RUNTIME_ID,
+			LANGUAGE_STREAM_RUNTIME_DESC);
+
 	// task dsl
 	public final static String LANGUAGE_TASK_ID = "scdft";
 	public final static String LANGUAGE_TASK_DESC = "Spring Cloud Data Flow Task Language";

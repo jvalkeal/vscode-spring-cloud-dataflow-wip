@@ -36,6 +36,7 @@ import org.springframework.dsl.domain.Position;
 import org.springframework.dsl.domain.Range;
 import org.springframework.dsl.jsonrpc.session.JsonRpcSession;
 import org.springframework.dsl.lsp.LspSystemConstants;
+import org.springframework.dsl.model.LanguageId;
 import org.springframework.dsl.service.AbstractDslService;
 import org.springframework.dsl.service.DslContext;
 import org.springframework.dsl.service.reconcile.DefaultReconcileProblem;
@@ -61,6 +62,10 @@ public abstract class AbstractDataflowStreamLanguageService extends AbstractDslS
 
 	public AbstractDataflowStreamLanguageService() {
 		super(DataflowLanguages.LANGUAGE_STREAM);
+	}
+
+	public AbstractDataflowStreamLanguageService(LanguageId languageId) {
+		super(languageId);
 	}
 
 	@Autowired
