@@ -15,12 +15,13 @@
  */
 import { IconManager } from '@pivotal-tools/vscode-extension-core';
 import { BaseNode } from './base-node';
-import { ScdfModel } from '../../service/scdf-model';
+import { ScdfModel, ScdfAppEntry } from '../../service/scdf-model';
 import { StreamNode } from './stream-node';
 import { AppTypeNode, AppType } from './app-type-node';
 import { ServerRegistration } from '../../service/server-registration-manager';
 import { TaskNode } from './task-node';
 import { JobNode } from './job-node';
+import { AppNode } from './app-node';
 
 /**
  * Enumeration of a possible child types under server in a dataflow. Mostly following web
@@ -62,13 +63,47 @@ export class ServerNode extends BaseNode {
     }
 
     private async getAppTypeNodes(): Promise<AppTypeNode[]> {
-        let nodes: AppTypeNode[] = [];
-        nodes.push(new AppTypeNode('App', this.getIconManager(), AppType.App, this.registration));
-        nodes.push(new AppTypeNode('Source', this.getIconManager(), AppType.Source, this.registration));
-        nodes.push(new AppTypeNode('Processor', this.getIconManager(), AppType.Processor, this.registration));
-        nodes.push(new AppTypeNode('Sink', this.getIconManager(), AppType.Sink, this.registration));
-        nodes.push(new AppTypeNode('Task', this.getIconManager(), AppType.Task, this.registration));
-        return nodes;
+        return this.getAppTypeNodesMap()
+            .then(appTypes => {
+                let nodes: AppTypeNode[] = [];
+                appTypes.forEach((v, k) => {
+                    const name = k.toString();
+                    const nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1);
+                    nodes.push(new AppTypeNode(nameCapitalized, v.size.toString(), this.getIconManager(), k, v));
+                });
+                return nodes;
+            });
+    }
+
+    private async getAppTypeNodesMap(): Promise<Map<AppType, Map<string, Map<string, ScdfAppEntry>>>> {
+        const stringToEnumValue = <ET, T>(enumObj: ET, str: string): T =>
+            (enumObj as any)[Object.keys(enumObj).filter(k => (enumObj as any)[k] === str)[0]];
+        const model = new ScdfModel(this.registration);
+        return model.getApps()
+            .then(apps => {
+                // populate main types
+                const appTypeMap = new Map<AppType, Map<string, Map<string, ScdfAppEntry>>>();
+                appTypeMap.set(AppType.App, new Map<string, Map<string, ScdfAppEntry>>());
+                appTypeMap.set(AppType.Source, new Map<string, Map<string, ScdfAppEntry>>());
+                appTypeMap.set(AppType.Processor, new Map<string, Map<string, ScdfAppEntry>>());
+                appTypeMap.set(AppType.Sink, new Map<string, Map<string, ScdfAppEntry>>());
+                appTypeMap.set(AppType.Task, new Map<string, Map<string, ScdfAppEntry>>());
+                // build named types and versions
+                apps.forEach(app => {
+                    const appType = stringToEnumValue<typeof AppType, AppType>(AppType, app.type);
+                    let appTypeNameMap = appTypeMap.get(appType);
+                    if (appTypeNameMap) {
+                        let appTypeNameVersionMap = appTypeNameMap.get(app.name);
+                        if (!appTypeNameVersionMap) {
+                            appTypeNameVersionMap = new Map<string, ScdfAppEntry>();
+                            appTypeNameMap.set(app.name, appTypeNameVersionMap);
+                        }
+                        appTypeNameVersionMap.set(app.version, app);
+                    }
+
+                });
+                return appTypeMap;
+            });
     }
 
     private async getStreamNodes(): Promise<StreamNode[]> {

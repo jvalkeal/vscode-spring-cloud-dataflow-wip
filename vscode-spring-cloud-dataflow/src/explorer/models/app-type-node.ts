@@ -38,11 +38,12 @@ export class AppTypeNode extends BaseNode {
 
     constructor(
         label: string,
+        description: string | undefined,
         iconManager: IconManager,
         private readonly type: AppType,
-        private readonly registration: ServerRegistration
+        private childData: Map<string, Map<string, ScdfAppEntry>>
     ) {
-        super(label, undefined, iconManager);
+        super(label, description, iconManager);
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {
@@ -67,29 +68,10 @@ export class AppTypeNode extends BaseNode {
     }
 
     private async getAppNodes(type: AppType): Promise<AppNode[]> {
-        const scdfModel = new ScdfModel(this.registration);
-        return scdfModel.getApps()
-            .then(apps => {
-                const grouped = new Map<string, Array<ScdfAppEntry>>();
-                apps.forEach(app => {
-                    if (app.type === type.toString()) {
-                        let group = grouped.get(app.name);
-                        if (!group) {
-                            group = new Array<ScdfAppEntry>();
-                            group.push(app);
-                            grouped.set(app.name, group);
-                        } else {
-                            group.push(app);
-                        }
-                    }
-                });
-                const appNodes = new Array<AppNode>();
-                grouped.forEach((v, k) => {
-                    const versions: string[] = [];
-                    v.forEach(app => versions.push(app.version));
-                    appNodes.push(new AppNode(k, this.getIconManager(), type, versions));
-                });
-                return appNodes;
-            });
+        const nodes: AppNode[] = [];
+        this.childData.forEach((v, k) => {
+            nodes.push(new AppNode(k, v.size.toString(), this.getIconManager(), type, [...v.keys()]));
+        });
+        return nodes;
     }
 }

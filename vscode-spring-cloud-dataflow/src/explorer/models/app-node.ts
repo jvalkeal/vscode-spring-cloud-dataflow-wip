@@ -25,18 +25,19 @@ export class AppNode extends BaseNode {
 
     constructor(
         label: string,
+        description: string | undefined,
         iconManager: IconManager,
         private readonly type: AppType,
-        private readonly versions?: string[]
+        private readonly versions: string[]
     ) {
-        super(label, undefined, iconManager, 'definedApp');
+        super(label, description, iconManager, 'definedApp');
     }
 
     public async getChildren(element: BaseNode): Promise<BaseNode[]> {
         let nodes: AppVersionNode[] = [];
         if (this.versions) {
             this.versions.forEach(v => {
-                nodes.push(new AppVersionNode(v, this.getIconManager(), this.type, this.label, v));
+                nodes.push(new AppVersionNode(v, undefined, this.getIconManager(), this.type, this.label, v));
             });
         }
         return nodes;

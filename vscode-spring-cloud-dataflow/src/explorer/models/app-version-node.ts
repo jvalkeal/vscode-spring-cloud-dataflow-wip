@@ -20,8 +20,15 @@ import { AppType } from "./app-type-node";
 
 export class AppVersionNode extends BaseNode {
 
-    constructor(label: string, iconManager: IconManager, public readonly type: AppType, public readonly name: string, public readonly version: string) {
-        super(label, undefined, iconManager, 'definedAppVersion');
+    constructor(
+        label: string,
+        description: string | undefined,
+        iconManager: IconManager,
+        public readonly type: AppType,
+        public readonly name: string,
+        public readonly version: string
+    ) {
+        super(label, description, iconManager, 'definedAppVersion');
     }
 
     protected getTreeItemCollapsibleState(): TreeItemCollapsibleState {
