@@ -15,7 +15,7 @@
  */
 import { injectable, inject } from 'inversify';
 import { Command } from '@pivotal-tools/vscode-extension-di';
-import { COMMAND_SCDF_APPS_UNREGISTER, COMMAND_SCDF_APPS_DEFAULT } from '../extension-globals';
+import { COMMAND_SCDF_APPS_DEFAULT } from '../extension-globals';
 import { ServerRegistrationManager } from '../service/server-registration-manager';
 import { TYPES } from '../types';
 import { ScdfModel } from '../service/scdf-model';
