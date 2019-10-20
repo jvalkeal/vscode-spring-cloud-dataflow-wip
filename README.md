@@ -23,3 +23,29 @@ See individual readme's in these project for futher info.
 Until we start publishing this extension into a VSCode marketplace, you can pick snapshot build out from a
 [Azure Pipeline Build](https://dev.azure.com/jannevalkealahti/vscode-test/_build?definitionId=3). Pick a latest
 master build:
+![vscode-pick-latest-vsix-dist](vscode-pick-latest-vsix-dist.png)
+Then download a `drop` file and `vsix` file will be inside of it:
+```bash
+$ unzip -l drop.zip
+Archive:  drop.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2019-10-20 14:01   drop/
+ 47485336  2019-10-20 14:01   drop/vscode-spring-cloud-dataflow-0.0.1.vsix
+---------                     -------
+ 47485336                     2 files
+```
+
+Generic purpose uninstall/install procedure with vscode is:
+```
+$ code --uninstall-extension vscode-spring-cloud-dataflow-0.0.1.vsix
+$ code
+$ code --install-extension vscode-spring-cloud-dataflow-0.0.1.vsix
+$ code
+```
+
+**NOTE**: Currently in vscode when trying to replace existing extension with a same
+          version you need to start vscode after requesting _uninstall_ as for some
+          weird reason _uninstall_ actually happens only after you start a vscode.
+          If it's your first time, just install vsix file within vscode or start
+          it with `--install-extension`.
