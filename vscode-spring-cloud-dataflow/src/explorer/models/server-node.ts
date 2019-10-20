@@ -110,20 +110,37 @@ export class ServerNode extends BaseNode {
         const serverId = this.registration.name;
         return scdfModel.getStreams().then(streams =>
             streams.map(app =>
-                new StreamNode(app.name, app.status, app.name, this.getIconManager(), serverId, this.registration)));
+                new StreamNode(
+                    app.name,
+                    app.status,
+                    app.name,
+                    this.getIconManager(),
+                    serverId,
+                    this.registration)));
     }
 
     private async getTaskNodes(): Promise<TaskNode[]> {
         const scdfModel = new ScdfModel(this.registration);
         return scdfModel.getTasks().then(tasks =>
             tasks.map(app =>
-                new TaskNode(app.name, app.status, app.name, this.getIconManager(), this.registration)));
+                new TaskNode(
+                    app.name,
+                    app.status,
+                    app.name,
+                    this.getIconManager(),
+                    this.registration)));
     }
 
     private async getJobNodes(): Promise<JobNode[]> {
         const scdfModel = new ScdfModel(this.registration);
         return scdfModel.getJobs().then(jobs =>
             jobs.map(job =>
-                new JobNode(job.executionId.toString(), `${job.name} ${job.status}`, this.getIconManager(), this.registration, job.executionId)));
+                new JobNode(
+                    job.executionId.toString(),
+                    `${job.name} ${job.status}`,
+                    this.getIconManager(),
+                    this.registration,
+                    job.executionId,
+                    job.name)));
     }
 }

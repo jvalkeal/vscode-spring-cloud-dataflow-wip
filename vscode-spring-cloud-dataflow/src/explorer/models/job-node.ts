@@ -26,8 +26,9 @@ export class JobNode extends BaseNode {
         label: string,
         public readonly description: string | undefined,
         iconManager: IconManager,
-        private readonly registration: ServerRegistration,
-        private readonly executionId: number
+        public readonly registration: ServerRegistration,
+        public readonly executionId: number,
+        public readonly jobName: string
     ) {
         super(label, description, iconManager, 'executedJob');
     }
@@ -46,7 +47,14 @@ export class JobNode extends BaseNode {
         await scdfModel.getJobExecution(this.executionId)
             .then(execution => {
                 execution.jobExecution.stepExecutions.forEach(step => {
-                    stepNodes.push(new StepNode(step.id.toString(), `${step.stepName} ${step.status}`, this.getIconManager()));
+                    stepNodes.push(new StepNode(
+                        step.id.toString(),
+                        `${step.stepName} ${step.status}`,
+                        this.getIconManager(),
+                        this.registration,
+                        execution.executionId,
+                        step.id,
+                        step.stepName));
                 });
             });
         return stepNodes;

@@ -124,8 +124,23 @@
 				"category": "SCDF"
 			},
 			{
+				"command": "vscode-spring-cloud-dataflow.tasks.execution.inspect",
+				"title": "Inspect",
+				"category": "SCDF"
+			},
+			{
 				"command": "vscode-spring-cloud-dataflow.tasks.debugattach",
 				"title": "Debug Attach",
+				"category": "SCDF"
+			},
+			{
+				"command": "vscode-spring-cloud-dataflow.jobs.execution.inspect",
+				"title": "Inspect",
+				"category": "SCDF"
+			},
+			{
+				"command": "vscode-spring-cloud-dataflow.steps.execution.inspect",
+				"title": "Inspect",
 				"category": "SCDF"
 			}
 		],
@@ -182,6 +197,18 @@
 				},
 				{
 					"command": "vscode-spring-cloud-dataflow.tasks.log",
+					"when": "never"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.tasks.execution.inspect",
+					"when": "never"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.jobs.execution.inspect",
+					"when": "never"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.steps.execution.inspect",
 					"when": "never"
 				}
 			],
@@ -262,8 +289,20 @@
 					"when": "viewItem == executedTaskInstance"
 				},
 				{
+					"command": "vscode-spring-cloud-dataflow.tasks.execution.inspect",
+					"when": "viewItem == executedTaskInstance"
+				},
+				{
 					"command": "vscode-spring-cloud-dataflow.tasks.debugattach",
 					"when": "viewItem == executedTaskInstance"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.jobs.execution.inspect",
+					"when": "viewItem == executedJob"
+				},
+				{
+					"command": "vscode-spring-cloud-dataflow.steps.execution.inspect",
+					"when": "viewItem == executedStep"
 				}
 			]
 		},

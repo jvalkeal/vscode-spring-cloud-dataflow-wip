@@ -17,7 +17,7 @@ import axios from 'axios';
 import * as FormData from 'form-data';
 import {
     ScdfStreamEntry, ScdfAppEntry, ScdfStreamDeploymentEntry, ScdfStreamRuntimeEntry, ScdfStreamLogs, ScdfTaskEntry,
-    ScdfTaskExecutionEntry, ScdfJobEntry, ScdfJobExecutionEntry
+    ScdfTaskExecutionEntry, ScdfJobEntry, ScdfJobExecutionEntry, ScdfStepExecutionEntry
 } from './scdf-model';
 import { ServerRegistration } from './server-registration-manager';
 
@@ -105,6 +105,15 @@ export class ScdfService {
         });
     }
 
+    public getTaskExecution(registration: ServerRegistration, executionId: number): Thenable<ScdfTaskExecutionEntry> {
+        return new Promise(async (resolve, reject) => {
+                const response = await axios.get(registration.url + '/tasks/executions/' + executionId, {
+                    auth: registration.credentials
+                });
+                resolve((response.data as ScdfTaskExecutionEntry));
+        });
+    }
+
     public getJobs(registration: ServerRegistration): Thenable<ScdfJobEntry[]> {
         return new Promise(async (resolve, reject) => {
             try {
@@ -127,6 +136,15 @@ export class ScdfService {
                     auth: registration.credentials
                 });
                 resolve((response.data as ScdfJobExecutionEntry));
+        });
+    }
+
+    public getStepExecution(registration: ServerRegistration, jobExecutionId: number, stepExecutionId: number): Thenable<ScdfStepExecutionEntry> {
+        return new Promise(async (resolve, reject) => {
+                const response = await axios.get(registration.url + '/jobs/executions/' + jobExecutionId + '/steps/' + stepExecutionId, {
+                    auth: registration.credentials
+                });
+                resolve((response.data as ScdfStepExecutionEntry));
         });
     }
 

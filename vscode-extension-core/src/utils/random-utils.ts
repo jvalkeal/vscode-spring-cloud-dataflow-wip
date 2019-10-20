@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './security/keytar';
-export * from './security/settings-manager';
-export * from './core/extension-context-aware';
-export * from './core/extension-activate-aware';
-export * from './extension/abstract-extension';
-export * from './language/language-server-manager';
-export * from './language/language-support';
-export * from './ui/icon-manager';
-export * from './ui/status-bar-manager';
-export * from './ui/notification-manager';
-export * from './ui/output-manager';
-export * from './ui/read-only-document-manager';
+import * as crypto from "crypto";
+
+export namespace randomUtils {
+    export function getPseudononymousStringHash(s: string, encoding: crypto.HexBase64Latin1Encoding = 'base64'): string {
+        return crypto.createHash('sha256').update(s).digest(encoding);
+    }
+}

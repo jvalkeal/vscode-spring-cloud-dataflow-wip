@@ -24,6 +24,7 @@ export class ExecutionNode extends BaseNode {
         label: string,
         public readonly description: string | undefined,
         public readonly taskName: string,
+        public readonly executionId: number,
         iconManager: IconManager,
         public readonly externalExecutionId: string,
         public readonly registration: ServerRegistration

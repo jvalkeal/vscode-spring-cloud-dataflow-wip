@@ -18,7 +18,7 @@ import { ContainerModule, decorate, injectable } from 'inversify';
 import {
     ExtensionActivateAware, ExtensionContextAware, SettingsManager, DefaultSettingsManager, NotificationManager,
     OutputManager, StatusBarManager, StatusBarManagerItem, AbstractStatusBarManagerItem, LanguageServerManager,
-    LanguageSupport, IconManager
+    LanguageSupport, IconManager, ReadOnlyDocumentManager
 } from '@pivotal-tools/vscode-extension-core';
 import { DITYPES } from './ditypes';
 import { ExtensionActivateManager } from './extension-activate-manager';
@@ -59,6 +59,13 @@ const coreContainerModule = new ContainerModule((bind) => {
             return new LanguageServerManager(extensionContext, languageSupports, notificationManager);
         }
     ).inSingletonScope();
+    bind<ReadOnlyDocumentManager>(DITYPES.ReadOnlyDocumentManager).toDynamicValue(
+        context => {
+            const extensionContext = context.container.get<ExtensionContext>(DITYPES.ExtensionContext);
+            return new ReadOnlyDocumentManager(extensionContext);
+        }
+    ).inSingletonScope();
+
     bind<IconManager>(DITYPES.IconManager).toDynamicValue(
         context => {
             const extensionContext = context.container.get<ExtensionContext>(DITYPES.ExtensionContext);

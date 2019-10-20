@@ -27,5 +27,6 @@ export const DITYPES = {
     NotificationManagerLocationKey: Symbol('NotificationManagerLocationKey'),
     OutputManager: Symbol('OutputManager'),
     StatusBarManager: Symbol('StatusBarManager'),
-    StatusBarManagerItem: Symbol('StatusBarManagerItem')
+    StatusBarManagerItem: Symbol('StatusBarManagerItem'),
+    ReadOnlyDocumentManager: Symbol('ReadOnlyDocumentManager')
 };

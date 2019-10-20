@@ -41,6 +41,9 @@ import { StreamsAppLogCommand } from './streams-app-log-command';
 import { TasksDebugAttachCommand } from './tasks-debug-attach-command';
 import { AppsRegisterAllCommand } from './apps-registerall-command';
 import { AppsDefaultCommand } from './apps-default-command';
+import { TasksExecutionInspectCommand } from './tasks-execution-inspect-command';
+import { JobsExecutionInspectCommand } from './jobs-execution-inspect-command';
+import { StepsExecutionInspectCommand } from './steps-execution-inspect-command';
 
 const commandsContainerModule = new ContainerModule((bind) => {
     bind<ServerRegistrationManager>(TYPES.ServerRegistrationManager).to(ServerRegistrationManager).inSingletonScope();
@@ -59,6 +62,9 @@ const commandsContainerModule = new ContainerModule((bind) => {
     bind<Command>(DITYPES.Command).to(TasksLaunchCommand);
     bind<Command>(DITYPES.Command).to(TasksDestroyCommand);
     bind<Command>(DITYPES.Command).to(TasksDebugAttachCommand);
+    bind<Command>(DITYPES.Command).to(TasksExecutionInspectCommand);
+    bind<Command>(DITYPES.Command).to(JobsExecutionInspectCommand);
+    bind<Command>(DITYPES.Command).to(StepsExecutionInspectCommand);
     bind<Command>(DITYPES.Command).to(AppsRegisterCommand);
     bind<Command>(DITYPES.Command).to(AppsRegisterAllCommand);
     bind<Command>(DITYPES.Command).to(AppsUnregisterCommand);

@@ -85,6 +85,12 @@ export interface ScdfJobExecutionEntry extends BaseEntry {
     jobExecution: JobExecution;
 }
 
+export interface ScdfStepExecutionEntry extends BaseEntry {
+    jobExecutionId: number;
+    stepExecution: StepExecution;
+    stepType: string;
+}
+
 interface DeploymentProperties {
     [key: string]: string;
 }
@@ -169,12 +175,20 @@ export class ScdfModel {
         return this.scdfService.getTaskExecutions(this.registration, streamName);
     }
 
+    public getTaskExecution(executionId: number): Thenable<ScdfTaskExecutionEntry> {
+        return this.scdfService.getTaskExecution(this.registration, executionId);
+    }
+
     public getJobs(): Thenable<ScdfJobEntry[]> {
         return this.scdfService.getJobs(this.registration);
     }
 
     public getJobExecution(executionId: number): Thenable<ScdfJobExecutionEntry> {
         return this.scdfService.getJobExecution(this.registration, executionId);
+    }
+
+    public getStepExecution(jobExecutionId: number, stepExecutionId: number): Thenable<ScdfStepExecutionEntry> {
+        return this.scdfService.getStepExecution(this.registration, jobExecutionId, stepExecutionId);
     }
 
     public registerApps(uris: string[]): Thenable<void> {

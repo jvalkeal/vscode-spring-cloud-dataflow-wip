@@ -33,7 +33,7 @@
     "@types/keytar": "^4.4.0",
     "@types/node": "^7.0.43",
     "@types/vscode": "^1.37.0",
-    "typescript": "2.6.1",
+    "typescript": "^3.3.1",
     "vscode-test": "^1.2.0"
   }
 }

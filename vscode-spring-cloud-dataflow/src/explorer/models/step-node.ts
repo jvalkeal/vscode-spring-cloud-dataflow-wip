@@ -16,13 +16,18 @@
 import { IconManager, ThemedIconPath } from "@pivotal-tools/vscode-extension-core";
 import { BaseNode } from "./base-node";
 import { TreeItemCollapsibleState } from "vscode";
+import { ServerRegistration } from "../../service/server-registration-manager";
 
 export class StepNode extends BaseNode {
 
     constructor(
         label: string,
         public readonly description: string | undefined,
-        iconManager: IconManager
+        iconManager: IconManager,
+        public readonly registration: ServerRegistration,
+        public readonly jobExecutionId: number,
+        public readonly stepExecutionId: number,
+        public readonly stepName: string
     ) {
         super(label, description, iconManager, 'executedStep');
     }
