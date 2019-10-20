@@ -5,6 +5,9 @@ VSCode extension for a Spring Cloud Data Flow is meant to help developers to
 work with a development to manage and handle application, stream, tasks and jobs
 in a SCDF environment.
 
+**NOTE:** This page is an overview, more detailed documentation is available in
+[SCDF VSCode Extension Repo](https://github.com/jvalkeal/vscode-spring-cloud-dataflow-wip/tree/master/vscode-spring-cloud-dataflow/docs).
+
 ![Generic1][vscode-docs-generic-1]
 
 ## Features
