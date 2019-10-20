@@ -19,3 +19,7 @@ See individual readme's in these project for futher info.
           [inversify](http://inversify.io/), and DI library based on [inversify](http://inversify.io/)
           to easy extension development. SCDF Language Server inself will be a generic purpose implementation
           which can be used from any Language Client which chooce to do an integration into it.
+
+Until we start publishing this extension into a VSCode marketplace, you can pick snapshot build out from a
+[Azure Pipeline Build](https://dev.azure.com/jannevalkealahti/vscode-test/_build?definitionId=3). Pick a latest
+master build:
