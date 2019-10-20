@@ -24,6 +24,7 @@ Until we start publishing this extension into a VSCode marketplace, you can pick
 [Azure Pipeline Build](https://dev.azure.com/jannevalkealahti/vscode-test/_build?definitionId=3). Pick a latest
 master build:
 ![vscode-pick-latest-vsix-dist](vscode-pick-latest-vsix-dist.png)
+
 Then download a `drop` file and `vsix` file will be inside of it:
 ```bash
 $ unzip -l drop.zip
