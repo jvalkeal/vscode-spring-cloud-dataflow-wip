@@ -121,4 +121,13 @@ public class DataflowTaskLanguageLenserTests {
 		assertThat(lenses.get(5).getCommand().getArguments().get(0)).isEqualTo("name3");
 		assertThat(lenses.get(5).getRange()).isEqualTo(Range.from(14, 0, 14, 9));
 	}
+
+	@Test
+	public void testTaskNoName() {
+		Document document = new TextDocument("fakeuri", DataflowLanguages.LANGUAGE_STREAM, 0,
+				AbstractDataflowTaskLanguageServiceTests.DSL_NO_NAME);
+		List<CodeLens> lenses = lenser.lense(DslContext.builder().document(document).build()).toStream()
+				.collect(Collectors.toList());
+		assertThat(lenses).hasSize(0);
+	}
 }

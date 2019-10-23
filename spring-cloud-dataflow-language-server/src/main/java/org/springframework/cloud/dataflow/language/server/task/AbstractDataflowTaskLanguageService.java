@@ -151,7 +151,7 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 			DocumentText lineContent = document.content(lineRange);
 			DocumentText trim = lineContent.trimStart();
 			if (trim.hasText() && Character.isLetterOrDigit(trim.charAt(0))) {
-				DefinitionItem definitionItem = parseDefinition(lineContent, nameItem);
+				DefinitionItem definitionItem = parseDefinition(lineContent, nameItem, line);
 				definitionItem.range = lineRange;
 				definitionItem.envItem = envItem;
 				definitionItem.nameItem = nameItem;
@@ -255,7 +255,7 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 		return null;
 	}
 
-	private DefinitionItem parseDefinition(DocumentText text, LaunchItem nameItem) {
+	private DefinitionItem parseDefinition(DocumentText text, LaunchItem nameItem, int line) {
 		DefinitionItem definitionItem = new DefinitionItem();
 		try {
 			int l = 0;
@@ -275,13 +275,20 @@ public abstract class AbstractDataflowTaskLanguageService extends AbstractDslSer
 						.substring(contentRange.getStart().getCharacter() + 6, nameItem.getText().length()).trim()
 						.toString();
 			}
+			if (taskName == null) {
+				Range range = Range.from(line, 0, line, 0);
+				DefaultReconcileProblem problem = new DefaultReconcileProblem(new ErrorProblemType(""),
+						"Task Definition must have a name", range);
+				definitionItem.reconcileProblem = problem;
+				return definitionItem;
+			}
 			TaskParser parser = new TaskParser(taskName, text.subtext(l, text.length()).toString(), true, true);
 			TaskNode node = parser.parse();
 			definitionItem.taskNode = node;
 		} catch (ParseException e) {
 			String message = e.getMessage();
 			int position = e.getPosition();
-			Range range = Range.from(0, position, 0, position);
+			Range range = Range.from(line, position, line, position);
 			DefaultReconcileProblem problem = new DefaultReconcileProblem(new ErrorProblemType(""), message, range);
 			definitionItem.reconcileProblem = problem;
 		}
