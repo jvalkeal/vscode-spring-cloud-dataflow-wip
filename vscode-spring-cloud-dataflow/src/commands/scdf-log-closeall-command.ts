@@ -16,17 +16,17 @@
 import { injectable, inject } from 'inversify';
 import { OutputManager }  from '@pivotal-tools/vscode-extension-core';
 import { Command, DITYPES } from '@pivotal-tools/vscode-extension-di';
-import { COMMAND_SCDF_STREAMS_LOG_CLOSEALL } from '../extension-globals';
+import { COMMAND_SCDF_LOG_CLOSEALL } from '../extension-globals';
 
 @injectable()
-export class StreamsLogCloseallCommand implements Command {
+export class ScdfLogCloseallCommand implements Command {
 
     constructor(
         @inject(DITYPES.OutputManager)private outputManager: OutputManager
     ) {}
 
     get id() {
-        return COMMAND_SCDF_STREAMS_LOG_CLOSEALL;
+        return COMMAND_SCDF_LOG_CLOSEALL;
     }
 
     async execute() {

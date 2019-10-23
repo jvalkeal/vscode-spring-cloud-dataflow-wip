@@ -32,7 +32,7 @@ import { StreamsLogCommand } from './streams-log-command';
 import { StreamsShowCommand } from './streams-show-command';
 import { ExplorerRefreshCommand } from './explorer-refresh-command';
 import { StreamDebugAttachCommand } from './stream-debug-attach-command';
-import { StreamsLogCloseallCommand } from './streams-log-closeall-command';
+import { ScdfLogCloseallCommand } from './scdf-log-closeall-command';
 import { TasksCreateCommand } from './tasks-create-command';
 import { TasksDestroyCommand } from './tasks-destroy-command';
 import { TasksLaunchCommand } from './tasks-launch-command';
@@ -71,8 +71,8 @@ const commandsContainerModule = new ContainerModule((bind) => {
     bind<Command>(DITYPES.Command).to(AppsDefaultCommand);
     bind<Command>(DITYPES.Command).to(StreamsLogCommand);
     bind<Command>(DITYPES.Command).to(StreamsAppLogCommand);
-    bind<Command>(DITYPES.Command).to(StreamsLogCloseallCommand);
     bind<Command>(DITYPES.Command).to(StreamsShowCommand);
+    bind<Command>(DITYPES.Command).to(ScdfLogCloseallCommand);
     bind<Command>(DITYPES.Command).to(ExplorerRefreshCommand);
 });
 export default commandsContainerModule;
