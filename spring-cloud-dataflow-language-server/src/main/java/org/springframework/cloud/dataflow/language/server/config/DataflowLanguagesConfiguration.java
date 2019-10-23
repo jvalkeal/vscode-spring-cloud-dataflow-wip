@@ -26,6 +26,7 @@ import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamL
 import org.springframework.cloud.dataflow.language.server.stream.DataflowStreamRuntimeLanguageLenser;
 import org.springframework.cloud.dataflow.language.server.task.DataflowTaskLanguageLenser;
 import org.springframework.cloud.dataflow.language.server.task.DataflowTaskLanguageLinter;
+import org.springframework.cloud.dataflow.language.server.task.DataflowTaskLanguageSymbolizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dsl.lsp.server.support.JvmLspExiter;
@@ -87,6 +88,11 @@ public class DataflowLanguagesConfiguration {
     @Bean
     public Lenser dataflowTaskLanguageLenser() {
         return new DataflowTaskLanguageLenser();
+    }
+
+    @Bean
+    public Symbolizer dataflowTaskLanguageSymbolizer() {
+        return new DataflowTaskLanguageSymbolizer();
     }
 
     @Bean

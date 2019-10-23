@@ -59,6 +59,11 @@ public class AbstractDataflowTaskLanguageServiceTests {
 	public static final String DSL_NO_NAME =
 		"timestamp\n";
 
+	public static final String DSL_TWO_INLINE_NAME =
+		"name1=timestamp\n" +
+		"\n" +
+		"name2=timestamp";
+
 	@BeforeEach
 	public void setup() {
 		service.setDataflowCacheService(new DataflowCacheService());
