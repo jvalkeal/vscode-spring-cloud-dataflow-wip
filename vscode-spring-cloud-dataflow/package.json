@@ -346,6 +346,11 @@
 		],
 		"grammars": [
 			{
+				"language": "scdfa",
+				"scopeName": "source.scdfa",
+				"path": "./syntaxes/scdfa.tmLanguage.json"
+			},
+			{
 				"language": "scdfs",
 				"scopeName": "source.scdfs",
 				"path": "./syntaxes/scdfs.tmLanguage.json"
