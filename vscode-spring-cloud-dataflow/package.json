@@ -425,7 +425,7 @@
 		"vsce": "^1.62.0",
 		"vscode-test": "^1.2.0",
 		"webpack": "^4.40.2",
-		"webpack-cli": "^3.3.8"
+		"webpack-cli": "^3.3.12"
 	},
 	"dependencies": {
 		"@pivotal-tools/vscode-extension-core": "file:../vscode-extension-core/pivotal-tools-vscode-extension-core-0.0.1.tgz",
